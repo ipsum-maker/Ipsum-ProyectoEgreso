@@ -1,32 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">  
+<html lang="es">
 <head>
-     <link rel="stylesheet" href="../css/ingreso.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Reportes</title>
-   </head>
+   <link rel="stylesheet" href="../css/ingreso.css">
+</head>
 <body>
-    <header>
-        <div class="icon-container">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#4A4A8C" viewBox="0 0 24 24">
-          <path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm8 1.5V8h4.5L14 3.5zM8 12h8v1.5H8V12zm0 3h8v1.5H8V15zm0 3h5v1.5H8V18z"/>
-        </svg>
-      </div>
-         <h1>Bienvenido al sistema de reportes</h1>
-        <span>Ingrese sus datos para ingresar</span>
 
-    </header>
-    <form >
-        <label for="correo">Correo electronico</label>
-        <input type="email" id="correo" name="correo">
-        <br><br>
+    <main class="login-card">
 
-        <label for="contrasena">Contraseña</label>
-        <input type="password" id="contrasena" name="contrasena">
-        <br><br>
-        <button type="submit">Iniciar Sesión</button>
+        <header class="login-header">
+            <div class="icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#4A4A8C" viewBox="0 0 24 24">
+                    <path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm8 1.5V8h4.5L14 3.5zM8 12h8v1.5H8V12zm0 3h8v1.5H8V15zm0 3h5v1.5H8V18z"/>
+                </svg>
+            </div>
 
-    </form>
+            <h1 class="login-title">Bienvenido al sistema de reportes</h1>
+            <span class="login-subtitle">Ingrese sus datos para ingresar</span>
+        </header>
+
+        <form class="login-form">
+            <label class="login-label" for="correo">Correo electrónico</label>
+            <input class="login-input" type="email" id="correo" name="correo">
+
+            <label class="login-label" for="contrasena">Contraseña</label>
+            <input class="login-input" type="password" id="contrasena" name="contrasena">
+
+            <button class="login-button" type="submit">Iniciar Sesión</button>
+        </form>
+
+    </main>
+
 </body>
 </html>
