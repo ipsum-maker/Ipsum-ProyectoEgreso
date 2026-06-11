@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Diario</title>
+</head>
+
+<body>
+    <header>
+        <a href="panel-profesores.html"> ← Volver al Panel</a>
+        <h1>Reporte Diario</h1>
+    </header>
+    <main>
+        <section>
+            <p>Complete la información del reporte diario de actividades</p>
+        </section>
+        <form>
+            <article>
+                <label for="fecha">Fecha</label>
+                <input type="date" id="fecha" name="fecha">
+            </article>
+
+            <article>
+                <label for="nombre">Nombre del Profesor</label>
+                <input type="text" id="nombre" name="nombre">
+                <label for="apellido">Apellifo del Profesor</label>
+                <input type="text" id="apellido" name="apellido">
+            </article>
+            <article>
+                <label for="aula">Aula/Taller/Laboratorio</label>
+                <select name="aula" id="aula">
+                    <option value="">Seleccione el Aula</option>
+                    <option value="aula1">Aula 1</option>
+                    <option value="taller1">Taller 1</option>
+                    <option value="laboratorio1">Laboratorio 1</option>
+                </select>
+            </article>
+            <article>
+                <h2>Asignación de equipos</h2>
+                <button type="button">+Agregar PC</button>
+                <label for="pc1">PC1</label>
+                <input type="text" id="pc1" name="pc1">
+                <label for="alumno1">Nombre del alumno</label>
+                <input type="text" id="alumno1" name="alumno1">
+            </article>
+            <footer>
+                <button type="submit">Guardar Reporte</button>
+                <button type="reset">Cancelar</button>
+            </footer>
+        </form>
+    </main>
+
+</body>
+
+</html>
