@@ -1,0 +1,309 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #d9e6f7;
+    color: #050816;
+}
+
+.page {
+    min-height: 100vh;
+}
+
+.page-header {
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #d9e6f7;
+    padding: 1rem;
+}
+
+.page-header__nav {
+    width: 100%;
+    max-width: 58.5rem;
+    margin: 0 auto;
+}
+
+.page-header__link {
+    text-decoration: none;
+    color: #050816;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.container {
+    width: 90%;
+    max-width: 58.5rem;
+    margin: 2rem auto;
+}
+
+.report {
+    background-color: #ffffff;
+    border: 1px solid #d9dee7;
+    border-radius: 0.9rem;
+    padding: 1.5rem;
+    box-shadow: 0 0.4rem 1.2rem rgba(15, 23, 42, 0.06);
+}
+
+.report__intro {
+    margin-bottom: 1.8rem;
+}
+
+.report__title {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.report__description {
+    margin: 0;
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.report-form {
+    width: 100%;
+}
+
+.report-form__group {
+    width: 100%;
+    margin-bottom: 1.4rem;
+}
+
+.report-form__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.report-form__label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.report-form__input,
+.report-form__select,
+.assignment__input {
+    width: 100%;
+    border: none;
+    background-color: #f1f1f3;
+    border-radius: 0.5rem;
+    padding: 0.8rem 0.95rem;
+    font-size: 0.95rem;
+    color: #111827;
+    outline: none;
+}
+
+.report-form__input::placeholder,
+.assignment__input::placeholder {
+    color: #6b7280;
+}
+
+.report-form__input:focus,
+.report-form__select:focus,
+.assignment__input:focus {
+    outline: 2px solid #b8cdf5;
+    background-color: #ffffff;
+}
+
+.report-form__select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.assignment {
+    margin-top: 0.5rem;
+}
+
+.assignment__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.assignment__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.assignment__card {
+    border: 1px solid #d9dee7;
+    border-radius: 0.7rem;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    align-items: center;
+}
+
+.assignment__pc,
+.assignment__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.assignment__input {
+    min-width: 0;
+}
+
+.assignment__input:first-of-type {
+    text-align: center;
+}
+
+.assignment__delete {
+    border: none;
+    background-color: transparent;
+    color: #6b7280;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0.2rem;
+}
+
+.assignment__delete:hover {
+    color: #111827;
+}
+
+.report-form__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 2rem;
+}
+
+.button {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #d9dee7;
+}
+
+.button--primary {
+    background-color: #03010d;
+    color: #ffffff;
+    border-color: #03010d;
+}
+
+.button--secondary {
+    background-color: #ffffff;
+    color: #050816;
+}
+
+.button--primary:hover {
+    background-color: #111827;
+}
+
+.button--secondary:hover {
+    background-color: #f8fafc;
+}
+
+@media (min-width: 576px) {
+    .report {
+        padding: 1.7rem;
+    }
+
+    .assignment__header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .assignment__card {
+        grid-template-columns: 5.6rem 1fr auto;
+    }
+
+    .report-form__actions {
+        flex-direction: row;
+    }
+
+    .button--primary {
+        flex: 1;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        margin-top: 2.3rem;
+    }
+
+    .report-form__row {
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .report-form__row .report-form__group {
+        width: 50%;
+    }
+
+    .report {
+        padding: 1.75rem;
+    }
+}.button--add {
+    background-color: #21599e;
+    color: #ffffff;
+    border-color: #21599e;
+}
+
+.button--add:hover {
+    background-color: #4973a7;
+}@media (min-width: 577px) and (max-width: 768px) {
+    .container {
+        width: 92%;
+        max-width: 700px;
+        margin: 2rem auto;
+    }
+
+    .report {
+        padding: 2rem;
+    }
+
+    .report-form__row {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .report-form__row .report-form__group {
+        width: 50%;
+    }
+
+    .assignment__header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .assignment__card {
+        grid-template-columns: 5.5rem 1fr auto;
+        gap: 1rem;
+    }
+
+    .report-form__actions {
+        flex-direction: row;
+        gap: 1rem;
+    }
+
+    .button {
+        padding: 0.9rem 1.4rem;
+        font-size: 1rem;
+    }
+
+    .button--primary,
+    .button--secondary {
+        flex: 1;
+    }
+}
