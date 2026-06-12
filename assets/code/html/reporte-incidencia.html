@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Diario</title>
+</head>
+
+<body>
+    
+    <!--Encabezado-->
+    
+    <header>
+        <a href="panel-profesores.html"> ← Volver al Panel</a>
+        <h1>Reporte Diario</h1>
+    </header>
+
+    <!--Contenido principal-->
+    
+    <main>
+        <form>
+
+            <!--Datos Profesor-->
+            <article>
+            <label for="nombre">Nombre del Profeor</label>
+            <input type="text" name="nombre" id="nombre" placeholder="Ej: Juan">
+            
+            
+            <label for="apellido">Apellido del Profesor</label>
+            <input type="text" name="apellido" id="apellido" placeholder="Ej: García">
+            </article>
+          <!--Asignatura-->
+            <article></article>
+            <label for="asignatura">Asignatura</label>
+            <input type="text" name="asignatura" id="asignatura" placeholder="Ej: Full Stack, Redes, Base de Datos">
+            </article>
+            <!--Fecha y Hora-->
+            <article>
+            <label for="fecha">Fecha de la Incidencia</label>
+            <input type="date" name="fecha" id="fecha">
+            
+            
+            <label for="hora">Hora de la Apertura del Reporte</label>
+            <input type="time" name="hora" id="hora">
+            </article>
+            <!--Tipo de solicitud-->
+
+            <article>
+            <label for="tipoSolicitud">Tipo de solicitud</label>
+            <select name="tipoSolicitud" id="tipoSolicitud">
+                <option value="">Seleccione una opción</option>
+                <option value="rotura-equipo">Rotura de equipo</option>
+                <option value="falla-equipo">Falla de equipo</option>
+                <option value="otro">Otro</option>
+            </select>
+
+            <!--Campo adicional si se selecciona "otro"-->
+
+            <label for="otroTipo">Especifique el tipo de incidencia</label>
+            <input type="text" name="otroTipo" id="otroTipo" placeholder="Describa el tipo de incidencia">
+        </article>
+
+            <!--Laboratorio/Taller-->
+            <article>
+                <label for="taller">Laboratorio</label>
+                <select name="taller" id="taller">
+                    <option value="">Seleccione el laboratorio o taller</option>
+                    <option value="taller1">Taller 1</option>
+                    <option value="taller2">Taller 2</option>
+                    <option value="taller3">Taller 3</option>
+                    <option value="taller4">Taller 4</option>
+                    <option value="taller5">Taller 5</option>
+                    <option value="lab1">Laborattorio 1</option>
+                    <option value="lab2">Laborattorio 2</option>
+                    <option value="lab3">Laborattorio 3</option>
+                </select>
+            </article>
+
+            <!--Descripcion-->
+
+            <article>
+                <label for="descripcion">Descripcón Detallada</label>
+                <textarea name="descripcion" id="descripcion" rows="5" placeholder="Describa ccon detalle la incidencia ocurrida, equipos afectados, circunstancias, etc."></textarea>
+            </article>
+            <footer>
+                <button type="submit">Enviar Reporte</button>
+                <button type="reset">Cancelar</button>
+            </footer>
+     </form>
+    </main>
+
+</body>
+
+</html>
