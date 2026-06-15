@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Reportes</title>
-    <link rel="stylesheet" href="../css/ingreso.css">
+    <script src="../code/js/login.js"></script>
+    <link rel="stylesheet" href="../code/css/ingreso.css">
 </head>
 
 <body>
@@ -21,10 +22,10 @@
 
         <form class="login-form" id="login-form">
             <label class="login-label" for="correo">Correo electrónico</label>
-            <input class="login-input" type="email" id="correo" name="correo">
+            <input class="login-input" type="email" id="correo" name="correo" required>
 
             <label class="login-label" for="contrasena">Contraseña</label>
-            <input class="login-input" type="password" id="contrasena" name="contrasena">
+            <input class="login-input" type="password" id="contrasena" name="contrasena" required>
 
             <button class="login-button" type="submit">Iniciar Sesión</button>
         </form>
