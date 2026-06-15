@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Diario</title>
+    <link rel="stylesheet" href="../css/reporte-diario.css">
+</head>
+
+<body class="page">
+    <header class="page-header">
+        <nav class="page-header_nav">
+            <a class="page-header__link" href="panel-profeso/res.html"> ← Volver al Panel</a>
+
+
+    </header>
+    <main class="report container">
+        <section class="report__intro">
+            <h1 class="report__title">Reporte Diario</h1>
+            <p class="report__description">Complete la información del reporte diario de actividades</p>
+        </section>
+        <form class="report-form" id="form-reporte-diario">
+            <article class="report-form__group">
+                <label class="report-form__label" for="fecha">Fecha</label>
+                <input class="report-form__input" type="date" id="fecha" name="fecha">
+            </article>
+
+            <article class="report-form__group">
+                <label class="report-form__label" for="hora">Hora</label>
+                <input class="report-form__input" type="time" id="hora" name="hora">
+            </article>
+
+            <!-- Botón Agregar PC -->
+            <header class="assignment__header">
+                <h2 class="assignment__title">Asignación de Equipos</h2>
+                <button class="button button--add" type="button" id="agregar-pc">+ Agregar PC</button>
+            </header>
+
+            <!-- Contenedor dinámico de PCs -->
+            <section class="assignment__card" id="lista-pcs">
+                <label class="assignment__pc" for="pc1">PC1</label>
+                <input class="assignment__input" type="text" id="pc1" name="pc1" value="PC1">
+
+                <label class="assignment__label" for="alumno1">Nombre del alumno</label>
+                <input class="assignment__input assignment__input--student" type="text" id="alumno1" name="alumno1"
+                    placeholder="Nombre del alumno">
+
+                <button class="assignment__delete" type="button" aria-label="Eliminar asignación">×</button>
+            </section>
+
+            <footer class="report-form__actions">
+                <button class="button button--primary" type="submit">Guardar Reporte</button>
+                <button class="button button--secondary" type="reset">Cancelar</button>
+            </footer>
+        </form>
+
+
+    </main>
+
+</body>
+
+</html>
