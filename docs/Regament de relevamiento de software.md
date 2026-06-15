@@ -1,7 +1,7 @@
 Reglamento de organización de software y Estándares de Codificación de Ipsum:
 
     • Introducción y Alcance:
-	El presente documento establece las normas, convencionales y buenas prácticas obligatorias 		para el desarrollo de proyectos web en Ipsum. Para garantizar un ecosistema de equipo 			técnico.
+	El presente documento establece las normas, convencionales y buenas prácticas obligatorias para el desarrollo de proyectos web en Ipsum. Para garantizar un ecosistema de equipo técnico.
 	Este reglamento aplica de forma estricta a todos los archivos HTML, CSS y JavaScript. 
     • Estructura del proyecto y arquitectura de carpetas:
     El proyecto se organiza en carpetas según el tipo de archivo con el fin de mantener el orden, facilitar el mantenimiento y permitir la reutilización del código.
@@ -12,9 +12,17 @@ Reglamento de organización de software y Estándares de Codificación de Ipsum:
 			/code
                 /css
                     ligin.css
+                    panel-profesores.css
+                    reporte-diario.css
                 /html
                     login.html
+                    panel-profesores.html
+                    reporte-dirio.html
+                    reporte-incidencia.html
                 /js
+                    LOGIN.js
+                    PANEL_PROFESORES.js
+                    REPORTE_DIARIO.js
                 /php	
 	    /docs
             Regamento de relevamiento de software.md
