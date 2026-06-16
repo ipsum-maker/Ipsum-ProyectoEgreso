@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte Diario</title>
+    <title>Reporte de Incidencias</title>
+    <link rel="stylesheet" href="css/reporte-insidencia.css">
 </head>
 
 <body class="report-page">
@@ -13,14 +14,15 @@
     <!--Encabezado-->
 
     <header class="report-header">
-        <a class="report-header__link" href="panel-profesores.html"> ← Volver al Panel</a>
-        <h1 class="report-header__title">Reporte Diario</h1>
+        <a class="report-header__link" href="panel-profesores.html">← Volver al Panel</a>
+        <h1 class="report-header__title">Reporte de Incidencias</h1>
     </header>
 
     <!--Contenido principal-->
 
     <main class="report-main">
         <form class="report-form" id="form-reporte-incidencia">
+
             <article class="report-form__group">
                 <!-- ERROR: el atributo for="nombre" no coincide con el id="nombre-profesor". Para corregirlo debería ser for="nombre-profesor" -->
                 <label class="report-form__label" for="nombre">Nombre del Profesor</label>
@@ -44,7 +46,7 @@
                 <input class="report-form__input" type="time" name="hora" id="hora-reporte">
             </article>
 
-            <!--- ERROR: según el reglamento, los nombres deberían usar kebab-case. tipoSolicitud debería ser tipo-solicitud -->
+            <!-- ERROR: según el reglamento, los nombres deberían usar kebab-case. tipoSolicitud debería ser tipo-solicitud -->
             <label class="report-form__label" for="tipoSolicitud">Tipo de solicitud</label>
             <select class="report-form__select" name="tipoSolicitud" id="tipoSolicitud">
                 <option value="">Seleccione una opción</option>
@@ -71,15 +73,15 @@
             </select>
 
             <label class="report-form__label" for="descripcion">Descripción Detallada</label>
-            <textarea class="report-form__textarea" name="descripcion" id="descripcion" rows="5"></textarea>
+            <textarea class="report-form__textarea" name="descripcion" id="descripcion" rows="5" placeholder="Describa con detalle la incidencia ocurrida, equipos afectados, circunstancias, etc."></textarea>
 
             <footer class="report-form__footer">
                 <button class="report-form__button report-form__button--submit" type="submit">Enviar Reporte</button>
                 <button class="report-form__button report-form__button--reset" type="reset">Cancelar</button>
             </footer>
+
         </form>
     </main>
-
 
 </body>
 

@@ -1,0 +1,234 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-size: 0.8rem;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #d9e6f7;
+    color: #020617;
+}
+
+.report-page {
+    min-height: 100vh;
+}
+
+.report-header {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid #d9dee7;
+}
+
+.report-header__link {
+    display: inline-block;
+    text-decoration: none;
+    color: #020617;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.report-header__link:hover {
+    color: #2563eb;
+}
+
+.report-header__title {
+    margin: 0.9rem 0 0 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #020617;
+}
+
+.report-main {
+    width: 100%;
+    min-height: calc(100vh - 7rem);
+    padding: 2rem 1rem;
+    background-color: #d9e6f7;
+}
+
+.report-form {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border: 1px solid #d9dee7;
+    border-radius: 1rem;
+    box-shadow: 0 0.35rem 1.2rem rgba(15, 23, 42, 0.08);
+}
+
+.report-form::before {
+    content: "Reporte de Incidencias";
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #020617;
+}
+
+.report-form::after {
+    content: "Complete el formulario para reportar una incidencia ocurrida en el taller o aula";
+    display: block;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: #536783;
+}
+
+.report-form__group {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 0;
+}
+
+.report-form__label {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #020617;
+}
+
+.report-form__input,
+.report-form__select,
+.report-form__textarea {
+    width: 100%;
+    margin-bottom: 1.25rem;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    outline: none;
+    background-color: #f3f4f6;
+    color: #020617;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9rem;
+}
+
+.report-form__input::placeholder,
+.report-form__textarea::placeholder {
+    color: #64748b;
+}
+
+.report-form__input:focus,
+.report-form__select:focus,
+.report-form__textarea:focus {
+    border-color: #93c5fd;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0.2rem rgba(147, 197, 253, 0.35);
+}
+
+.report-form__select {
+    cursor: pointer;
+}
+
+.report-form__textarea {
+    min-height: 6rem;
+    resize: vertical;
+}
+
+.report-form__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+}
+
+.report-form__button {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 0.5rem;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.report-form__button--submit {
+    border: 1px solid #020617;
+    background-color: #020617;
+    color: #ffffff;
+}
+
+.report-form__button--submit:hover {
+    background-color: #1e293b;
+    border-color: #1e293b;
+}
+
+.report-form__button--reset {
+    border: 1px solid #d9dee7;
+    background-color: #ffffff;
+    color: #020617;
+}
+
+.report-form__button--reset:hover {
+    background-color: #f3f4f6;
+}
+
+@media (min-width: 577px) {
+    html {
+        font-size: 18px;
+    }
+
+    .report-header {
+        padding: 1.25rem 2rem;
+    }
+
+    .report-main {
+        padding: 2rem;
+    }
+
+    .report-form {
+        max-width: 700px;
+        padding: 1.75rem;
+    }
+
+    .report-form__group {
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1rem;
+    }
+
+    .report-form__group .report-form__label:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .report-form__group .report-form__input:nth-child(2) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .report-form__group .report-form__label:nth-child(3) {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .report-form__group .report-form__input:nth-child(4) {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .report-form__footer {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .report-form__button {
+        padding: 1rem 1.25rem;
+        font-size: 1rem;
+    }
+
+    .report-form__button--submit {
+        flex: 1;
+    }
+
+    .report-form__button--reset {
+        width: auto;
+        min-width: 6rem;
+    }
+}
