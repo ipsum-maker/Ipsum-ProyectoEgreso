@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- ERROR: según el reglamento, el idioma debería ser español: lang="es" -->
 <html lang="en">
 
 <head>
@@ -7,51 +8,57 @@
     <title>Reporte Diario</title>
 </head>
 
-<body>
+<body class="report-page">
 
     <!--Encabezado-->
 
-    <header>
-        <a href="panel-profesores.html"> ← Volver al Panel</a>
-        <h1>Reporte Diario</h1>
+    <header class="report-header">
+        <a class="report-header__link" href="panel-profesores.html"> ← Volver al Panel</a>
+        <h1 class="report-header__title">Reporte Diario</h1>
     </header>
 
     <!--Contenido principal-->
 
-    <main>
-        <form id="form-reporte-incidencia">
-            <article>
-                <label for="nombre">Nombre del Profesor</label>
-                <input type="text" name="nombre" id="nombre-profesor" placeholder="Ej: Juan">
+    <main class="report-main">
+        <form class="report-form" id="form-reporte-incidencia">
+            <article class="report-form__group">
+                <!-- ERROR: el atributo for="nombre" no coincide con el id="nombre-profesor". Para corregirlo debería ser for="nombre-profesor" -->
+                <label class="report-form__label" for="nombre">Nombre del Profesor</label>
+                <input class="report-form__input" type="text" name="nombre" id="nombre-profesor" placeholder="Ej: Juan">
 
-                <label for="apellido">Apellido del Profesor</label>
-                <input type="text" name="apellido" id="apellido-profesor" placeholder="Ej: García">
+                <!-- ERROR: el atributo for="apellido" no coincide con el id="apellido-profesor". Para corregirlo debería ser for="apellido-profesor" -->
+                <label class="report-form__label" for="apellido">Apellido del Profesor</label>
+                <input class="report-form__input" type="text" name="apellido" id="apellido-profesor" placeholder="Ej: García">
             </article>
 
-            <label for="asignatura">Asignatura</label>
-            <input type="text" name="asignatura" id="asignatura" placeholder="Ej: Full Stack, Redes, Base de Datos">
+            <label class="report-form__label" for="asignatura">Asignatura</label>
+            <input class="report-form__input" type="text" name="asignatura" id="asignatura" placeholder="Ej: Full Stack, Redes, Base de Datos">
 
-            <article>
-                <label for="fecha">Fecha de la Incidencia</label>
-                <input type="date" name="fecha" id="fecha-incidencia">
+            <article class="report-form__group">
+                <!-- ERROR: el atributo for="fecha" no coincide con el id="fecha-incidencia". Para corregirlo debería ser for="fecha-incidencia" -->
+                <label class="report-form__label" for="fecha">Fecha de la Incidencia</label>
+                <input class="report-form__input" type="date" name="fecha" id="fecha-incidencia">
 
-                <label for="hora">Hora de la Apertura del Reporte</label>
-                <input type="time" name="hora" id="hora-reporte">
+                <!-- ERROR: el atributo for="hora" no coincide con el id="hora-reporte". Para corregirlo debería ser for="hora-reporte" -->
+                <label class="report-form__label" for="hora">Hora de la Apertura del Reporte</label>
+                <input class="report-form__input" type="time" name="hora" id="hora-reporte">
             </article>
 
-            <label for="tipoSolicitud">Tipo de solicitud</label>
-            <select name="tipoSolicitud" id="tipoSolicitud">
+            <!--- ERROR: según el reglamento, los nombres deberían usar kebab-case. tipoSolicitud debería ser tipo-solicitud -->
+            <label class="report-form__label" for="tipoSolicitud">Tipo de solicitud</label>
+            <select class="report-form__select" name="tipoSolicitud" id="tipoSolicitud">
                 <option value="">Seleccione una opción</option>
                 <option value="rotura-equipo">Rotura de equipo</option>
                 <option value="falla-equipo">Falla de equipo</option>
                 <option value="otro">Otro</option>
             </select>
 
-            <label for="otroTipo">Especifique el tipo de incidencia</label>
-            <input type="text" name="otroTipo" id="otroTipo" placeholder="Describa el tipo de incidencia">
+            <!-- ERROR: según el reglamento, los nombres deberían usar kebab-case. otroTipo debería ser otro-tipo -->
+            <label class="report-form__label" for="otroTipo">Especifique el tipo de incidencia</label>
+            <input class="report-form__input" type="text" name="otroTipo" id="otroTipo" placeholder="Describa el tipo de incidencia">
 
-            <label for="taller">Laboratorio</label>
-            <select name="taller" id="taller">
+            <label class="report-form__label" for="taller">Laboratorio</label>
+            <select class="report-form__select" name="taller" id="taller">
                 <option value="">Seleccione el laboratorio o taller</option>
                 <option value="taller1">Taller 1</option>
                 <option value="taller2">Taller 2</option>
@@ -63,12 +70,12 @@
                 <option value="lab3">Laboratorio 3</option>
             </select>
 
-            <label for="descripcion">Descripción Detallada</label>
-            <textarea name="descripcion" id="descripcion" rows="5"></textarea>
+            <label class="report-form__label" for="descripcion">Descripción Detallada</label>
+            <textarea class="report-form__textarea" name="descripcion" id="descripcion" rows="5"></textarea>
 
-            <footer>
-                <button type="submit">Enviar Reporte</button>
-                <button type="reset">Cancelar</button>
+            <footer class="report-form__footer">
+                <button class="report-form__button report-form__button--submit" type="submit">Enviar Reporte</button>
+                <button class="report-form__button report-form__button--reset" type="reset">Cancelar</button>
             </footer>
         </form>
     </main>
