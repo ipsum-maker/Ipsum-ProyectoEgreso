@@ -3,12 +3,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const STORAGE_KEY_REPORTES = "reportes";
 
     // Elementos principales del HTML
-    const formReporteDiario = document.getElementById("form-reporte-diario");
-    const botonAgregarPc = document.getElementById("agregar-pc");
-    const listaPcs = document.getElementById("lista-pcs");
-    const campoFecha = document.getElementById("fecha");
-    const campoHora = document.getElementById("hora");
-    const botonCancelar = document.querySelector(".button--secondary");
+   const campoFecha = document.getElementById("fecha");
+const campoHora = document.getElementById("hora");
+const campoNombreProfesor = document.getElementById("nombre-profesor");
+const campoApellidoProfesor = document.getElementById("apellido-profesor");
+const campoAula = document.getElementById("aula");
+const botonCancelar = document.querySelector(".button--secondary");
+const formReporteDiario = document.getElementById("form-reporte-diario");
+const botonAgregarPc = document.getElementById("agregar-pc");
+const listaPcs = document.getElementById("lista-pcs");
 
     // Contador para crear PC1, PC2, PC3, etc.
     let contadorPc = 0;
@@ -136,12 +139,28 @@ document.addEventListener("DOMContentLoaded", function () {
     formReporteDiario.addEventListener("submit", function (event) {
     event.preventDefault();
 
-    // Se obtienen las PCs agregadas
     const pcsAsignadas = obtenerPcsAsignadas();
 
-    // Si no hay ninguna PC agregada, no se permite guardar
+    if (
+        campoNombreProfesor.value.trim() === "" ||
+        campoApellidoProfesor.value.trim() === "" ||
+        campoAula.value.trim() === ""
+    ) {
+        alert("⚠️ Debe rellenar el formulario antes de enviar el reporte");
+        return;
+    }
+
     if (pcsAsignadas.length === 0) {
-        alert("⚠️ Informe quien esta asignado a la PC antes de enviar el reporte");
+        alert("⚠️ Informe la asignacion de las PC antes de enviar el reporte");
+        return;
+    }
+
+    const hayCamposVaciosEnPc = pcsAsignadas.some(function (pcAsignada) {
+        return pcAsignada.pc.trim() === "" || pcAsignada.alumno.trim() === "";
+    });
+
+    if (hayCamposVaciosEnPc) {
+        alert("⚠️ Debe rellenar todos los datos de las PC antes de enviar el reporte");
         return;
     }
 
@@ -149,16 +168,21 @@ document.addEventListener("DOMContentLoaded", function () {
         tipo: "reporte-diario",
         fecha: campoFecha.value,
         hora: campoHora.value,
+        nombreProfesor: campoNombreProfesor.value,
+        apellidoProfesor: campoApellidoProfesor.value,
+        aula: campoAula.value,
         pcs: pcsAsignadas
     };
 
     guardarReporteDiario(reporteDiario);
-        alert("✅ Reporte diario guardado correctamente");
 
-        formReporteDiario.reset();
-        listaPcs.innerHTML = "";
-        contadorPc = 0;
+    alert("✅ Reporte diario guardado correctamente");
 
-        cargarFechaYHoraAutomatica();
-    });
+    formReporteDiario.reset();
+    listaPcs.innerHTML = "";
+    contadorPc = 0;
+
+    cargarFechaYHoraAutomatica();
 });
+});
+
