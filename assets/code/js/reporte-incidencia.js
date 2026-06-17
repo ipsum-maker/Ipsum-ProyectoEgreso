@@ -13,6 +13,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoTaller = document.getElementById("taller");
     const campoDescripcion = document.getElementById("descripcion");
 
+    // Se busca el botón cancelar usando la clase que ya existe en tu HTML
+    const botonCancelar = document.querySelector(".report-form__button--reset");
+
     function obtenerFechaActual() {
         const fechaActual = new Date();
 
@@ -58,10 +61,62 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportesGuardados));
     }
 
+    function formularioEstaCompleto() {
+        if (campoNombreProfesor.value.trim() === "") {
+            return false;
+        }
+
+        if (campoApellidoProfesor.value.trim() === "") {
+            return false;
+        }
+
+        if (campoAsignatura.value.trim() === "") {
+            return false;
+        }
+
+        if (campoFechaIncidencia.value.trim() === "") {
+            return false;
+        }
+
+        if (campoHoraReporte.value.trim() === "") {
+            return false;
+        }
+
+        if (campoTipoSolicitud.value.trim() === "") {
+            return false;
+        }
+
+        if (campoTaller.value.trim() === "") {
+            return false;
+        }
+
+        if (campoDescripcion.value.trim() === "") {
+            return false;
+        }
+
+        // El campo "otroTipo" solo es obligatorio si se eligió "Otro"
+        if (campoTipoSolicitud.value === "otro" && campoOtroTipo.value.trim() === "") {
+            return false;
+        }
+
+        return true;
+    }
+
     cargarFechaYHoraAutomatica();
+
+    // Botón Cancelar: evita el reset y vuelve al panel
+    botonCancelar.addEventListener("click", function (event) {
+        event.preventDefault();
+        window.location.href = "panel-profesores.html";
+    });
 
     formReporteIncidencia.addEventListener("submit", function (event) {
         event.preventDefault();
+
+        if (!formularioEstaCompleto()) {
+            alert("⚠️ Debe rellenar el formulario antes de enviar el reporte");
+            return;
+        }
 
         const reporteIncidencia = {
             tipo: "reporte-incidencia",
