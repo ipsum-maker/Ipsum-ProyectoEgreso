@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="e">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../code/css/historial-reportes.css">
+    <script src="../code/js/historial-reportes.js"></script>
+    <title>Sistema de Reporte</title>
+</head>
+
+<body>
+    <header class="historial-header">
+        <nav class="historial-header__nav">
+            <a class="historial-header__link-back" id="btn-volver" href="panel-profesores.html">
+                <span class="historial-header__icon-back">&larr;</span> Volver al Panel
+            </a>
+        </nav>
+        <h1 class="historial-header__title" id="historial-title">Mis Reportes</h1>
+        <p class="historial-header__subtitle">Historial completo de reportes diarios e incidencias</p>
+    </header>
+    <main class="historial-main">
+        <!-- Sección que contiene los filtros de los reportes-->
+        <section class="historial-filters" aria-label="Filtros de reportes">
+            <button class="historial-filters__button historial-filters__button--active" id="btn-filtro-todos"
+                type="button">
+                Todos (0)
+            </button>
+            <button class="historial-filters__button" id="btn-filtro-diarios" type="button">
+                Reportes Diarios (0)
+            </button>
+            <button class="historial-filters__button" id="btn-filtro-incidencias" type="button">
+                Incidencias (0)
+            </button>
+        </section>
+        <!-- Sección de Resultados -->
+        <section class="historial-results" id="contenedor-reportes">
+            <article class="historial-results__empty-state" id="mensaje-vacio">
+                <p class="historial-results__empty-text">No hay reportes registrados aún</p>
+            </article>
+        </section>
+    </main>
+    <footer class="historial-footer">
+        <p class="historial-footer__text">&copy; 2026 Sistema de Reportes</p>
+    </footer>
+</body>
+
+</html>
