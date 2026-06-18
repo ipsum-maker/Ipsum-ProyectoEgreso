@@ -5,83 +5,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Reportes</title>
-    <link rel="stylesheet" href="../css/panel-administrador.css">
+    <link rel="stylesheet" href="css/panel-administrador.css">
 </head>
 
 <body class="admin-page">
-    <header class="admin-header" id="admin-header">
-        <section class="admin-header__container">
-            <article class="admin-header__info">
-                <span class="admin-header__icon">⌑</span>
-
-                <section class="admin-header__text">
-                    <h1 class="admin-header__title">Panel de Administrador</h1>
-                    <p class="admin-header__subtitle">Gestión de usuarios y permisos</p>
-                </section>
-            </article>
-
-            <nav class="admin-nav" id="admin-nav">
-                <a class="admin-nav__link" href="">Cerrar Sesión</a>
-            </nav>
+    <header class="admin-header">
+        <section class="admin-header__brand" id="encabezado-administrador">
+            <h1 class="admin-header__title">Panel de Administrador</h1>
+            <p class="admin-header__subtitle">Gestión de usuarios y permisos</p>
         </section>
+
+        <nav class="admin-header__nav" id="navegacion-administrador">
+            <a class="admin-header__logout" href="">Cerrar Sesión</a>
+        </nav>
     </header>
 
-    <main class="admin-main" id="admin-main">
-        <section class="admin-indicators" id="admin-indicators">
-            <h2 class="admin-indicators__title">Indicadores</h2>
+    <main class="admin-main" id="contenido-principal">
+        <section class="admin-stats" id="indicadores">
+            <h2 class="admin-stats__title">Indicadores</h2>
 
-            <!-- Cantidad de profesores-->
-            <article class="admin-indicators__card">
-                <p class="admin-indicators__number">0</p>
-                <h3 class="admin-indicators__label">Profesortes</h3>
+            <article class="admin-stats__card">
+                <h3 class="admin-stats__name">Profesortes</h3>
+                <p class="admin-stats__number">0</p>
             </article>
 
-            <!-- Cantidad de coordinadores -->
-            <article class="admin-indicators__card">
-                <p class="admin-indicators__number">0</p>
-                <h3 class="admin-indicators__label">Coordinadores</h3>
+            <article class="admin-stats__card">
+                <h3 class="admin-stats__name">Coordinadores</h3>
+                <p class="admin-stats__number">0</p>
             </article>
 
-            <!-- Cantidad de administradores-->
-            <article class="admin-indicators__card">
-                <p class="admin-indicators__number">0</p>
-                <h3 class="admin-indicators__label">Administradores</h3>
+            <article class="admin-stats__card">
+                <h3 class="admin-stats__name">Administradores</h3>
+                <p class="admin-stats__number">0</p>
             </article>
         </section>
 
-        <section class="admin-users" id="admin-users">
-            <section class="admin-users__header">
-                <section class="admin-users__title-area">
-                    <h2 class="admin-users__title">Usuarios del Sistema</h2>
-                    <p class="admin-users__description">Gestión de usuarios y roles dentro del sistema.</p>
-                </section>
+        <section class="admin-users" id="usuarios-del-sistema">
+            <h2 class="admin-users__title">Usuarios del Sistema</h2>
+            <p class="admin-users__description">Gestión de usuarios y roles dentro del sistema.</p>
 
-                <button class="admin-users__button" id="new-user-button">Nuevo Usuario</button>
-            </section>
-
-            <table class="admin-users__table">
+            <table class="admin-users__table" id="tabla-usuarios">
                 <thead class="admin-users__thead">
                     <tr class="admin-users__row">
-                        <th class="admin-users__heading">Nombre</th>
-                        <th class="admin-users__heading">Correo</th>
-                        <th class="admin-users__heading">Rol/Módulo</th>
+                        <th class="admin-users__header">Nombre</th>
+                        <th class="admin-users__header">Correo</th>
+                        <th class="admin-users__header">Rol/Módulo</th>
                     </tr>
                 </thead>
 
                 <tbody class="admin-users__tbody">
                     <tr class="admin-users__row">
-                        <td class="admin-users__data admin-users__data--name">Juan</td>
-                        <td class="admin-users__data">zapallitospersonico@gmail.com</td>
-                        <td class="admin-users__data">
-                            <span class="admin-users__role admin-users__role--admin">Administrador</span>
+                        <td class="admin-users__cell admin-users__cell--name">Juan</td>
+                        <td class="admin-users__cell">zapallitospersonico@gmail.com</td>
+                        <td class="admin-users__cell">
+                            <span class="admin-users__role">Administrador</span>
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+            <button class="admin-users__button" id="boton-nuevo-usuario">Nuevo Usuario</button>
         </section>
     </main>
 
-    <footer class="admin-footer" id="admin-footer">
+    <footer class="admin-footer" id="pie-de-pagina">
         <p class="admin-footer__text">&copy; 2026 Sistema de Reportes</p>
     </footer>
 </body>
