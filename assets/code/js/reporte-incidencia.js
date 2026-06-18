@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportesGuardados));
     }
-
+      //valida que el formulario este completo y si falta algun campo te manda una alert que te dice un mensajito 
     function formularioEstaCompleto() {
         if (campoNombreProfesor.value.trim() === "") {
             return false;

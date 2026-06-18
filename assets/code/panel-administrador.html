@@ -1,65 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Reportes</title>
+    <link rel="stylesheet" href="../css/panel-administrador.css">
 </head>
 
-<body>
-    <header>
-        <h1>Panel de Administrador</h1>
-        <nav>
-            <a href="">Cerrar Sesión</a>
-        </nav>
+<body class="admin-page">
+    <header class="admin-header" id="admin-header">
+        <section class="admin-header__container">
+            <article class="admin-header__info">
+                <span class="admin-header__icon">⌑</span>
+
+                <section class="admin-header__text">
+                    <h1 class="admin-header__title">Panel de Administrador</h1>
+                    <p class="admin-header__subtitle">Gestión de usuarios y permisos</p>
+                </section>
+            </article>
+
+            <nav class="admin-nav" id="admin-nav">
+                <a class="admin-nav__link" href="">Cerrar Sesión</a>
+            </nav>
+        </section>
     </header>
 
-    <main>
-        <section>
-            <h2>Indicadores</h2>
+    <main class="admin-main" id="admin-main">
+        <section class="admin-indicators" id="admin-indicators">
+            <h2 class="admin-indicators__title">Indicadores</h2>
+
             <!-- Cantidad de profesores-->
-            <article>
-                <h3>Profesortes</h3>
-                <p>0</p>
+            <article class="admin-indicators__card">
+                <p class="admin-indicators__number">0</p>
+                <h3 class="admin-indicators__label">Profesortes</h3>
             </article>
+
             <!-- Cantidad de coordinadores -->
-            <article>
-                <h3>Coordinadores</h3>
-                <p>0</p>
+            <article class="admin-indicators__card">
+                <p class="admin-indicators__number">0</p>
+                <h3 class="admin-indicators__label">Coordinadores</h3>
             </article>
+
             <!-- Cantidad de administradores-->
-            <article>
-                <h3>Administradores</h3>
-                <p>0</p>
+            <article class="admin-indicators__card">
+                <p class="admin-indicators__number">0</p>
+                <h3 class="admin-indicators__label">Administradores</h3>
             </article>
         </section>
 
-        <section>
-            <h2>Usuarios del Sistema</h2>
-            <p>Gestión de usuarios y roles dentro del sistema.</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Correo</th>
-                        <th>Rol/Módulo</th>
+        <section class="admin-users" id="admin-users">
+            <section class="admin-users__header">
+                <section class="admin-users__title-area">
+                    <h2 class="admin-users__title">Usuarios del Sistema</h2>
+                    <p class="admin-users__description">Gestión de usuarios y roles dentro del sistema.</p>
+                </section>
+
+                <button class="admin-users__button" id="new-user-button">Nuevo Usuario</button>
+            </section>
+
+            <table class="admin-users__table">
+                <thead class="admin-users__thead">
+                    <tr class="admin-users__row">
+                        <th class="admin-users__heading">Nombre</th>
+                        <th class="admin-users__heading">Correo</th>
+                        <th class="admin-users__heading">Rol/Módulo</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Juan</td>
-                        <td>zapallitospersonico@gmail.com</td>
-                        <td>Administrador</td>
+
+                <tbody class="admin-users__tbody">
+                    <tr class="admin-users__row">
+                        <td class="admin-users__data admin-users__data--name">Juan</td>
+                        <td class="admin-users__data">zapallitospersonico@gmail.com</td>
+                        <td class="admin-users__data">
+                            <span class="admin-users__role admin-users__role--admin">Administrador</span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
-
-            <button>Nuevo Usuario</button>
         </section>
     </main>
-    <footer>
-        <p>&copy; 2026 Sistema de Reportes</p>
+
+    <footer class="admin-footer" id="admin-footer">
+        <p class="admin-footer__text">&copy; 2026 Sistema de Reportes</p>
     </footer>
 </body>
 
