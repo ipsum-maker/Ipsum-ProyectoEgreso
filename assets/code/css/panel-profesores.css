@@ -1,7 +1,9 @@
+/* Aplica el mismo cálculo de tamaño a todos los elementos */
 * {
     box-sizing: border-box;
 }
 
+/* Quita márgenes y hace que la página ocupe toda la altura */
 html,
 body {
     margin: 0;
@@ -9,12 +11,14 @@ body {
     font-size: 0.8rem;
 }
 
+/* Define la fuente, el color de fondo y el color del texto */
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #d9e6f7;
     color: #0f172a;
 }
 
+/* Crea el encabezado superior y distribuye título, correo y cerrar sesión */
 header {
     width: 100%;
     background-color: #ffffff;
@@ -27,6 +31,7 @@ header {
     gap: 4px 14px;
 }
 
+/* Estiliza el título del encabezado */
 header h1 {
     margin: 0;
     font-size: 1.25rem;
@@ -35,10 +40,12 @@ header h1 {
     grid-row: 1;
 }
 
+/* Permite que los elementos del nav se acomoden dentro del grid del header */
 nav {
     display: contents;
 }
 
+/* Estiliza el correo del usuario debajo del título */
 nav p {
     margin: 0;
     font-size: 0.8rem;
@@ -48,43 +55,34 @@ nav p {
     grid-row: 2;
 }
 
+/* Estiliza el enlace de cerrar sesión */
 .logout-button {
     text-decoration: none;
-    color: #0f172a;
-    background-color: #ffffff;
-    border: 1px solid #d9dee7;
-    border-radius: 10px;
+    color: #050505;
+    font-size: 1rem;
     font-weight: 700;
-    font-size: 0.9rem;
-    white-space: nowrap;
     grid-column: 2;
     grid-row: 1 / 3;
     align-self: center;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 16px;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+    gap: 0.8rem;
+    white-space: nowrap;
 }
 
-.logout-button:hover {
-    color: #0f172a;
-    background-color: #f8fafc;
-    border-color: #cbd5e1;
-}
-
+/* Agrega el icono antes del texto cerrar sesión */
 .logout-button::before {
-    content: "";
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 18px 18px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%230f172a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4'/%3E%3Cpath d='M16 17l5-5-5-5'/%3E%3Cpath d='M21 12H9'/%3E%3C/svg%3E");
+    content: "↪";
+    font-size: 1.4rem;
+    font-weight: 400;
 }
 
+/* Cambia el color al pasar el mouse */
+.logout-button:hover {
+    color: #7c2cff;
+}
+
+/* Contenedor principal en mobile */
 main {
     width: 92%;
     max-width: 430px;
@@ -98,12 +96,14 @@ main {
     gap: 18px;
 }
 
+/* Estiliza el título de bienvenida */
 main > section:first-child h2 {
     margin: 0 0 8px 0;
     font-size: 1rem;
     font-weight: 700;
 }
 
+/* Estiliza el texto de bienvenida */
 main > section:first-child p {
     margin: 0;
     font-size: 1.75rem;
@@ -111,6 +111,7 @@ main > section:first-child p {
     line-height: 1.5;
 }
 
+/* Estiliza las tarjetas de reportes */
 .reporte-diario,
 .reporte-incidencia,
 .historial-reportes {
@@ -123,6 +124,7 @@ main > section:first-child p {
     min-height: 190px;
 }
 
+/* Organiza el contenido interno de cada tarjeta */
 .reporte-diario article,
 .reporte-incidencia article,
 .historial-reportes article {
@@ -133,6 +135,7 @@ main > section:first-child p {
     padding-left: 68px;
 }
 
+/* Crea el espacio visual para los iconos de las tarjetas */
 .reporte-diario article::before,
 .reporte-incidencia article::before,
 .historial-reportes article::before {
@@ -148,21 +151,25 @@ main > section:first-child p {
     background-size: 28px 28px;
 }
 
+/* Agrega el icono del reporte diario */
 .reporte-diario article::before {
     background-color: #dbeafe;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3h6v4H9z'/%3E%3Cpath d='M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2'/%3E%3Cpath d='M9 12h6'/%3E%3Cpath d='M9 16h6'/%3E%3C/svg%3E");
 }
 
+/* Agrega el icono del reporte de incidencia */
 .reporte-incidencia article::before {
     background-color: #f3e8ff;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%239333ea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'/%3E%3Cpath d='M3.27 6.96 12 12.01l8.73-5.05'/%3E%3Cpath d='M12 22.08V12'/%3E%3C/svg%3E");
 }
 
+/* Agrega el icono del historial de reportes */
 .historial-reportes article::before {
     background-color: #e0e7ff;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 2v6h6'/%3E%3Cpath d='M8 13h8'/%3E%3Cpath d='M8 17h8'/%3E%3Cpath d='M8 9h2'/%3E%3C/svg%3E");
 }
 
+/* Estiliza los títulos de las tarjetas */
 .reporte-diario h2,
 .reporte-incidencia h2,
 .historial-reportes h2 {
@@ -172,6 +179,7 @@ main > section:first-child p {
     line-height: 1.2;
 }
 
+/* Estiliza las descripciones de las tarjetas */
 .reporte-diario span,
 .reporte-incidencia span,
 .historial-reportes p {
@@ -182,6 +190,7 @@ main > section:first-child p {
     line-height: 1.5;
 }
 
+/* Estiliza todos los botones principales */
 button {
     width: 100%;
     height: 42px;
@@ -202,10 +211,12 @@ button {
     white-space: nowrap;
 }
 
+/* Cambia el color del botón al pasar el mouse */
 button:hover {
     background-color: #12203e;
 }
 
+/* Estiliza el pie de página */
 footer {
     width: 92%;
     max-width: 430px;
@@ -215,35 +226,46 @@ footer {
     font-size: 0.85rem;
 }
 
-/* Tablet: sigue parecido al celular, pero más ancho */
+/* Ajusta el diseño para tablet */
 @media (min-width: 577px) {
+    /* Aumenta el espacio interno del encabezado */
     header {
         padding: 20px 32px;
     }
 
+    /* Aumenta el tamaño del título */
     header h1 {
         font-size: 1.6rem;
     }
 
-    nav p,
-    .logout-button {
+    /* Ajusta el tamaño del correo */
+    nav p {
         font-size: 0.95rem;
     }
 
+    /* Ajusta el tamaño de cerrar sesión */
+    .logout-button {
+        font-size: 1rem;
+    }
+
+    /* Agranda el contenedor principal */
     main {
         max-width: 700px;
         padding: 32px;
         gap: 24px;
     }
 
+    /* Agranda el título de bienvenida */
     main > section:first-child h2 {
         font-size: 2rem;
     }
 
+    /* Ajusta el texto de bienvenida */
     main > section:first-child p {
         font-size: 1.05rem;
     }
 
+    /* Agranda las tarjetas */
     .reporte-diario,
     .reporte-incidencia,
     .historial-reportes {
@@ -251,60 +273,71 @@ footer {
         min-height: 200px;
     }
 
+    /* Ajusta el alto interno de las tarjetas */
     .reporte-diario article,
     .reporte-incidencia article,
     .historial-reportes article {
         min-height: 144px;
     }
 
+    /* Agranda los títulos de las tarjetas */
     .reporte-diario h2,
     .reporte-incidencia h2,
     .historial-reportes h2 {
         font-size: 1.55rem;
     }
 
+    /* Agranda las descripciones de las tarjetas */
     .reporte-diario span,
     .reporte-incidencia span,
     .historial-reportes p {
         font-size: 1.05rem;
     }
 
+    /* Ajusta los botones en tablet */
     button {
         height: 42px;
         font-size: 0.95rem;
         padding: 0 16px;
     }
 
+    /* Ajusta el ancho del footer */
     footer {
         max-width: 700px;
         font-size: 0.9rem;
     }
 }
 
-/* Escritorio: distribución como la primera imagen */
+/* Ajusta el diseño para escritorio */
 @media (min-width: 900px) {
+    /* Aumenta el tamaño base del texto */
     html,
     body {
         font-size: 1rem;
     }
 
+    /* Agranda el encabezado */
     header {
         padding: 24px 38px;
     }
 
+    /* Ajusta el título del encabezado */
     header h1 {
         font-size: 1.5rem;
     }
 
+    /* Ajusta el tamaño del correo */
     nav p {
         font-size: 0.95rem;
     }
 
+    /* Ajusta la posición de cerrar sesión */
     .logout-button {
-        font-size: 0.95rem;
+        font-size: 1rem;
         margin-right: 16px;
     }
 
+    /* Distribuye el contenido principal en dos columnas */
     main {
         width: 100%;
         max-width: none;
@@ -318,57 +351,68 @@ footer {
         gap: 38px 30px;
     }
 
+    /* Hace que bienvenida ocupe todo el ancho */
     main > section:first-child {
         grid-column: 1 / -1;
     }
 
+    /* Ajusta el título de bienvenida en escritorio */
     main > section:first-child h2 {
         font-size: 1.8rem;
         margin-bottom: 12px;
     }
 
+    /* Ajusta el texto de bienvenida en escritorio */
     main > section:first-child p {
         font-size: 1.05rem;
     }
 
+    /* Ajusta las dos primeras tarjetas */
     .reporte-diario,
     .reporte-incidencia {
         min-height: 240px;
         padding: 28px 30px;
     }
 
+    /* Hace que historial ocupe todo el ancho */
     .historial-reportes {
         grid-column: 1 / -1;
         min-height: 195px;
         padding: 28px 30px;
     }
 
+    /* Ajusta el contenido interno de las dos primeras tarjetas */
     .reporte-diario article,
     .reporte-incidencia article {
         min-height: 184px;
     }
 
+    /* Ajusta el contenido interno del historial */
     .historial-reportes article {
         min-height: 136px;
     }
 
+    /* Ajusta los títulos de tarjetas en escritorio */
     .reporte-diario h2,
     .reporte-incidencia h2,
     .historial-reportes h2 {
         font-size: 1.25rem;
     }
 
+    /* Ajusta las descripciones de tarjetas en escritorio */
     .reporte-diario span,
     .reporte-incidencia span,
     .historial-reportes p {
         font-size: 1rem;
     }
 
+    /* Ajusta los botones en escritorio */
     button {
         height: 43px;
         font-size: 0.95rem;
     }
 
+    /* Hace que el botón de historial no ocupe todo el ancho */
     .historial-reportes button {
         width: auto;
         min-width: 210px;
@@ -376,6 +420,7 @@ footer {
         align-self: flex-start;
     }
 
+    /* Ajusta el ancho del footer en escritorio */
     footer {
         max-width: none;
     }
