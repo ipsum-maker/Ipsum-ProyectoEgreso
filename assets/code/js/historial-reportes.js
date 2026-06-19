@@ -1,538 +1,601 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Clave que se usa para guardar y leer los reportes en el almacenamiento del navegador (localStorage)
-    const STORAGE_KEY = "reportes";
+    // Claves usadas para leer y guardar información en localStorage
+    const STORAGE_KEY_USUARIO_ACTIVO = "usuario-activo";
+    const STORAGE_KEYS_REPORTES = ["reportes-sistema", "reportes"];
 
-    // Diccionario de traducción para que los códigos de Aula se vean bonitos y legibles
-    const aulasLegibles = {
-        "taller1": "Taller 1",
-        "taller2": "Taller 2",
-        "taller3": "Taller 3",
-        "taller4": "Taller 4",
-        "taller5": "Taller 5",
-        "lab1": "Laboratorio 1",
-        "lab2": "Laboratorio 2",
-        "lab3": "Laboratorio 3"
-    };
-
-    // Diccionario de traducción para que los tipos de incidencia se lean correctamente
-    const incidenciasLegibles = {
-        "rotura-equipo": "Rotura de equipo",
-        "falla-equipo": "Falla de equipo",
-        "otro": "Otro"
-    };
-
-    // Variable para saber cuál es el reporte que estamos editando actualmente
-    let reporteIdBajoEdicion = null;
-
-    // --- ELEMENTOS DE LA PÁGINA (HTML) QUE SE VA A CONTROLAR ---
+    // Elementos principales del historial
     const contenedorReportes = document.getElementById("contenedor-reportes");
     const mensajeVacio = document.getElementById("mensaje-vacio");
 
-    // Botones de filtros
-    const btnFiltroTodos = document.getElementById("btn-filtro-todos");
-    const btnFiltroDiarios = document.getElementById("btn-filtro-diarios");
-    const btnFiltroIncidencias = document.getElementById("btn-filtro-incidencias");
+    // Botones de filtro
+    const botonFiltroTodos = document.getElementById("btn-filtro-todos");
+    const botonFiltroDiarios = document.getElementById("btn-filtro-diarios");
+    const botonFiltroIncidencias = document.getElementById("btn-filtro-incidencias");
 
-    // Elementos donde se muestran las cantidades numéricas de los filtros (Todos (X), etc)
-    const cantTodos = document.getElementById("cantidad-todos");
-    const cantDiarios = document.getElementById("cantidad-diarios");
-    const cantIncidencias = document.getElementById("cantidad-incidencias");
+    // Contadores de los filtros
+    const cantidadTodos = document.getElementById("cantidad-todos");
+    const cantidadDiarios = document.getElementById("cantidad-diarios");
+    const cantidadIncidencias = document.getElementById("cantidad-incidencias");
 
-    // Modales (ventanas emergentes)
+    // Modal de edición de reporte diario
     const modalDiario = document.getElementById("modal-diario");
+    const formEditarDiario = document.getElementById("form-editar-diario");
+    const botonCerrarDiario = document.getElementById("btn-cerrar-diario");
+    const botonCancelarDiario = document.getElementById("btn-cancelar-diario");
+    const campoEditDiarioFecha = document.getElementById("edit-diario-fecha");
+    const campoEditDiarioNombre = document.getElementById("edit-diario-nombre");
+    const campoEditDiarioApellido = document.getElementById("edit-diario-apellido");
+    const campoEditDiarioAula = document.getElementById("edit-diario-aula");
+    const botonEditDiarioAgregarPc = document.getElementById("edit-diario-agregar-pc");
+    const listaEditDiarioPcs = document.getElementById("edit-diario-lista-pcs");
+
+    // Modal de edición de reporte de incidencia
     const modalIncidencia = document.getElementById("modal-incidencia");
+    const formEditarIncidencia = document.getElementById("form-editar-incidencia");
+    const botonCerrarIncidencia = document.getElementById("btn-cerrar-incidencia");
+    const botonCancelarIncidencia = document.getElementById("btn-cancelar-incidencia");
+    const campoEditIncidenciaNombre = document.getElementById("edit-incidencia-nombre");
+    const campoEditIncidenciaApellido = document.getElementById("edit-incidencia-apellido");
+    const campoEditIncidenciaAsignatura = document.getElementById("edit-incidencia-asignatura");
+    const campoEditIncidenciaFecha = document.getElementById("edit-incidencia-fecha");
+    const campoEditIncidenciaSolicitud = document.getElementById("edit-incidencia-solicitud");
+    const campoEditIncidenciaTaller = document.getElementById("edit-incidencia-taller");
+    const campoEditIncidenciaDescripcion = document.getElementById("edit-incidencia-descripcion");
 
-    // Formulario de edición diario y sus campos
-    const formDiario = document.getElementById("form-editar-diario");
-    const editDiarioFecha = document.getElementById("edit-diario-fecha");
-    const editDiarioNombre = document.getElementById("edit-diario-nombre");
-    const editDiarioApellido = document.getElementById("edit-diario-apellido");
-    const editDiarioAula = document.getElementById("edit-diario-aula");
-    const editDiarioListaPcs = document.getElementById("edit-diario-lista-pcs");
-    const editDiarioBtnAgregarPc = document.getElementById("edit-diario-agregar-pc");
+    // Contenedor de alertas visuales
+    const contenedorAlertas = document.getElementById("alertas-contenedor");
 
-    // Formulario de edición de incidencia y sus campos
-    const formIncidencia = document.getElementById("form-editar-incidencia");
-    const editIncidenciaNombre = document.getElementById("edit-incidencia-nombre");
-    const editIncidenciaApellido = document.getElementById("edit-incidencia-apellido");
-    const editIncidenciaAsignatura = document.getElementById("edit-incidencia-asignatura");
-    const editIncidenciaFecha = document.getElementById("edit-incidencia-fecha");
-    const editIncidenciaSolicitud = document.getElementById("edit-incidencia-solicitud");
-    const editIncidenciaTaller = document.getElementById("edit-incidencia-taller");
-    const editIncidenciaDescripcion = document.getElementById("edit-incidencia-descripcion");
+    // Variables de control
+    let filtroActual = "todos";
+    let reporteEditandoId = null;
+    let contadorPcEdicion = 0;
 
-    // Variable para controlar cuál filtro está seleccionado actualmente ("todos", "reporte-diario", "reporte-incidencia")
-    let filtroActivo = "todos";
+    // Obtiene el usuario que inició sesión
+    function obtenerUsuarioActivo() {
+        const usuarioActivoGuardado = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
 
-    // ==========================================================================
-    // =  FUNCIONES ÚTILES                                                         =
-    // ==========================================================================
-
-    // Traduce un código de Aula (ej: "lab1") a un texto legible (ej: "Laboratorio 1")
-    function obtenerAulaLegible(codigo) {
-        return aulasLegibles[codigo] || codigo || "";
-    }
-
-    // Traduce un código de tipo de incidencia (ej: "falla-equipo") a un texto legible (ej: "Falla de equipo")
-    function obtenerIncidenciaLegible(codigo) {
-        return incidenciasLegibles[codigo] || codigo || "";
-    }
-
-    // Convierte una fecha de formato año-mes-día (ej: "2026-06-18") a texto amigable (ej: "18 de junio de 2026")
-    function formatearFecha(fechaStr) {
-        if (!fechaStr) return "";
-        const partes = fechaStr.split("-");
-        if (partes.length !== 3) return fechaStr;
-
-        const anio = partes[0];
-        // En Javascript los meses van del 0 al 11, por eso restamos 1
-        const mesNro = parseInt(partes[1], 10) - 1;
-        const dia = parseInt(partes[2], 10);
-
-        const nombresMeses = [
-            "enero", "febrero", "marzo", "abril", "mayo", "junio",
-            "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
-        ];
-
-        return `${dia} de ${nombresMeses[mesNro]} de ${anio}`;
-    }
-
-    // Muestra un cartelito flotante en pantalla de color verde (éxito) o rojo (eliminado/error)
-    function mostrarAlertaNotificacion(mensaje, tipo = "exito") {
-        const contenedor = document.getElementById("alertas-contenedor");
-        if (!contenedor) return;
-
-        // Creamos la alerta en el HTML
-        const alerta = document.createElement("article");
-        alerta.className = `alerta-notificacion alerta-notificacion--${tipo}`;
-        alerta.setAttribute("role", "alert");
-        alerta.innerHTML = `<p class="alerta-notificacion__mensaje">${mensaje}</p>`;
-
-        // La metemos en la caja de notificaciones
-        contenedor.appendChild(alerta);
-
-        // Desvanecer y borrar la notificación solita tras 3.5 segundos
-        setTimeout(() => {
-            alerta.style.opacity = "0";
-            alerta.style.transition = "opacity 0.3s ease";
-            setTimeout(() => {
-                if (alerta.parentNode === contenedor) {
-                    contenedor.removeChild(alerta);
-                }
-            }, 300);
-        }, 3500);
-    }
-
-    // ==========================================================================
-    // =  LEER Y ACTUALIZAR REPORTES DESDE LOCALSTORAGE                         =
-    // ==========================================================================
-
-    // Lee los reportes guardados en el navegador. Si no hay ninguno, devuelve una lista vacía.
-    function obtenerReportes() {
-        const datos = localStorage.getItem(STORAGE_KEY);
-        if (datos) {
-            try {
-                let lista = JSON.parse(datos);
-                // Si algún reporte viejo no tiene un identificador único (ID), se lo creamos en el momento
-                let huboCambios = false;
-                lista = lista.map(reporte => {
-                    if (!reporte.id) {
-                        reporte.id = "rep_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
-                        huboCambios = true;
-                    }
-                    // Si es incidencia y no tiene estado, por defecto empieza en "Pendiente"
-                    if (reporte.tipo === "reporte-incidencia" && !reporte.estado) {
-                        reporte.estado = "Pendiente";
-                        huboCambios = true;
-                    }
-                    return reporte;
-                });
-
-                // Si creamos IDs nuevos, actualizamos la base de datos
-                if (huboCambios) {
-                    guardarReportesEnStorage(lista);
-                }
-                return lista;
-            } catch (e) {
-                return [];
-            }
-        }
-        return [];
-    }
-
-    // Guarda la lista de reportes actualizada de vuelta en el navegador
-    function guardarReportesEnStorage(lista) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
-    }
-
-    // ==========================================================================
-    // =  RENDERIZAR O MOSTRAR LOS REPORTES EN PANTALLA                         =
-    // ==========================================================================
-
-    // Dibuja en pantalla los reportes correspondientes según el filtro activo
-    function mostrarReportesEnPantalla() {
-        const todosLosReportes = obtenerReportes();
-
-        // Limpiar las tarjetas viejas que están en pantalla (conservando el mensaje vacío)
-        const tarjetasViejas = contenedorReportes.querySelectorAll(".reporte-tarjeta");
-        tarjetasViejas.forEach(tarjeta => contenedorReportes.removeChild(tarjeta));
-
-        // Filtrar los reportes que queremos mostrar
-        const reportesFiltrados = todosLosReportes.filter(reporte => {
-            if (filtroActivo === "todos") return true;
-            return reporte.tipo === filtroActivo;
-        });
-
-        // Si no hay reportes tras el filtro, mostramos el cartel de "no hay reportes registrados aún"
-        if (reportesFiltrados.length === 0) {
-            mensajeVacio.style.display = "block";
-        } else {
-            mensajeVacio.style.display = "none";
-
-            // Recorremos los reportes y creamos una tarjeta para cada uno
-            reportesFiltrados.forEach(reporte => {
-                const tarjeta = document.createElement("article");
-
-                if (reporte.tipo === "reporte-diario") {
-                    tarjeta.className = "reporte-tarjeta reporte-tarjeta--diario";
-
-                    // Contamos las PCs que tiene registradas este reporte diario
-                    const cantidadPcs = (reporte.pcs && reporte.pcs.length) || 0;
-
-                    // Nombre completo del docente
-                    const nombreCompleto = `${reporte.nombreProfesor} ${reporte.apellidoProfesor}`;
-                    const aulaLimpia = obtenerAulaLegible(reporte.aula);
-                    const fechaLimpia = formatearFecha(reporte.fecha);
-
-                    tarjeta.innerHTML = `
-                        <header class="reporte-tarjeta__header">
-                            <h2 class="reporte-tarjeta__titulo">${nombreCompleto}</h2>
-                            <div class="reporte-tarjeta__badges">
-                                <span class="reporte-tarjeta__badge reporte-tarjeta__badge--diario">Diario</span>
-                            </div>
-                        </header>
-                        <section class="reporte-tarjeta__detalles">
-                            <p class="reporte-tarjeta__info reporte-tarjeta__info-fecha">
-                                <strong>${fechaLimpia}</strong> &bull; ${aulaLimpia}
-                            </p>
-                            <p class="reporte-tarjeta__detalle-pc">${cantidadPcs} equipo(s) registrado(s)</p>
-                        </section>
-                        <footer class="reporte-tarjeta__acciones">
-                            <button class="reporte-tarjeta__boton reporte-tarjeta__boton--editar" data-id="${reporte.id}" type="button">Editar</button>
-                            <button class="reporte-tarjeta__boton reporte-tarjeta__boton--eliminar" data-id="${reporte.id}" type="button">Eliminar</button>
-                        </footer>
-                    `;
-                } else {
-                    tarjeta.className = "reporte-tarjeta reporte-tarjeta--incidencia";
-
-                    const nombreCompleto = `${reporte.nombreProfesor} ${reporte.apellidoProfesor}`;
-                    const tallerLimpio = obtenerAulaLegible(reporte.taller);
-                    const solicitudLimpia = obtenerIncidenciaLegible(reporte.tipoSolicitud);
-                    const fechaLimpia = formatearFecha(reporte.fecha);
-                    // Estado manejado por coordinador (Pendiente, En proceso, Resuelto)
-                    const estadoReporte = reporte.estado || "Pendiente";
-
-                    tarjeta.innerHTML = `
-                        <header class="reporte-tarjeta__header">
-                            <h2 class="reporte-tarjeta__titulo">${nombreCompleto}</h2>
-                            <div class="reporte-tarjeta__badges">
-                                <span class="reporte-tarjeta__badge reporte-tarjeta__badge--estado">${estadoReporte}</span>
-                                <span class="reporte-tarjeta__badge reporte-tarjeta__badge--incidencia">Incidencia</span>
-                            </div>
-                        </header>
-                        <section class="reporte-tarjeta__detalles">
-                            <p class="reporte-tarjeta__info reporte-tarjeta__info-fecha">
-                                <strong>${fechaLimpia}</strong> &bull; ${solicitudLimpia} &bull; ${tallerLimpio}
-                            </p>
-                        </section>
-                        <footer class="reporte-tarjeta__acciones">
-                            <button class="reporte-tarjeta__boton reporte-tarjeta__boton--editar" data-id="${reporte.id}" type="button">Editar</button>
-                            <button class="reporte-tarjeta__boton reporte-tarjeta__boton--eliminar" data-id="${reporte.id}" type="button">Eliminar</button>
-                        </footer>
-                    `;
-                }
-
-                // Agregamos la tarjeta al contenedor visual
-                contenedorReportes.appendChild(tarjeta);
-            });
+        if (usuarioActivoGuardado === null) {
+            return null;
         }
 
-        // Volver a calcular los números de los filtros de arriba
-        actualizarContadoresFiltros(todosLosReportes);
+        return JSON.parse(usuarioActivoGuardado);
     }
 
-    // Calcula cuántos reportes hay en total, cuántos diarios y cuántas incidencias, y actualiza los numeritos arriba
-    function actualizarContadoresFiltros(lista) {
-        const total = lista.length;
-        const diarios = lista.filter(r => r.tipo === "reporte-diario").length;
-        const incidencias = lista.filter(r => r.tipo === "reporte-incidencia").length;
+    // Protege el historial para que solo entren profesores
+    function protegerHistorialProfesor() {
+        const usuarioActivo = obtenerUsuarioActivo();
 
-        cantTodos.textContent = `(${total})`;
-        cantDiarios.textContent = `(${diarios})`;
-        cantIncidencias.textContent = `(${incidencias})`;
-    }
-
-    // ==========================================================================
-    // =  FILTRAR REPORTES AL HACER CLIC EN LOS BOTONES                         =
-    // ==========================================================================
-
-    // Cambia el filtro activo de la página al que elijas
-    function aplicarFiltro(nuevoFiltro, botonActivo) {
-        filtroActivo = nuevoFiltro;
-
-        // Desactivamos la clase visual de todos los botones de filtro
-        btnFiltroTodos.classList.remove("historial-filters__button--active");
-        btnFiltroDiarios.classList.remove("historial-filters__button--active");
-        btnFiltroIncidencias.classList.remove("historial-filters__button--active");
-
-        // Se la agregamos únicamente al botón que presionó el usuario
-        botonActivo.classList.add("historial-filters__button--active");
-
-        // Refrescamos las tarjetas mostradas
-        mostrarReportesEnPantalla();
-    }
-
-    btnFiltroTodos.addEventListener("click", () => aplicarFiltro("todos", btnFiltroTodos));
-    btnFiltroDiarios.addEventListener("click", () => aplicarFiltro("reporte-diario", btnFiltroDiarios));
-    btnFiltroIncidencias.addEventListener("click", () => aplicarFiltro("reporte-incidencia", btnFiltroIncidencias));
-
-
-    // ==========================================================================
-    // =  ELIMINAR UN REPORTE                                                   =
-    // ==========================================================================
-
-    // Captura los clics en los botones de "Eliminar" de las tarjetas
-    contenedorReportes.addEventListener("click", function (event) {
-        // Buscamos si el elemento clickeado es un botón de eliminar
-        const botonEliminar = event.target.closest(".reporte-tarjeta__boton--eliminar");
-        if (!botonEliminar) return;
-
-        const idReporte = botonEliminar.dataset.id;
-
-        // Cuadro de confirmación nativo y simple
-        const seguro = confirm("¿Estás seguro de que deseas eliminar este reporte permanentemente?");
-        if (seguro) {
-            let reportes = obtenerReportes();
-            // Filtramos la lista para quitar el reporte seleccionado
-            reportes = reportes.filter(r => r.id !== idReporte);
-
-            // Guardamos la lista nueva y refrescamos la pantalla
-            guardarReportesEnStorage(reportes);
-            mostrarReportesEnPantalla();
-
-            // Lanzamos la alerta roja
-            mostrarAlertaNotificacion("Se ha eliminado el reporte.", "error");
-        }
-    });
-
-    // ==========================================================================
-    // = INTERACTIVIDAD DE AGREGAR/QUITAR PCS EN LA MODAL DE EDICIÓN DIARIA    =
-    // ==========================================================================
-
-    // Dibuja las computadoras asociadas en la lista del formulario de edición diario
-    function renderizarPcsEnEdicion(listaPcs) {
-        editDiarioListaPcs.innerHTML = "";
-        listaPcs.forEach((item, index) => {
-            const numeroPc = index + 1;
-            const fila = document.createElement("section");
-            fila.className = "assignment__card";
-            fila.innerHTML = `
-                <label class="assignment__pc" for="edit-pc-${numeroPc}">PC${numeroPc}</label>
-                <input class="assignment__input pc-nombre" type="text" id="edit-pc-${numeroPc}" value="${item.pc}" required>
-                <label class="assignment__label" for="edit-alumno-${numeroPc}">Nombre del Alumno</label>
-                <input class="assignment__input pc-alumno" type="text" id="edit-alumno-${numeroPc}" value="${item.alumno}" placeholder="Nombre del alumno" required>
-                <button class="assignment__delete" type="button" aria-label="Eliminar PC">&times;</button>
-            `;
-            editDiarioListaPcs.appendChild(fila);
-
-            // Funcionalidad al botoncito de la cruz (X) para remover esta fila
-            fila.querySelector(".assignment__delete").addEventListener("click", function () {
-                editDiarioListaPcs.removeChild(fila);
-                actualizarNumerosDeLasPcs();
-            });
-        });
-    }
-
-    // Renombra de manera consecutiva (PC1, PC2, PC3...) las computadoras si se elimina alguna
-    function actualizarNumbersDeLasPcs() {
-        const filas = editDiarioListaPcs.querySelectorAll(".assignment__card");
-        filas.forEach((fila, index) => {
-            const numeroPc = index + 1;
-            const labelPc = fila.querySelector(".assignment__pc");
-            const inputPc = fila.querySelector(".pc-nombre");
-            const labelAlumno = fila.querySelector(".assignment__label");
-            const inputAlumno = fila.querySelector(".pc-alumno");
-
-            if (labelPc) {
-                labelPc.textContent = `PC${numeroPc}`;
-                labelPc.setAttribute("for", `edit-pc-${numeroPc}`);
-            }
-            if (inputPc) {
-                inputPc.id = `edit-pc-${numeroPc}`;
-            }
-            if (labelAlumno) {
-                labelAlumno.setAttribute("for", `edit-alumno-${numeroPc}`);
-            }
-            if (inputAlumno) {
-                inputAlumno.id = `edit-alumno-${numeroPc}`;
-            }
-        });
-    }
-
-    // Botón para agregar una nueva computadora en el formulario de la modal diario
-    editDiarioBtnAgregarPc.addEventListener("click", function () {
-        const numeroSiguiente = editDiarioListaPcs.children.length + 1;
-        const fila = document.createElement("section");
-        fila.className = "assignment__card";
-        fila.innerHTML = `
-            <label class="assignment__pc" for="edit-pc-${numeroSiguiente}">PC${numeroSiguiente}</label>
-            <input class="assignment__input pc-nombre" type="text" id="edit-pc-${numeroSiguiente}" value="PC${numeroSiguiente}" required>
-            <label class="assignment__label" for="edit-alumno-${numeroSiguiente}">Nombre del Alumno</label>
-            <input class="assignment__input pc-alumno" type="text" id="edit-alumno-${numeroSiguiente}" placeholder="Nombre del alumno" required>
-            <button class="assignment__delete" type="button" aria-label="Eliminar PC">&times;</button>
-        `;
-        editDiarioListaPcs.appendChild(fila);
-
-        fila.querySelector(".assignment__delete").addEventListener("click", function () {
-            editDiarioListaPcs.removeChild(fila);
-            actualizarNumbersDeLasPcs();
-        });
-    });
-
-    // ==========================================================================
-    // =  EDICIÓN DE UN REPORTE (ABRIR LA MODAL CORRESPONDIENTE)               =
-    // ==========================================================================
-
-    // Captura los clics en los botones "Editar" de las tarjetas
-    contenedorReportes.addEventListener("click", function (event) {
-        const botonEditar = event.target.closest(".reporte-tarjeta__boton--editar");
-        if (!botonEditar) return;
-
-        const idReporte = botonEditar.dataset.id;
-        const reportes = obtenerReportes();
-        const reporte = reportes.find(r => r.id === idReporte);
-
-        if (!reporte) return;
-
-        // Guardamos el ID del reporte que se está editando
-        reporteIdBajoEdicion = idReporte;
-
-        if (reporte.tipo === "reporte-diario") {
-            // Rellenamos los campos de la modal diario con los datos que ya tenía guardados
-            editDiarioFecha.value = reporte.fecha;
-            editDiarioNombre.value = reporte.nombreProfesor;
-            editDiarioApellido.value = reporte.apellidoProfesor;
-            editDiarioAula.value = reporte.aula;
-
-            // Dibujamos las computadoras del reporte en la modal
-            renderizarPcsEnEdicion(reporte.pcs || []);
-
-            // Abrimos la modal usando la función nativa showModal() de HTML5
-            modalDiario.showModal();
-        } else {
-            // Rellenamos los campos de la modal de incidencias
-            editIncidenciaNombre.value = reporte.nombreProfesor;
-            editIncidenciaApellido.value = reporte.apellidoProfesor;
-            editIncidenciaAsignatura.value = reporte.asignatura;
-            editIncidenciaFecha.value = reporte.fecha;
-            editIncidenciaSolicitud.value = reporte.tipoSolicitud;
-            editIncidenciaTaller.value = reporte.taller;
-            editIncidenciaDescripcion.value = reporte.descripcion;
-
-            // Abrimos la modal de incidencias
-            modalIncidencia.showModal();
-        }
-    });
-
-    // ==========================================================================
-    // =  CERRAR LAS MODALES (BOTONES CANCELAR Y X DE LA ESQUINA)             =    
-    // ==========================================================================
-
-    // Cerrar modal diario
-    document.getElementById("btn-cerrar-diario").addEventListener("click", () => modalDiario.close());
-    document.getElementById("btn-cancelar-diario").addEventListener("click", () => modalDiario.close());
-
-    // Cerrar modal incidencia
-    document.getElementById("btn-cerrar-incidencia").addEventListener("click", () => modalIncidencia.close());
-    document.getElementById("btn-cancelar-incidencia").addEventListener("click", () => modalIncidencia.close());
-
-    // ==========================================================================
-    // =  GUARDAR CAMBIOS (ENVIAR LOS FORMULARIOS DE LAS MODALES)              =    
-    // ==========================================================================
-
-    // Al guardar la edición del Reporte Diario
-    formDiario.addEventListener("submit", function (event) {
-        event.preventDefault(); // Evitamos que la página se reinicie
-
-        const reportes = obtenerReportes();
-        const indice = reportes.findIndex(r => r.id === reporteIdBajoEdicion);
-
-        if (indice === -1) return;
-
-        // Recogemos la lista de PCs asignadas que editó el profesor
-        const pcsEditadas = [];
-        const bloquesPc = editDiarioListaPcs.querySelectorAll(".assignment__card");
-
-        bloquesPc.forEach(bloque => {
-            const pcVal = bloque.querySelector(".pc-nombre").value;
-            const alumnoVal = bloque.querySelector(".pc-alumno").value;
-            pcsEditadas.push({
-                pc: pcVal,
-                alumno: alumnoVal
-            });
-        });
-
-        // Validamos que se asigne al menos una PC
-        if (pcsEditadas.length === 0) {
-            alert("Debe asignar al menos una PC en el reporte");
+        if (usuarioActivo === null) {
+            window.location.href = "login.html";
             return;
         }
 
-        // Actualizamos los datos del reporte en nuestro array
-        reportes[indice].nombreProfesor = editDiarioNombre.value.trim();
-        reportes[indice].apellidoProfesor = editDiarioApellido.value.trim();
-        reportes[indice].aula = editDiarioAula.value;
-        reportes[indice].pcs = pcsEditadas;
+        if (usuarioActivo.rol !== "profesor") {
+            alert("Esta sección pertenece al historial del profesor.");
+            window.location.href = "login.html";
+        }
+    }
 
-        // Guardamos todo y cerramos la ventana emergente
-        guardarReportesEnStorage(reportes);
-        modalDiario.close();
-        mostrarReportesEnPantalla();
+    // Obtiene todos los reportes guardados
+    function obtenerReportes() {
+        for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
+            const reportesGuardados = localStorage.getItem(STORAGE_KEYS_REPORTES[i]);
 
-        // Lanzamos la notificación verde
-        mostrarAlertaNotificacion("Reporte editado con éxito.", "exito");
-    });
+            if (reportesGuardados !== null) {
+                const reportes = JSON.parse(reportesGuardados);
 
-    // Al guardar la edición del Reporte de Incidencias
-    formIncidencia.addEventListener("submit", function (event) {
-        event.preventDefault(); // Evitamos que la página se reinicie
+                if (Array.isArray(reportes)) {
+                    return reportes;
+                }
+            }
+        }
+
+        return [];
+    }
+
+    // Guarda todos los reportes en las dos claves para mantener compatibilidad
+    function guardarReportes(reportes) {
+        STORAGE_KEYS_REPORTES.forEach(function (clave) {
+            localStorage.setItem(clave, JSON.stringify(reportes));
+        });
+    }
+
+    // Obtiene solo los reportes del profesor activo
+    function obtenerReportesDelProfesor() {
+        const usuarioActivo = obtenerUsuarioActivo();
+        const reportes = obtenerReportes();
+
+        return reportes.filter(function (reporte) {
+            return reporte.profesorCorreo === usuarioActivo.correo;
+        });
+    }
+
+    // Muestra alertas visuales usando las clases originales del CSS
+    function mostrarAlerta(mensaje, tipo) {
+        if (contenedorAlertas === null) {
+            alert(mensaje);
+            return;
+        }
+
+        const alerta = document.createElement("article");
+        alerta.className = `alerta-notificacion alerta-notificacion--${tipo}`;
+
+        const textoAlerta = document.createElement("p");
+        textoAlerta.className = "alerta-notificacion__mensaje";
+        textoAlerta.textContent = mensaje;
+
+        alerta.appendChild(textoAlerta);
+        contenedorAlertas.appendChild(alerta);
+
+        setTimeout(function () {
+            alerta.remove();
+        }, 2500);
+    }
+
+    // Quita el estado activo de todos los filtros
+    function limpiarFiltrosActivos() {
+        botonFiltroTodos.classList.remove("historial-filters__button--active");
+        botonFiltroDiarios.classList.remove("historial-filters__button--active");
+        botonFiltroIncidencias.classList.remove("historial-filters__button--active");
+    }
+
+    // Marca visualmente el filtro seleccionado
+    function activarFiltro(boton) {
+        limpiarFiltrosActivos();
+        boton.classList.add("historial-filters__button--active");
+    }
+
+    // Actualiza las cantidades de los filtros
+    function actualizarCantidades(reportes) {
+        const diarios = reportes.filter(function (reporte) {
+            return reporte.tipo === "diario";
+        });
+
+        const incidencias = reportes.filter(function (reporte) {
+            return reporte.tipo === "incidencia";
+        });
+
+        cantidadTodos.textContent = `(${reportes.length})`;
+        cantidadDiarios.textContent = `(${diarios.length})`;
+        cantidadIncidencias.textContent = `(${incidencias.length})`;
+    }
+
+    // Filtra los reportes según el botón seleccionado
+    function obtenerReportesFiltrados(reportes) {
+        if (filtroActual === "diarios") {
+            return reportes.filter(function (reporte) {
+                return reporte.tipo === "diario";
+            });
+        }
+
+        if (filtroActual === "incidencias") {
+            return reportes.filter(function (reporte) {
+                return reporte.tipo === "incidencia";
+            });
+        }
+
+        return reportes;
+    }
+
+    // Obtiene un valor admitiendo distintos nombres posibles
+    function obtenerValor(reporte, claves, valorPorDefecto) {
+        for (let i = 0; i < claves.length; i++) {
+            if (reporte[claves[i]] !== undefined && reporte[claves[i]] !== null) {
+                return reporte[claves[i]];
+            }
+        }
+
+        return valorPorDefecto;
+    }
+
+    // Convierte estados internos a texto visible
+    function formatearEstado(estado) {
+        if (estado === "reenviado") {
+            return "Reenviado";
+        }
+
+        if (estado === "en-proceso") {
+            return "En proceso";
+        }
+
+        if (estado === "resuelto") {
+            return "Resuelto";
+        }
+
+        return "Pendiente";
+    }
+
+    // Crea un badge usando las clases originales del CSS
+    function crearBadge(texto, claseModificadora) {
+        const badge = document.createElement("span");
+        badge.className = `reporte-tarjeta__badge ${claseModificadora}`;
+        badge.textContent = texto;
+
+        return badge;
+    }
+
+    // Crea una tarjeta de reporte usando el diseño original del historial
+    function crearTarjetaReporte(reporte) {
+        const tarjeta = document.createElement("article");
+
+        if (reporte.tipo === "diario") {
+            tarjeta.className = "reporte-tarjeta reporte-tarjeta--diario";
+        } else {
+            tarjeta.className = "reporte-tarjeta reporte-tarjeta--incidencia";
+        }
+
+        const encabezado = document.createElement("header");
+        encabezado.className = "reporte-tarjeta__header";
+
+        const titulo = document.createElement("h2");
+        titulo.className = "reporte-tarjeta__titulo";
+
+        if (reporte.tipo === "diario") {
+            titulo.textContent = "Reporte Diario";
+        } else {
+            titulo.textContent = "Reporte de Incidencia";
+        }
+
+        const contenedorBadges = document.createElement("section");
+        contenedorBadges.className = "reporte-tarjeta__badges";
+
+        if (reporte.tipo === "diario") {
+            contenedorBadges.appendChild(crearBadge("Diario", "reporte-tarjeta__badge--diario"));
+        } else {
+            const estado = obtenerValor(reporte, ["estado"], "pendiente");
+
+            contenedorBadges.appendChild(crearBadge("Incidencia", "reporte-tarjeta__badge--incidencia"));
+            contenedorBadges.appendChild(crearBadge(formatearEstado(estado), "reporte-tarjeta__badge--estado"));
+        }
+
+        encabezado.appendChild(titulo);
+        encabezado.appendChild(contenedorBadges);
+
+        const detalles = document.createElement("section");
+        detalles.className = "reporte-tarjeta__detalles";
+
+        const fecha = document.createElement("p");
+        fecha.className = "reporte-tarjeta__info reporte-tarjeta__info-fecha";
+        fecha.textContent = `${obtenerValor(reporte, ["fecha"], "")} - ${obtenerValor(reporte, ["hora"], "")}`;
+
+        const docente = document.createElement("p");
+        docente.className = "reporte-tarjeta__info";
+        docente.innerHTML = `<strong>Docente:</strong> ${obtenerValor(reporte, ["nombreProfesor", "nombre"], "")} ${obtenerValor(reporte, ["apellidoProfesor", "apellido"], "")}`;
+
+        const detallePrincipal = document.createElement("p");
+        detallePrincipal.className = "reporte-tarjeta__info";
+
+        if (reporte.tipo === "diario") {
+            detallePrincipal.innerHTML = `<strong>Aula / Taller:</strong> ${obtenerValor(reporte, ["aula", "taller"], "")}`;
+        } else {
+            detallePrincipal.innerHTML = `<strong>Asignatura:</strong> ${obtenerValor(reporte, ["asignatura"], "")} | <strong>Taller:</strong> ${obtenerValor(reporte, ["taller", "aula"], "")}`;
+        }
+
+        detalles.appendChild(fecha);
+        detalles.appendChild(docente);
+        detalles.appendChild(detallePrincipal);
+
+        if (reporte.tipo === "diario") {
+            const asignaciones = obtenerValor(reporte, ["asignaciones"], []);
+            const detallePc = document.createElement("p");
+
+            detallePc.className = "reporte-tarjeta__detalle-pc";
+            detallePc.textContent = `Equipos registrados: ${asignaciones.length}`;
+            detalles.appendChild(detallePc);
+        }
+
+        const solucionGuardada = obtenerValor(reporte, ["solucion"], "");
+
+        if (solucionGuardada !== "") {
+            const solucion = document.createElement("p");
+            solucion.className = "reporte-tarjeta__info";
+            solucion.innerHTML = `<strong>Solución:</strong> ${solucionGuardada}`;
+            detalles.appendChild(solucion);
+        }
+
+        const acciones = document.createElement("footer");
+        acciones.className = "reporte-tarjeta__acciones";
+
+        const botonEditar = document.createElement("button");
+        botonEditar.type = "button";
+        botonEditar.textContent = "Editar";
+        botonEditar.className = "reporte-tarjeta__boton reporte-tarjeta__boton--editar";
+
+        botonEditar.addEventListener("click", function () {
+            abrirModalEdicion(reporte.id);
+        });
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.type = "button";
+        botonEliminar.textContent = "Eliminar";
+        botonEliminar.className = "reporte-tarjeta__boton reporte-tarjeta__boton--eliminar";
+
+        botonEliminar.addEventListener("click", function () {
+            eliminarReporte(reporte.id);
+        });
+
+        acciones.appendChild(botonEditar);
+        acciones.appendChild(botonEliminar);
+
+        tarjeta.appendChild(encabezado);
+        tarjeta.appendChild(detalles);
+        tarjeta.appendChild(acciones);
+
+        return tarjeta;
+    }
+
+    // Muestra los reportes en pantalla
+    function mostrarReportes() {
+        const reportesProfesor = obtenerReportesDelProfesor();
+        const reportesFiltrados = obtenerReportesFiltrados(reportesProfesor);
+
+        actualizarCantidades(reportesProfesor);
+        contenedorReportes.innerHTML = "";
+
+        if (reportesFiltrados.length === 0) {
+            mensajeVacio.style.display = "block";
+            contenedorReportes.appendChild(mensajeVacio);
+            return;
+        }
+
+        mensajeVacio.style.display = "none";
+
+        reportesFiltrados.forEach(function (reporte) {
+            contenedorReportes.appendChild(crearTarjetaReporte(reporte));
+        });
+    }
+
+    // Elimina un reporte
+    function eliminarReporte(reporteId) {
+        const confirmar = confirm("¿Seguro que querés eliminar este reporte?");
+
+        if (!confirmar) {
+            return;
+        }
 
         const reportes = obtenerReportes();
-        const indice = reportes.findIndex(r => r.id === reporteIdBajoEdicion);
 
-        if (indice === -1) return;
+        const reportesActualizados = reportes.filter(function (reporte) {
+            return reporte.id !== reporteId;
+        });
 
-        // Actualizamos todos los datos de la incidencia en nuestro array
-        reportes[indice].nombreProfesor = editIncidenciaNombre.value.trim();
-        reportes[indice].apellidoProfesor = editIncidenciaApellido.value.trim();
-        reportes[indice].asignatura = editIncidenciaAsignatura.value.trim();
-        reportes[indice].tipoSolicitud = editIncidenciaSolicitud.value;
-        reportes[indice].taller = editIncidenciaTaller.value;
-        reportes[indice].descripcion = editIncidenciaDescripcion.value.trim();
+        guardarReportes(reportesActualizados);
+        mostrarReportes();
+        mostrarAlerta("Reporte eliminado correctamente.", "error");
+    }
 
-        // Guardamos todo y cerramos la ventana emergente
-        guardarReportesEnStorage(reportes);
+    // Busca un reporte por su id
+    function buscarReportePorId(reporteId) {
+        const reportes = obtenerReportes();
+
+        return reportes.find(function (reporte) {
+            return reporte.id === reporteId;
+        });
+    }
+
+    // Abre el modal correspondiente según el tipo de reporte
+    function abrirModalEdicion(reporteId) {
+        const reporte = buscarReportePorId(reporteId);
+
+        if (reporte === undefined) {
+            alert("No se encontró el reporte.");
+            return;
+        }
+
+        reporteEditandoId = reporteId;
+
+        if (reporte.tipo === "diario") {
+            abrirModalDiario(reporte);
+            return;
+        }
+
+        abrirModalIncidencia(reporte);
+    }
+
+    // Crea una fila editable de PC dentro del modal
+    function crearCampoPcEdicion(asignacion) {
+        contadorPcEdicion++;
+
+        const tarjetaPc = document.createElement("section");
+        tarjetaPc.className = "assignment__card";
+
+        const etiquetaPc = document.createElement("label");
+        etiquetaPc.className = "assignment__pc";
+        etiquetaPc.textContent = `PC${contadorPcEdicion}`;
+
+        const campoPc = document.createElement("input");
+        campoPc.className = "assignment__input";
+        campoPc.type = "text";
+        campoPc.value = asignacion.pc;
+        campoPc.readOnly = true;
+
+        const etiquetaAlumno = document.createElement("label");
+        etiquetaAlumno.className = "assignment__label";
+        etiquetaAlumno.textContent = "Nombre del alumno";
+
+        const campoAlumno = document.createElement("input");
+        campoAlumno.className = "assignment__input assignment__input--student";
+        campoAlumno.type = "text";
+        campoAlumno.value = asignacion.alumno;
+        campoAlumno.placeholder = "Nombre del alumno";
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "assignment__delete";
+        botonEliminar.type = "button";
+        botonEliminar.textContent = "×";
+
+        botonEliminar.addEventListener("click", function () {
+            tarjetaPc.remove();
+        });
+
+        tarjetaPc.appendChild(etiquetaPc);
+        tarjetaPc.appendChild(campoPc);
+        tarjetaPc.appendChild(etiquetaAlumno);
+        tarjetaPc.appendChild(campoAlumno);
+        tarjetaPc.appendChild(botonEliminar);
+
+        return tarjetaPc;
+    }
+
+    // Abre el modal de edición de reporte diario
+    function abrirModalDiario(reporte) {
+        contadorPcEdicion = 0;
+
+        campoEditDiarioFecha.value = obtenerValor(reporte, ["fecha"], "");
+        campoEditDiarioNombre.value = obtenerValor(reporte, ["nombreProfesor", "nombre"], "");
+        campoEditDiarioApellido.value = obtenerValor(reporte, ["apellidoProfesor", "apellido"], "");
+        campoEditDiarioAula.value = obtenerValor(reporte, ["aula", "taller"], "");
+
+        listaEditDiarioPcs.innerHTML = "";
+
+        const asignaciones = obtenerValor(reporte, ["asignaciones"], []);
+
+        asignaciones.forEach(function (asignacion) {
+            listaEditDiarioPcs.appendChild(crearCampoPcEdicion(asignacion));
+        });
+
+        modalDiario.showModal();
+    }
+
+    // Abre el modal de edición de incidencia
+    function abrirModalIncidencia(reporte) {
+        campoEditIncidenciaNombre.value = obtenerValor(reporte, ["nombreProfesor", "nombre"], "");
+        campoEditIncidenciaApellido.value = obtenerValor(reporte, ["apellidoProfesor", "apellido"], "");
+        campoEditIncidenciaAsignatura.value = obtenerValor(reporte, ["asignatura"], "");
+        campoEditIncidenciaFecha.value = obtenerValor(reporte, ["fecha"], "");
+        campoEditIncidenciaSolicitud.value = obtenerValor(reporte, ["tipoSolicitud"], "");
+        campoEditIncidenciaTaller.value = obtenerValor(reporte, ["taller", "aula"], "");
+        campoEditIncidenciaDescripcion.value = obtenerValor(reporte, ["descripcion"], "");
+
+        modalIncidencia.showModal();
+    }
+
+    // Obtiene las asignaciones editadas del modal diario
+    function obtenerAsignacionesEditadas() {
+        const tarjetasPc = document.querySelectorAll("#edit-diario-lista-pcs .assignment__card");
+        const asignaciones = [];
+
+        tarjetasPc.forEach(function (tarjeta) {
+            const inputs = tarjeta.querySelectorAll("input");
+
+            asignaciones.push({
+                pc: inputs[0].value.trim(),
+                alumno: inputs[1].value.trim()
+            });
+        });
+
+        return asignaciones;
+    }
+
+    // Guarda la edición de un reporte diario
+    function guardarEdicionDiario(evento) {
+        evento.preventDefault();
+
+        const asignaciones = obtenerAsignacionesEditadas();
+
+        if (asignaciones.length === 0) {
+            alert("El reporte debe tener al menos una PC asignada.");
+            return;
+        }
+
+        const reportes = obtenerReportes();
+
+        const reportesActualizados = reportes.map(function (reporte) {
+            if (reporte.id === reporteEditandoId) {
+                reporte.estado = "reenviado";
+                reporte.nombreProfesor = campoEditDiarioNombre.value.trim();
+                reporte.apellidoProfesor = campoEditDiarioApellido.value.trim();
+                reporte.aula = campoEditDiarioAula.value;
+                reporte.asignaciones = asignaciones;
+            }
+
+            return reporte;
+        });
+
+        guardarReportes(reportesActualizados);
+        modalDiario.close();
+        mostrarReportes();
+        mostrarAlerta("Reporte diario editado y reenviado.", "exito");
+    }
+
+    // Guarda la edición de una incidencia
+    function guardarEdicionIncidencia(evento) {
+        evento.preventDefault();
+
+        const reportes = obtenerReportes();
+
+        const reportesActualizados = reportes.map(function (reporte) {
+            if (reporte.id === reporteEditandoId) {
+                reporte.estado = "reenviado";
+                reporte.nombreProfesor = campoEditIncidenciaNombre.value.trim();
+                reporte.apellidoProfesor = campoEditIncidenciaApellido.value.trim();
+                reporte.asignatura = campoEditIncidenciaAsignatura.value.trim();
+                reporte.tipoSolicitud = campoEditIncidenciaSolicitud.value;
+                reporte.taller = campoEditIncidenciaTaller.value;
+                reporte.descripcion = campoEditIncidenciaDescripcion.value.trim();
+            }
+
+            return reporte;
+        });
+
+        guardarReportes(reportesActualizados);
         modalIncidencia.close();
-        mostrarReportesEnPantalla();
+        mostrarReportes();
+        mostrarAlerta("Incidencia editada y reenviada.", "exito");
+    }
 
-        // Lanzamos la notificación verde
-        mostrarAlertaNotificacion("Reporte editado con éxito.", "exito");
+    // Agrega una PC nueva en el modal de edición diario
+    function agregarPcEnEdicion() {
+        const nuevaAsignacion = {
+            pc: `PC${contadorPcEdicion + 1}`,
+            alumno: ""
+        };
+
+        listaEditDiarioPcs.appendChild(crearCampoPcEdicion(nuevaAsignacion));
+    }
+
+    // Inicio del historial
+    protegerHistorialProfesor();
+    mostrarReportes();
+
+    // Eventos de filtros
+    botonFiltroTodos.addEventListener("click", function () {
+        filtroActual = "todos";
+        activarFiltro(botonFiltroTodos);
+        mostrarReportes();
     });
 
-    // ==========================================================================
-    // =  ARRANQUE INICIAL AL CARGAR LA PÁGINA                                  =    
-    // ==========================================================================
+    botonFiltroDiarios.addEventListener("click", function () {
+        filtroActual = "diarios";
+        activarFiltro(botonFiltroDiarios);
+        mostrarReportes();
+    });
 
-    // Mostramos los reportes cargados en pantalla apenas se abre la página
-    mostrarReportesEnPantalla();
+    botonFiltroIncidencias.addEventListener("click", function () {
+        filtroActual = "incidencias";
+        activarFiltro(botonFiltroIncidencias);
+        mostrarReportes();
+    });
+
+    // Eventos de cierre de modales
+    botonCerrarDiario.addEventListener("click", function () {
+        modalDiario.close();
+    });
+
+    botonCancelarDiario.addEventListener("click", function () {
+        modalDiario.close();
+    });
+
+    botonCerrarIncidencia.addEventListener("click", function () {
+        modalIncidencia.close();
+    });
+
+    botonCancelarIncidencia.addEventListener("click", function () {
+        modalIncidencia.close();
+    });
+
+    // Eventos de guardado
+    botonEditDiarioAgregarPc.addEventListener("click", agregarPcEnEdicion);
+    formEditarDiario.addEventListener("submit", guardarEdicionDiario);
+    formEditarIncidencia.addEventListener("submit", guardarEdicionIncidencia);
 });

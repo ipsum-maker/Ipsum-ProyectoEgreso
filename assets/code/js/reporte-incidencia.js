@@ -1,20 +1,56 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const STORAGE_KEY_REPORTES = "reportes";
+    const STORAGE_KEY_USUARIO_ACTIVO = "usuario-activo";
+    const STORAGE_KEY_REPORTES = "reportes-sistema";
 
     const formReporteIncidencia = document.getElementById("form-reporte-incidencia");
-
-    const campoNombreProfesor = document.getElementById("nombre-profesor");
-    const campoApellidoProfesor = document.getElementById("apellido-profesor");
+    const campoNombre = document.getElementById("nombre-profesor");
+    const campoApellido = document.getElementById("apellido-profesor");
     const campoAsignatura = document.getElementById("asignatura");
-    const campoFechaIncidencia = document.getElementById("fecha-incidencia");
-    const campoHoraReporte = document.getElementById("hora-reporte");
+    const campoFecha = document.getElementById("fecha-incidencia");
+    const campoHora = document.getElementById("hora-reporte");
     const campoTipoSolicitud = document.getElementById("tipoSolicitud");
     const campoOtroTipo = document.getElementById("otroTipo");
     const campoTaller = document.getElementById("taller");
     const campoDescripcion = document.getElementById("descripcion");
-
-    // Se busca el botón cancelar usando la clase que ya existe en tu HTML
     const botonCancelar = document.querySelector(".report-form__button--reset");
+
+    function obtenerUsuarioActivo() {
+        const usuarioActivo = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
+
+        if (usuarioActivo === null) {
+            return null;
+        }
+
+        return JSON.parse(usuarioActivo);
+    }
+
+    function protegerFormulario() {
+        const usuarioActivo = obtenerUsuarioActivo();
+
+        if (usuarioActivo === null) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (usuarioActivo.rol !== "profesor") {
+            alert("Solo los profesores pueden crear reportes de incidencia.");
+            window.location.href = "login.html";
+        }
+    }
+
+    function obtenerReportes() {
+        const reportesGuardados = localStorage.getItem(STORAGE_KEY_REPORTES);
+
+        if (reportesGuardados === null) {
+            return [];
+        }
+
+        return JSON.parse(reportesGuardados);
+    }
+
+    function guardarReportes(reportes) {
+        localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportes));
+    }
 
     function obtenerFechaActual() {
         const fechaActual = new Date();
@@ -35,108 +71,104 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${horas}:${minutos}`;
     }
 
-    function cargarFechaYHoraAutomatica() {
-        campoFechaIncidencia.value = obtenerFechaActual();
-        campoHoraReporte.value = obtenerHoraActual();
-
-        campoFechaIncidencia.readOnly = true;
-        campoHoraReporte.readOnly = true;
-    }
-
-    function obtenerReportesGuardados() {
-        const reportesGuardados = localStorage.getItem(STORAGE_KEY_REPORTES);
-
-        if (reportesGuardados) {
-            return JSON.parse(reportesGuardados);
+    function cargarFechaYHora() {
+        if (campoFecha !== null) {
+            campoFecha.value = obtenerFechaActual();
         }
 
-        return [];
+        if (campoHora !== null) {
+            campoHora.value = obtenerHoraActual();
+        }
     }
 
-    function guardarReporteIncidencia(reporteIncidencia) {
-        const reportesGuardados = obtenerReportesGuardados();
-
-        reportesGuardados.push(reporteIncidencia);
-
-        localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportesGuardados));
-    }
-      //valida que el formulario este completo y si falta algun campo te manda una alert que te dice un mensajito 
-    function formularioEstaCompleto() {
-        if (campoNombreProfesor.value.trim() === "") {
+    function validarFormulario() {
+        if (campoNombre.value.trim() === "") {
+            alert("Ingrese el nombre del profesor.");
             return false;
         }
 
-        if (campoApellidoProfesor.value.trim() === "") {
+        if (campoApellido.value.trim() === "") {
+            alert("Ingrese el apellido del profesor.");
             return false;
         }
 
         if (campoAsignatura.value.trim() === "") {
-            return false;
-        }
-
-        if (campoFechaIncidencia.value.trim() === "") {
-            return false;
-        }
-
-        if (campoHoraReporte.value.trim() === "") {
+            alert("Ingrese la asignatura.");
             return false;
         }
 
         if (campoTipoSolicitud.value.trim() === "") {
+            alert("Seleccione el tipo de solicitud.");
+            return false;
+        }
+
+        if (campoTipoSolicitud.value === "otro" && campoOtroTipo.value.trim() === "") {
+            alert("Especifique el tipo de incidencia.");
             return false;
         }
 
         if (campoTaller.value.trim() === "") {
+            alert("Seleccione el laboratorio o taller.");
             return false;
         }
 
         if (campoDescripcion.value.trim() === "") {
-            return false;
-        }
-
-        // El campo "otroTipo" solo es obligatorio si se eligió "Otro"
-        if (campoTipoSolicitud.value === "otro" && campoOtroTipo.value.trim() === "") {
+            alert("Ingrese una descripción detallada.");
             return false;
         }
 
         return true;
     }
 
-    cargarFechaYHoraAutomatica();
+    function guardarReporteIncidencia(evento) {
+        evento.preventDefault();
 
-    // Botón Cancelar: evita el reset y vuelve al panel
-    botonCancelar.addEventListener("click", function (event) {
-        event.preventDefault();
-        window.location.href = "panel-profesores.html";
-    });
+        const usuarioActivo = obtenerUsuarioActivo();
 
-    formReporteIncidencia.addEventListener("submit", function (event) {
-        event.preventDefault();
-
-        if (!formularioEstaCompleto()) {
-            alert("⚠️ Debe rellenar el formulario antes de enviar el reporte");
+        if (!validarFormulario()) {
             return;
         }
 
-        const reporteIncidencia = {
-            tipo: "reporte-incidencia",
-            nombreProfesor: campoNombreProfesor.value,
-            apellidoProfesor: campoApellidoProfesor.value,
-            asignatura: campoAsignatura.value,
-            fecha: campoFechaIncidencia.value,
-            hora: campoHoraReporte.value,
+        const nuevoReporte = {
+            id: Date.now(),
+            tipo: "incidencia",
+            estado: "pendiente",
+            profesorCorreo: usuarioActivo.correo,
+            profesorNombreUsuario: usuarioActivo.nombre,
+            nombreProfesor: campoNombre.value.trim(),
+            apellidoProfesor: campoApellido.value.trim(),
+            asignatura: campoAsignatura.value.trim(),
+            fecha: campoFecha.value,
+            hora: campoHora.value,
             tipoSolicitud: campoTipoSolicitud.value,
-            otroTipo: campoOtroTipo.value,
+            otroTipo: campoOtroTipo.value.trim(),
             taller: campoTaller.value,
-            descripcion: campoDescripcion.value
+            descripcion: campoDescripcion.value.trim(),
+            fechaCreacion: new Date().toISOString(),
+            solucion: ""
         };
 
-        guardarReporteIncidencia(reporteIncidencia);
+        const reportes = obtenerReportes();
+        reportes.push(nuevoReporte);
+        guardarReportes(reportes);
 
-        alert("✅ Reporte enviado correctamente");
+        alert("Reporte de incidencia enviado correctamente.");
+        window.location.href = "historial-reportes.html";
+    }
 
-        formReporteIncidencia.reset();
+    function cancelarFormulario(evento) {
+        evento.preventDefault();
+        window.location.href = "panel-profesores.html";
+    }
 
-        cargarFechaYHoraAutomatica();
-    });
+    protegerFormulario();
+    cargarFechaYHora();
+
+    if (formReporteIncidencia !== null) {
+        formReporteIncidencia.addEventListener("submit", guardarReporteIncidencia);
+    }
+
+    if (botonCancelar !== null) {
+        botonCancelar.addEventListener("click", cancelarFormulario);
+    }
 });

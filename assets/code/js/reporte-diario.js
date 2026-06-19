@@ -1,22 +1,57 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Clave donde se guardan todos los reportes
-    const STORAGE_KEY_REPORTES = "reportes";
+    const STORAGE_KEY_USUARIO_ACTIVO = "usuario-activo";
+    const STORAGE_KEY_REPORTES = "reportes-sistema";
 
-    // Elementos principales del HTML
-   const campoFecha = document.getElementById("fecha");
-const campoHora = document.getElementById("hora");
-const campoNombreProfesor = document.getElementById("nombre-profesor");
-const campoApellidoProfesor = document.getElementById("apellido-profesor");
-const campoAula = document.getElementById("aula");
-const botonCancelar = document.querySelector(".button--secondary");
-const formReporteDiario = document.getElementById("form-reporte-diario");
-const botonAgregarPc = document.getElementById("agregar-pc");
-const listaPcs = document.getElementById("lista-pcs");
+    const formReporteDiario = document.getElementById("form-reporte-diario");
+    const botonAgregarPc = document.getElementById("agregar-pc");
+    const listaPcs = document.getElementById("lista-pcs");
+    const campoFecha = document.getElementById("fecha");
+    const campoHora = document.getElementById("hora");
+    const campoNombre = document.getElementById("nombre-profesor");
+    const campoApellido = document.getElementById("apellido-profesor");
+    const campoAula = document.getElementById("aula");
+    const botonCancelar = document.querySelector(".button--secondary");
 
-    // Contador para crear PC1, PC2, PC3, etc.
     let contadorPc = 0;
 
-    // Obtiene la fecha actual en formato correcto para input type="date"
+    function obtenerUsuarioActivo() {
+        const usuarioActivo = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
+
+        if (usuarioActivo === null) {
+            return null;
+        }
+
+        return JSON.parse(usuarioActivo);
+    }
+
+    function protegerFormulario() {
+        const usuarioActivo = obtenerUsuarioActivo();
+
+        if (usuarioActivo === null) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (usuarioActivo.rol !== "profesor") {
+            alert("Solo los profesores pueden crear reportes diarios.");
+            window.location.href = "login.html";
+        }
+    }
+
+    function obtenerReportes() {
+        const reportesGuardados = localStorage.getItem(STORAGE_KEY_REPORTES);
+
+        if (reportesGuardados === null) {
+            return [];
+        }
+
+        return JSON.parse(reportesGuardados);
+    }
+
+    function guardarReportes(reportes) {
+        localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportes));
+    }
+
     function obtenerFechaActual() {
         const fechaActual = new Date();
 
@@ -27,7 +62,6 @@ const listaPcs = document.getElementById("lista-pcs");
         return `${anio}-${mes}-${dia}`;
     }
 
-    // Obtiene la hora actual en formato correcto para input type="time"
     function obtenerHoraActual() {
         const fechaActual = new Date();
 
@@ -37,152 +71,177 @@ const listaPcs = document.getElementById("lista-pcs");
         return `${horas}:${minutos}`;
     }
 
-    // Rellena automáticamente fecha y hora
-    function cargarFechaYHoraAutomatica() {
-        campoFecha.value = obtenerFechaActual();
-        campoHora.value = obtenerHoraActual();
-
-        campoFecha.readOnly = true;
-        campoHora.readOnly = true;
-    }
-
-    // Agrega una nueva PC al reporte
-    function agregarPc() {
-        contadorPc++;
-
-        const bloquePc = document.createElement("section");
-
-        // Se conserva la misma clase de diseño
-        bloquePc.classList.add("assignment__card");
-
-        // El input de PC NO tiene readonly, así podés modificar PC1, PC2, etc.
-        bloquePc.innerHTML = `
-            <label class="assignment__pc" for="pc${contadorPc}">PC${contadorPc}</label>
-
-            <input class="assignment__input pc-nombre"
-                   type="text"
-                   id="pc${contadorPc}"
-                   name="pc${contadorPc}"
-                   value="PC${contadorPc}">
-
-            <label class="assignment__label" for="alumno${contadorPc}">Nombre del alumno</label>
-
-            <input class="assignment__input pc-alumno"
-                   type="text"
-                   id="alumno${contadorPc}"
-                   name="alumno${contadorPc}"
-                   placeholder="Nombre del alumno">
-
-            <button class="assignment__delete" type="button" aria-label="Eliminar asignación">✖</button>
-        `;
-
-        listaPcs.appendChild(bloquePc);
-
-        const botonEliminar = bloquePc.querySelector(".assignment__delete");
-
-        botonEliminar.addEventListener("click", function () {
-            listaPcs.removeChild(bloquePc);
-        });
-    }
-
-    // Obtiene todas las PCs agregadas
-    function obtenerPcsAsignadas() {
-        const pcs = [];
-
-        listaPcs.querySelectorAll(".assignment__card").forEach(function (bloquePc) {
-            const campoPc = bloquePc.querySelector(".pc-nombre");
-            const campoAlumno = bloquePc.querySelector(".pc-alumno");
-
-            pcs.push({
-                pc: campoPc.value,
-                alumno: campoAlumno.value
-            });
-        });
-
-        return pcs;
-    }
-
-    // Obtiene reportes ya guardados
-    function obtenerReportesGuardados() {
-        const reportesGuardados = localStorage.getItem(STORAGE_KEY_REPORTES);
-
-        if (reportesGuardados) {
-            return JSON.parse(reportesGuardados);
+    function cargarFechaYHora() {
+        if (campoFecha !== null) {
+            campoFecha.value = obtenerFechaActual();
         }
 
-        return [];
+        if (campoHora !== null) {
+            campoHora.value = obtenerHoraActual();
+        }
     }
 
-    // Guarda el reporte diario junto con los demás reportes
-    function guardarReporteDiario(reporteDiario) {
-        const reportesGuardados = obtenerReportesGuardados();
+    function crearCampoPc(numeroPc) {
+        const tarjetaPc = document.createElement("section");
+        tarjetaPc.className = "assignment__card";
+        tarjetaPc.dataset.numeroPc = numeroPc;
 
-        reportesGuardados.push(reporteDiario);
+        const etiquetaPc = document.createElement("label");
+        etiquetaPc.className = "assignment__pc";
+        etiquetaPc.setAttribute("for", `pc-${numeroPc}`);
+        etiquetaPc.textContent = `PC${numeroPc}`;
 
-        localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportesGuardados));
+        const campoPc = document.createElement("input");
+        campoPc.className = "assignment__input";
+        campoPc.type = "text";
+        campoPc.id = `pc-${numeroPc}`;
+        campoPc.name = `pc-${numeroPc}`;
+        campoPc.value = `PC${numeroPc}`;
+        campoPc.readOnly = true;
+
+        const etiquetaAlumno = document.createElement("label");
+        etiquetaAlumno.className = "assignment__label";
+        etiquetaAlumno.setAttribute("for", `alumno-${numeroPc}`);
+        etiquetaAlumno.textContent = "Nombre del alumno";
+
+        const campoAlumno = document.createElement("input");
+        campoAlumno.className = "assignment__input assignment__input--student";
+        campoAlumno.type = "text";
+        campoAlumno.id = `alumno-${numeroPc}`;
+        campoAlumno.name = `alumno-${numeroPc}`;
+        campoAlumno.placeholder = "Nombre del alumno";
+
+        const botonEliminar = document.createElement("button");
+        botonEliminar.className = "assignment__delete";
+        botonEliminar.type = "button";
+        botonEliminar.setAttribute("aria-label", "Eliminar asignación");
+        botonEliminar.textContent = "×";
+
+        botonEliminar.addEventListener("click", function () {
+            tarjetaPc.remove();
+        });
+
+        tarjetaPc.appendChild(etiquetaPc);
+        tarjetaPc.appendChild(campoPc);
+        tarjetaPc.appendChild(etiquetaAlumno);
+        tarjetaPc.appendChild(campoAlumno);
+        tarjetaPc.appendChild(botonEliminar);
+
+        return tarjetaPc;
     }
 
-    // Carga fecha y hora apenas abre la página
-    cargarFechaYHoraAutomatica();
+    function agregarPc() {
+        contadorPc++;
+        const nuevaPc = crearCampoPc(contadorPc);
 
-    // Botón Agregar PC
-    botonAgregarPc.addEventListener("click", function () {
-        agregarPc();
-    });
+        if (listaPcs !== null) {
+            listaPcs.appendChild(nuevaPc);
+        }
+    }
 
-    // Botón Cancelar
-    botonCancelar.addEventListener("click", function (event) {
-        event.preventDefault();
+    function obtenerAsignacionesPc() {
+        const tarjetasPc = document.querySelectorAll("#lista-pcs .assignment__card");
+        const asignaciones = [];
+
+        tarjetasPc.forEach(function (tarjeta) {
+            const campoPc = tarjeta.querySelector("input[name^='pc-']");
+            const campoAlumno = tarjeta.querySelector("input[name^='alumno-']");
+
+            if (campoPc !== null && campoAlumno !== null) {
+                asignaciones.push({
+                    pc: campoPc.value.trim(),
+                    alumno: campoAlumno.value.trim()
+                });
+            }
+        });
+
+        return asignaciones;
+    }
+
+    function validarFormulario(asignaciones) {
+        if (campoNombre.value.trim() === "") {
+            alert("Ingrese el nombre del profesor.");
+            return false;
+        }
+
+        if (campoApellido.value.trim() === "") {
+            alert("Ingrese el apellido del profesor.");
+            return false;
+        }
+
+        if (campoAula.value.trim() === "") {
+            alert("Seleccione un aula, taller o laboratorio.");
+            return false;
+        }
+
+        if (asignaciones.length === 0) {
+            alert("Agregue al menos una PC.");
+            return false;
+        }
+
+        const hayAlumnoVacio = asignaciones.some(function (asignacion) {
+            return asignacion.alumno === "";
+        });
+
+        if (hayAlumnoVacio) {
+            alert("Complete el nombre del alumno en todas las PCs agregadas.");
+            return false;
+        }
+
+        return true;
+    }
+
+    function guardarReporteDiario(evento) {
+        evento.preventDefault();
+
+        const usuarioActivo = obtenerUsuarioActivo();
+        const asignaciones = obtenerAsignacionesPc();
+
+        if (!validarFormulario(asignaciones)) {
+            return;
+        }
+
+        const nuevoReporte = {
+            id: Date.now(),
+            tipo: "diario",
+            estado: "pendiente",
+            profesorCorreo: usuarioActivo.correo,
+            profesorNombreUsuario: usuarioActivo.nombre,
+            fecha: campoFecha.value,
+            hora: campoHora.value,
+            nombreProfesor: campoNombre.value.trim(),
+            apellidoProfesor: campoApellido.value.trim(),
+            aula: campoAula.value,
+            asignaciones: asignaciones,
+            fechaCreacion: new Date().toISOString(),
+            solucion: ""
+        };
+
+        const reportes = obtenerReportes();
+        reportes.push(nuevoReporte);
+        guardarReportes(reportes);
+
+        alert("Reporte diario guardado correctamente.");
+        window.location.href = "historial-reportes.html";
+    }
+
+    function cancelarFormulario(evento) {
+        evento.preventDefault();
         window.location.href = "panel-profesores.html";
-    });
-
-    formReporteDiario.addEventListener("submit", function (event) {
-    event.preventDefault();
-
-    const pcsAsignadas = obtenerPcsAsignadas();
-
-    if (
-        campoNombreProfesor.value.trim() === "" ||
-        campoApellidoProfesor.value.trim() === "" ||
-        campoAula.value.trim() === ""
-    ) {
-        alert("⚠️ Debe rellenar el formulario antes de enviar el reporte");
-        return;
     }
 
-    if (pcsAsignadas.length === 0) {
-        alert("⚠️ Informe la asignacion de las PC antes de enviar el reporte");
-        return;
+    protegerFormulario();
+    cargarFechaYHora();
+
+    if (botonAgregarPc !== null) {
+        botonAgregarPc.addEventListener("click", agregarPc);
     }
 
-    const hayCamposVaciosEnPc = pcsAsignadas.some(function (pcAsignada) {
-        return pcAsignada.pc.trim() === "" || pcAsignada.alumno.trim() === "";
-    });
-
-    if (hayCamposVaciosEnPc) {
-        alert("⚠️ Debe rellenar todos los datos de las PC antes de enviar el reporte");
-        return;
+    if (formReporteDiario !== null) {
+        formReporteDiario.addEventListener("submit", guardarReporteDiario);
     }
 
-    const reporteDiario = {
-        tipo: "reporte-diario",
-        fecha: campoFecha.value,
-        hora: campoHora.value,
-        nombreProfesor: campoNombreProfesor.value,
-        apellidoProfesor: campoApellidoProfesor.value,
-        aula: campoAula.value,
-        pcs: pcsAsignadas
-    };
-
-    guardarReporteDiario(reporteDiario);
-
-    alert("✅ Reporte diario guardado correctamente");
-
-    formReporteDiario.reset();
-    listaPcs.innerHTML = "";
-    contadorPc = 0;
-
-    cargarFechaYHoraAutomatica();
+    if (botonCancelar !== null) {
+        botonCancelar.addEventListener("click", cancelarFormulario);
+    }
 });
-});
-
