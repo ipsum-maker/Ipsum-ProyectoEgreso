@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registros Diarios - Ipsum</title>
+    <link rel="stylesheet" href="css/cordinacion-diarios.css">
+</head>
+
+<body class="cordinacion-page">
+
+    <!-- Encabezado principal de la página con barra de navegación superior -->
+    <header class="cordinacion-header">
+        <nav class="cordinacion-header__nav">
+            <a href="panel-cordinacion.html" class="cordinacion-header__back" id="btn-volver-panel">
+                <svg class="cordinacion-header__back-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Volver al Panel
+            </a>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal: Agrupa la barra de filtros y la tabla de resultados -->
+    <main class="cordinacion-main">
+            
+        <!-- Sección de Cabecera: Título, contador de registros y barra de búsqueda -->
+        <section class="cordinacion-top-bar">
+            <header class="cordinacion-title-group">
+                <span class="cordinacion-icon-wrapper cordinacion-icon-wrapper--blue">
+                    <!-- Icono SVG del calendario/registro -->
+                    <svg class="cordinacion-title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                        <path d="M9 16l2 2 4-4"></path>
+                    </svg>
+                </span>
+                <hgroup>
+                    <h1 class="cordinacion-title" id="titulo-pagina">Registros Diarios</h1>
+                    <p class="cordinacion-subtitle" id="cantidad-registros-diarios">0 registro(s) encontrado(s)</p>
+                </hgroup>
+            </header>
+
+            <!-- Barra de búsqueda con etiqueta de búsqueda semántica -->
+            <search class="cordinacion-search-wrapper">
+                <svg class="cordinacion-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input class="cordinacion-search-input" id="buscador-registros-diarios" type="search"
+                    placeholder="Buscar por profesor, aula, fecha...">
+            </search>
+        </section>
+
+        <!-- Sección de Tarjeta: Contiene la tabla de planillas diarias -->
+        <section class="cordinacion-card">
+            <header class="cordinacion-card__header">
+                <h2 class="cordinacion-card__title">Planillas de Registro de Uso de Sala de Informática</h2>
+            </header>
+
+            <!-- Contenedor con scroll lateral para la tabla en pantallas chicas -->
+            <section class="cordinacion-table-wrapper" id="tabla-contenedor">
+                <table class="cordinacion-table">
+                    <thead class="cordinacion-table__head">
+                        <tr class="cordinacion-table__row">
+                            <th class="cordinacion-table__header">Fecha</th>
+                            <th class="cordinacion-table__header">Docente</th>
+                            <th class="cordinacion-table__header">Aula / Taller</th>
+                            <th class="cordinacion-table__header">Equipos</th>
+                            <th class="cordinacion-table__header">Ver</th>
+                        </tr>
+                    </thead>
+                    <tbody class="cordinacion-table__body" id="tabla-registros-diarios">
+                        <!-- Filas inyectadas dinámicamente por JavaScript -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Párrafo para mostrar cuando no existan registros cargados -->
+            <p class="cordinacion-card__empty" id="mensaje-vacio-diarios" style="display: none;">
+                No hay registros diarios aún
+            </p>
+        </section>
+    </main>
+
+    <!-- Modal: Detalle del Registro Diario seleccionado -->
+    <dialog class="cordinacion-modal" id="modal-detalle-diario">
+        <header class="cordinacion-modal__header">
+            <h2 class="cordinacion-modal__title">Detalle del Registro Diario</h2>
+            <button class="cordinacion-modal__close" id="cerrar-modal-diario" type="button"
+                aria-label="Cerrar detalle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Información y listado de asignaciones de equipos cargados mediante JS -->
+        <section class="cordinacion-modal__body" id="detalle-diario-contenido">
+            <!-- Inyectado dinámicamente -->
+        </section>
+
+        <footer class="cordinacion-modal__footer">
+            <button class="cordinacion-modal__button" id="boton-cerrar-detalle-diario" type="button">
+                Cerrar
+            </button>
+        </footer>
+    </dialog>
+
+    <!-- Pie de página general del sitio -->
+    <footer class="cordinacion-footer">
+        <p class="cordinacion-footer__text">&copy; 2026 Sistema de Reportes</p>
+    </footer>
+
+    <script src="js/cordinacion-diarios.js"></script>
+</body>
+
+</html>

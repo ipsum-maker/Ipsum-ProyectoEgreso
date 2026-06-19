@@ -115,6 +115,19 @@ body {
     background-color: #ffffff;
 }
 
+.report-form__input[readonly] {
+    background-color: #e2e8f0;
+    cursor: not-allowed;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+}
+
+.report-form__input[readonly]:focus {
+    outline: none;
+    background-color: #e2e8f0;
+    box-shadow: none;
+}
+
 .report-form__select {
     appearance: none;
     cursor: pointer;

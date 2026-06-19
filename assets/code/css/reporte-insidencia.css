@@ -122,6 +122,20 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(147, 197, 253, 0.35);
 }
 
+.report-form__input[readonly] {
+    background-color: #e2e8f0;
+    cursor: not-allowed;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+}
+
+.report-form__input[readonly]:focus {
+    outline: none;
+    background-color: #e2e8f0;
+    box-shadow: none;
+    border-color: #cbd5e1;
+}
+
 .report-form__select {
     cursor: pointer;
 }
