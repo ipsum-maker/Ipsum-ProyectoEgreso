@@ -7,19 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoContrasena = document.getElementById("contrasena");
 
     function obtenerUsuarios() {
-        const usuariosGuardados = localStorage.getItem(STORAGE_KEY_USUARIOS);
-
-        if (usuariosGuardados === null) {
-            return [];
-        }
-
-        return JSON.parse(usuariosGuardados);
-    }
-
-    function guardarUsuarios(usuarios) {
-        localStorage.setItem(STORAGE_KEY_USUARIOS, JSON.stringify(usuarios));
-    }
-
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIOS, []);
+}
+function guardarUsuarios(usuarios) {
+    return ControlErrores.guardarJson(STORAGE_KEY_USUARIOS, usuarios);
+}
     function crearAdministradorInicial() {
         const usuarios = obtenerUsuarios();
 
@@ -46,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
             rol: usuario.rol
         };
 
-        localStorage.setItem(STORAGE_KEY_USUARIO_ACTIVO, JSON.stringify(usuarioActivo));
+        ControlErrores.guardarJson(STORAGE_KEY_USUARIO_ACTIVO, usuarioActivo);
     }
 
     function redirigirSegunRol(rol) {
@@ -92,7 +84,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     crearAdministradorInicial();
 
-    if (formLogin !== null) {
-        formLogin.addEventListener("submit", iniciarSesion);
-    }
+   ControlErrores.agregarEventoSeguro(formLogin, "submit", iniciarSesion);
 });

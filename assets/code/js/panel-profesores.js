@@ -5,14 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const botonCerrarSesion = document.getElementById("logout-button");
 
     function obtenerUsuarioActivo() {
-        const usuarioActivo = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
-
-        if (usuarioActivo === null) {
-            return null;
-        }
-
-        return JSON.parse(usuarioActivo);
-    }
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIO_ACTIVO, null);
+}
 
     function protegerPanelProfesor() {
         const usuarioActivo = obtenerUsuarioActivo();
@@ -41,7 +35,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
     protegerPanelProfesor();
 
-    if (botonCerrarSesion !== null) {
-        botonCerrarSesion.addEventListener("click", cerrarSesion);
-    }
+   ControlErrores.agregarEventoSeguro(botonCerrarSesion, "click", cerrarSesion);
 });

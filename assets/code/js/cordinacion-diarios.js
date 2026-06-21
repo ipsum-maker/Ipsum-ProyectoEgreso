@@ -17,13 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const botonCerrarDetalleDiario = document.getElementById("boton-cerrar-detalle-diario");
 
     // Valida si el usuario activo tiene rol autorizado
-    function obtenerUsuarioActivo() {
-        const usuarioActivoGuardado = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
-        if (usuarioActivoGuardado === null) {
-            return null;
-        }
-        return JSON.parse(usuarioActivoGuardado);
-    }
+   function obtenerUsuarioActivo() {
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIO_ACTIVO, null);
+}
 
     // Bloquea el acceso a usuarios no autorizados (solo coordinadores o administradores)
     function protegerPanelCoordinacion() {
@@ -40,18 +36,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Carga los reportes desde localStorage buscando en las claves compatibles
-    function obtenerReportes() {
-        for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
-            const reportesGuardados = localStorage.getItem(STORAGE_KEYS_REPORTES[i]);
-            if (reportesGuardados !== null) {
-                const reportes = JSON.parse(reportesGuardados);
-                if (Array.isArray(reportes)) {
-                    return reportes;
-                }
-            }
+  function obtenerReportes() {
+    for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
+        const reportes = ControlErrores.leerJson(STORAGE_KEYS_REPORTES[i], null);
+
+        if (Array.isArray(reportes)) {
+            return reportes;
         }
-        return [];
     }
+
+    return [];
+}
 
     // Mapea códigos técnicos del aula a texto legible
     function formatearAula(aulaKey) {
@@ -298,12 +293,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         detalleDiarioContenido.appendChild(sectionEquipos);
-        modalDetalleDiario.showModal();
+        ControlErrores.abrirModalSeguro(modalDetalleDiario);
     }
 
     // Cierra el diálogo modal
     function cerrarDetalleDiario() {
-        modalDetalleDiario.close();
+       ControlErrores.cerrarModalSeguro(modalDetalleDiario);
     }
 
     // Inicializaciones y vinculación de escuchas

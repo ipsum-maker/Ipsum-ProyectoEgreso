@@ -14,15 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let contadorPc = 0;
 
-    function obtenerUsuarioActivo() {
-        const usuarioActivo = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
-
-        if (usuarioActivo === null) {
-            return null;
-        }
-
-        return JSON.parse(usuarioActivo);
-    }
+ function obtenerUsuarioActivo() {
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIO_ACTIVO, null);
+}
 
     function protegerFormulario() {
         const usuarioActivo = obtenerUsuarioActivo();
@@ -38,19 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function obtenerReportes() {
-        const reportesGuardados = localStorage.getItem(STORAGE_KEY_REPORTES);
+   function obtenerReportes() {
+    return ControlErrores.leerJson(STORAGE_KEY_REPORTES, []);
+}
 
-        if (reportesGuardados === null) {
-            return [];
-        }
-
-        return JSON.parse(reportesGuardados);
-    }
-
-    function guardarReportes(reportes) {
-        localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportes));
-    }
+   function guardarReportes(reportes) {
+    return ControlErrores.guardarJson(STORAGE_KEY_REPORTES, reportes);
+}
 
     function obtenerFechaActual() {
         const fechaActual = new Date();
@@ -159,6 +147,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function validarFormulario(asignaciones) {
+        const elementosCorrectos = ControlErrores.validarElementos([
+    { nombre: "campoNombre", elemento: campoNombre },
+    { nombre: "campoApellido", elemento: campoApellido },
+    { nombre: "campoAula", elemento: campoAula },
+    { nombre: "campoFecha", elemento: campoFecha },
+    { nombre: "campoHora", elemento: campoHora }
+]);
+
+if (!elementosCorrectos) {
+    return false;
+}
         if (campoNombre.value.trim() === "") {
             alert("Ingrese el nombre del profesor.");
             return false;
@@ -232,16 +231,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     protegerFormulario();
     cargarFechaYHora();
-
-    if (botonAgregarPc !== null) {
-        botonAgregarPc.addEventListener("click", agregarPc);
-    }
-
-    if (formReporteDiario !== null) {
-        formReporteDiario.addEventListener("submit", guardarReporteDiario);
-    }
-
-    if (botonCancelar !== null) {
-        botonCancelar.addEventListener("click", cancelarFormulario);
-    }
+    
+ControlErrores.agregarEventoSeguro(botonAgregarPc, "click", agregarPc);
+ControlErrores.agregarEventoSeguro(formReporteDiario, "submit", guardarReporteDiario);
+ControlErrores.agregarEventoSeguro(botonCancelar, "click", cancelarFormulario);
 });

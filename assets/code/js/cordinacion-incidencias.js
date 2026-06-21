@@ -27,13 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let incidenciaSeleccionadaId = null;
 
     // Obtiene los datos del usuario activo desde el almacenamiento local
-    function obtenerUsuarioActivo() {
-        const usuarioActivoGuardado = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
-        if (usuarioActivoGuardado === null) {
-            return null;
-        }
-        return JSON.parse(usuarioActivoGuardado);
-    }
+  function obtenerUsuarioActivo() {
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIO_ACTIVO, null);
+}
 
     // Valida y restringe el acceso de usuarios no autorizados
     function protegerPanelCoordinacion() {
@@ -50,25 +46,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Lee los reportes almacenados buscando compatibilidad en las dos claves utilizadas
-    function obtenerReportes() {
-        for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
-            const reportesGuardados = localStorage.getItem(STORAGE_KEYS_REPORTES[i]);
-            if (reportesGuardados !== null) {
-                const reportes = JSON.parse(reportesGuardados);
-                if (Array.isArray(reportes)) {
-                    return reportes;
-                }
-            }
+function obtenerReportes() {
+    for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
+        const reportes = ControlErrores.leerJson(STORAGE_KEYS_REPORTES[i], null);
+
+        if (Array.isArray(reportes)) {
+            return reportes;
         }
-        return [];
     }
 
+    return [];
+}
+
     // Persiste los reportes actualizados en todas las claves de almacenamiento de datos
-    function guardarReportes(reportes) {
-        STORAGE_KEYS_REPORTES.forEach(function (clave) {
-            localStorage.setItem(clave, JSON.stringify(reportes));
-        });
-    }
+   function guardarReportes(reportes) {
+    STORAGE_KEYS_REPORTES.forEach(function (clave) {
+        ControlErrores.guardarJson(clave, reportes);
+    });
+}
 
     // Mapea los códigos del aula a nombres legibles
     function formatearAula(aulaKey) {
@@ -441,21 +436,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         detalleIncidenciaContenido.appendChild(textSection);
-        modalDetalleIncidencia.showModal();
+       ControlErrores.abrirModalSeguro(modalDetalleIncidencia);
     }
 
     function cerrarDetalleIncidencia() {
-        modalDetalleIncidencia.close();
+       ControlErrores.cerrarModalSeguro(modalDetalleIncidencia);
+
     }
 
     // Abre el modal para escribir la justificación de la solución
     function abrirModalSolucion() {
         textoSolucionIncidencia.value = "";
-        modalSolucionIncidencia.showModal();
+        ControlErrores.abrirModalSeguro(modalSolucionIncidencia);
     }
 
     function cerrarModalSolucion() {
-        modalSolucionIncidencia.close();
+       ControlErrores.cerrarModalSeguro(modalSolucionIncidencia);
     }
 
     // Procesa el submit del modal de solución y marca como resuelta

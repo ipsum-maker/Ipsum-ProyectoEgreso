@@ -33,14 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Obtiene el usuario activo
     function obtenerUsuarioActivo() {
-        const usuarioActivoGuardado = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
-
-        if (usuarioActivoGuardado === null) {
-            return null;
-        }
-
-        return JSON.parse(usuarioActivoGuardado);
-    }
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIO_ACTIVO, null);
+}
 
     // Protege el panel para que solo entre un administrador
     function protegerPanelAdministrador() {
@@ -58,37 +52,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Obtiene usuarios guardados
-    function obtenerUsuarios() {
-        const usuariosGuardados = localStorage.getItem(STORAGE_KEY_USUARIOS);
-
-        if (usuariosGuardados === null) {
-            return [];
-        }
-
-        return JSON.parse(usuariosGuardados);
-    }
+   function obtenerUsuarios() {
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIOS, []);
+}
 
     // Guarda usuarios
     function guardarUsuarios(usuarios) {
-        localStorage.setItem(STORAGE_KEY_USUARIOS, JSON.stringify(usuarios));
-    }
+    return ControlErrores.guardarJson(STORAGE_KEY_USUARIOS, usuarios);
+}
 
     // Obtiene reportes guardados
     function obtenerReportes() {
-        for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
-            const reportesGuardados = localStorage.getItem(STORAGE_KEYS_REPORTES[i]);
+    for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
+        const reportes = ControlErrores.leerJson(STORAGE_KEYS_REPORTES[i], null);
 
-            if (reportesGuardados !== null) {
-                const reportes = JSON.parse(reportesGuardados);
-
-                if (Array.isArray(reportes)) {
-                    return reportes;
-                }
-            }
+        if (Array.isArray(reportes)) {
+            return reportes;
         }
-
-        return [];
     }
+
+    return [];
+}
 
     // Crea el administrador inicial si no existe
     function crearAdministradorInicialSiFalta() {
@@ -237,12 +221,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Abre el modal de nuevo usuario
     function abrirModalNuevoUsuario() {
         formNuevoUsuario.reset();
-        modalNuevoUsuario.showModal();
+        ControlErrores.abrirModalSeguro(modalNuevoUsuario);
     }
 
     // Cierra el modal de nuevo usuario
     function cerrarModalNuevoUsuario() {
-        modalNuevoUsuario.close();
+       ControlErrores.cerrarModalSeguro(modalNuevoUsuario);
     }
 
     // Valida que el nuevo usuario sea correcto
@@ -452,12 +436,12 @@ document.addEventListener("DOMContentLoaded", function () {
         detalleResueltoContenido.appendChild(crearParrafoDetalle("Solución aplicada", solucion));
         detalleResueltoContenido.appendChild(crearParrafoDetalle("Técnico", tecnico));
 
-        modalDetalleResuelto.showModal();
+      ControlErrores.abrirModalSeguro(modalDetalleResuelto);
     }
 
     // Cierra el modal de detalle resuelto
     function cerrarDetalleResuelto() {
-        modalDetalleResuelto.close();
+        ControlErrores.cerrarModalSeguro(modalNuevoUsuario);
     }
 
     // Cierra sesión

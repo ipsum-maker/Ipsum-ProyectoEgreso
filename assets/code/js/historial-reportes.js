@@ -52,14 +52,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Obtiene el usuario que inició sesión
     function obtenerUsuarioActivo() {
-        const usuarioActivoGuardado = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
-
-        if (usuarioActivoGuardado === null) {
-            return null;
-        }
-
-        return JSON.parse(usuarioActivoGuardado);
-    }
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIO_ACTIVO, null);
+}
 
     // Protege el historial para que solo entren profesores
     function protegerHistorialProfesor() {
@@ -78,27 +72,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Obtiene todos los reportes guardados
     function obtenerReportes() {
-        for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
-            const reportesGuardados = localStorage.getItem(STORAGE_KEYS_REPORTES[i]);
+    for (let i = 0; i < STORAGE_KEYS_REPORTES.length; i++) {
+        const reportes = ControlErrores.leerJson(STORAGE_KEYS_REPORTES[i], null);
 
-            if (reportesGuardados !== null) {
-                const reportes = JSON.parse(reportesGuardados);
-
-                if (Array.isArray(reportes)) {
-                    return reportes;
-                }
-            }
+        if (Array.isArray(reportes)) {
+            return reportes;
         }
-
-        return [];
     }
+
+    return [];
+}
 
     // Guarda todos los reportes en las dos claves para mantener compatibilidad
     function guardarReportes(reportes) {
-        STORAGE_KEYS_REPORTES.forEach(function (clave) {
-            localStorage.setItem(clave, JSON.stringify(reportes));
-        });
-    }
+    STORAGE_KEYS_REPORTES.forEach(function (clave) {
+        ControlErrores.guardarJson(clave, reportes);
+    });
+}
 
     // Obtiene solo los reportes del profesor activo
     function obtenerReportesDelProfesor() {
@@ -454,7 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
             listaEditDiarioPcs.appendChild(crearCampoPcEdicion(asignacion));
         });
 
-        modalDiario.showModal();
+        ControlErrores.abrirModalSeguro(modalDiario);
     }
 
     // Abre el modal de edición de incidencia
@@ -467,7 +457,7 @@ document.addEventListener("DOMContentLoaded", function () {
         campoEditIncidenciaTaller.value = obtenerValor(reporte, ["taller", "aula"], "");
         campoEditIncidenciaDescripcion.value = obtenerValor(reporte, ["descripcion"], "");
 
-        modalIncidencia.showModal();
+        ControlErrores.abrirModalSeguro(modalIncidencia);
     }
 
     // Obtiene las asignaciones editadas del modal diario
@@ -513,7 +503,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         guardarReportes(reportesActualizados);
-        modalDiario.close();
+        ControlErrores.cerrarModalSeguro(modalDiario);
         mostrarReportes();
         mostrarAlerta("Reporte diario editado y reenviado.", "exito");
     }
@@ -539,7 +529,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         guardarReportes(reportesActualizados);
-        modalIncidencia.close();
+        ControlErrores.cerrarModalSeguro(modalIncidencia);
         mostrarReportes();
         mostrarAlerta("Incidencia editada y reenviada.", "exito");
     }

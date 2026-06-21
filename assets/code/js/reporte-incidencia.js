@@ -14,15 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const campoDescripcion = document.getElementById("descripcion");
     const botonCancelar = document.querySelector(".report-form__button--reset");
 
-    function obtenerUsuarioActivo() {
-        const usuarioActivo = localStorage.getItem(STORAGE_KEY_USUARIO_ACTIVO);
-
-        if (usuarioActivo === null) {
-            return null;
-        }
-
-        return JSON.parse(usuarioActivo);
-    }
+   function obtenerUsuarioActivo() {
+    return ControlErrores.leerJson(STORAGE_KEY_USUARIO_ACTIVO, null);
+}
 
     function protegerFormulario() {
         const usuarioActivo = obtenerUsuarioActivo();
@@ -39,18 +33,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function obtenerReportes() {
-        const reportesGuardados = localStorage.getItem(STORAGE_KEY_REPORTES);
+    return ControlErrores.leerJson(STORAGE_KEY_REPORTES, []);
+}
 
-        if (reportesGuardados === null) {
-            return [];
-        }
-
-        return JSON.parse(reportesGuardados);
-    }
-
-    function guardarReportes(reportes) {
-        localStorage.setItem(STORAGE_KEY_REPORTES, JSON.stringify(reportes));
-    }
+   function guardarReportes(reportes) {
+    return ControlErrores.guardarJson(STORAGE_KEY_REPORTES, reportes);
+}
 
     function obtenerFechaActual() {
         const fechaActual = new Date();
@@ -82,6 +70,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function validarFormulario() {
+        const elementosCorrectos = ControlErrores.validarElementos([
+    { nombre: "campoNombre", elemento: campoNombre },
+    { nombre: "campoApellido", elemento: campoApellido },
+    { nombre: "campoAsignatura", elemento: campoAsignatura },
+    { nombre: "campoTipoSolicitud", elemento: campoTipoSolicitud },
+    { nombre: "campoOtroTipo", elemento: campoOtroTipo },
+    { nombre: "campoTaller", elemento: campoTaller },
+    { nombre: "campoDescripcion", elemento: campoDescripcion }
+]);
+
+if (!elementosCorrectos) {
+    return false;
+}
         if (campoNombre.value.trim() === "") {
             alert("Ingrese el nombre del profesor.");
             return false;
@@ -164,11 +165,6 @@ document.addEventListener("DOMContentLoaded", function () {
     protegerFormulario();
     cargarFechaYHora();
 
-    if (formReporteIncidencia !== null) {
-        formReporteIncidencia.addEventListener("submit", guardarReporteIncidencia);
-    }
-
-    if (botonCancelar !== null) {
-        botonCancelar.addEventListener("click", cancelarFormulario);
-    }
+   ControlErrores.agregarEventoSeguro(formReporteIncidencia, "submit", guardarReporteIncidencia);
+ControlErrores.agregarEventoSeguro(botonCancelar, "click", cancelarFormulario);
 });
