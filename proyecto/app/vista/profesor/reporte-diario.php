@@ -7,7 +7,6 @@
     <script>
         window.IPSUM_USUARIO = <?= json_encode($usuario, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     </script>
-    <script src="assets/js/sesion-pestana.js"></script>
     <title>Reporte Diario</title>
     <link rel="stylesheet" href="assets/css/reporte-diario.css">
     <script src="assets/js/control-errores.js"></script>
@@ -26,7 +25,7 @@
             <h1 class="report__title">Reporte Diario</h1>
             <p class="report__description">Complete la información del reporte diario de actividades</p>
         </section>
-        <form class="report-form" id="form-reporte-diario">
+        <form class="report-form" id="form-reporte-diario" action="index.php? ruta=guardar-reporte-diario" method="post">
             <article class="report-form__group">
                 <label class="report-form__label" for="fecha">Fecha</label>
                 <input class="report-form__input" type="date" id="fecha" name="fecha" readonly>

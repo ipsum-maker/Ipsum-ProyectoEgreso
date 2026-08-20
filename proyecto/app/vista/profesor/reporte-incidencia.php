@@ -7,7 +7,6 @@
     <script>
         window.IPSUM_USUARIO = <?= json_encode($usuario, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     </script>
-    <script src="assets/js/sesion-pestana.js"></script>
     <title>Reporte de Incidencias</title>
     <link rel="stylesheet" href="assets/css/reporte-incidencia.css">
     <script src="assets/js/control-errores.js"></script>
@@ -26,7 +25,7 @@
     <!--Contenido principal-->
 
     <main class="report-main">
-        <form class="report-form" id="form-reporte-incidencia">
+        <form class="report-form" id="form-reporte-incidencia" action="index.php?ruta=guardar-reporte-incidencia" method="post">
 
             <article class="report-form__group">
                 <label class="report-form__label" for="nombre-profesor">Nombre del Profesor</label>
