@@ -29,7 +29,7 @@ try {
     $usuario = $modelo->buscarPorCedula(normalizarCedula($cedulaIngresada));
 } catch (PDOException $error) {
     error_log('Error de conexión al iniciar sesión: ' . $error->getMessage());
-    $_SESSION['error_login'] = 'No se pudo conectar con la base de datos. Revise MySQL y la configuración PDO.';
+    $_SESSION['error_login'] = 'Error MySQL: ' . $error->getMessage();
     redirigir('login.php');
 }
 

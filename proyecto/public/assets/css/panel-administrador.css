@@ -146,6 +146,7 @@ body {
     border-radius: 1rem;
     padding: 1.5rem;
     position: relative;
+    margin-bottom: 2.5rem;
 }
 
 .admin-users__title {
@@ -336,7 +337,9 @@ body {
         top: 2.6rem;
         right: 2.3rem;
     }
-}.admin-users__select {
+}
+
+.admin-users__select {
     width: 100%;
     padding: 8px 10px;
     border: 1px solid #d9dee7;
@@ -441,6 +444,7 @@ body {
         justify-content: flex-end;
     }
 }
+
 /* Mensajes generados por las operaciones PDO del panel */
 .admin-message {
     grid-column: 1 / -1;
@@ -462,4 +466,21 @@ body {
 
 .admin-users__cell form {
     margin: 0;
+}
+
+.admin-users__action-button {
+    background-color: #f8fafc;
+    color: #64748b;
+    border: 1px solid #64748b;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.25 ease;
+}
+
+.admin-users__action-button:hover {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
 }

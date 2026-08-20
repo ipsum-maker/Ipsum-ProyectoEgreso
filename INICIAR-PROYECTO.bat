@@ -5,11 +5,13 @@ set "RUTA_PROYECTO=%~dp0proyecto\public"
 set "PUERTO=8000"
 set "PHP_EJECUTABLE="
 
-where php >nul 2>nul
-if %errorlevel%==0 set "PHP_EJECUTABLE=php"
-
-if not defined PHP_EJECUTABLE if exist "C:\xampp\php\php.exe" set "PHP_EJECUTABLE=C:\xampp\php\php.exe"
+if exist "C:\xampp\php\php.exe" set "PHP_EJECUTABLE=C:\xampp\php\php.exe"
 if not defined PHP_EJECUTABLE if exist "D:\xampp\php\php.exe" set "PHP_EJECUTABLE=D:\xampp\php\php.exe"
+
+if not defined PHP_EJECUTABLE (
+    where php >nul 2>nul
+    if %errorlevel%==0 set "PHP_EJECUTABLE=php"
+)
 
 if not defined PHP_EJECUTABLE (
     echo.

@@ -180,7 +180,10 @@ body {
     font-weight: 700;
     cursor: pointer;
     text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }
+
 
 .panel-cordinacion-section__button:hover {
     background-color: #1e293b;
@@ -518,7 +521,9 @@ body {
         flex-direction: row;
         justify-content: flex-end;
     }
-}/* Select de estado dentro de la tabla de incidencias */
+}
+
+/* Select de estado dentro de la tabla de incidencias */
 .panel-cordinacion-table__select {
     min-width: 9.5rem;
     padding: 0.7rem 0.9rem;

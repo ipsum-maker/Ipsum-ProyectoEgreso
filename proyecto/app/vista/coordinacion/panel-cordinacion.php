@@ -15,7 +15,7 @@
 <body class="panel-cordinacion-page">
 
     <header class="panel-cordinacion-header" id="panel-cordinacion-header">
-        <h1 class="panel-cordinacion-header__title">Panel de Coordinación</h1>
+        <h1 class="panel-cordinacion-header__title">Panel de Asistente</h1>
         <p class="panel-cordinacion-header__email" id="usuario-email"><?= escapar(formatearCedula((string) $usuario['cedula'])) ?></p>
         <p class="panel-cordinacion-header__welcome">Bienvenido al sistema</p>
 
@@ -31,10 +31,10 @@
             <h3 class="panel-cordinacion-section__subtitle">Consulta de Registros</h3>
             <p class="panel-cordinacion-section__description">Acceda a los registros diarios generados dentro del sistema</p>
 
-            <button class="panel-cordinacion-section__button panel-cordinacion-section__button--daily"
-                id="boton-registros-diarios" type="button">
+                        <a class="panel-cordinacion-section__button panel-cordinacion-section__button--daily"
+                id="boton-registros-diarios" href="index.php?ruta=cordinacion-diarios">
                 Ver Registros Diarios
-            </button>
+            </a>
         </section>
 
         <!-- Incidencias -->
@@ -43,10 +43,11 @@
             <h3 class="panel-cordinacion-section__subtitle">Consulta de Incidencias</h3>
             <p class="panel-cordinacion-section__description">Acceda a los registros de Incidencias reportadas en el sistema</p>
 
-            <button class="panel-cordinacion-section__button panel-cordinacion-section__button--incidents"
-                id="boton-registros-incidencias" type="button">
+            <a class="panel-cordinacion-section__button panel-cordinacion-section__button--incidents"
+                id="boton-registros-incidencias" href="index.php?ruta=cordinacion-incidencias">
                 Ver Registros de Incidencias
-            </button>
+            </a>
+
         </section>
     </main>
 
