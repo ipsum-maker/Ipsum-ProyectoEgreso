@@ -12,7 +12,10 @@ switch ($ruta) {
         require __DIR__ . '/../app/controlador/irAlInicio.php';
         break;
     case 'login':
-        redirigir('login.php');
+        require __DIR__ . '/../app/vista/login.php';
+        break;
+    case 'iniciar-sesion':
+        require __DIR__ . '/../app/controlador/iniciarSesion.php';
         break;
     case 'cerrar-sesion':
         require __DIR__ . '/../app/controlador/cerrarSesion.php';
@@ -47,10 +50,20 @@ switch ($ruta) {
     case 'cordinacion-diarios':
         require __DIR__ . '/../app/controlador/mostrarCordinacionDiarios.php';
         break;
+    case 'guardar-reporte-diario':
+        require __DIR__ . '/../app/controlador/guardarReporteDiario.php';
+        break;
+    case 'guardar-reporte-incidencia':
+        require __DIR__ . '/../app/controlador/guardarReporteIncidencia.php';
+        break;
     case 'cordinacion-incidencias':
         require __DIR__ . '/../app/controlador/mostrarCordinacionIncidencias.php';
         break;
+    case 'resolver-incidencia':
+        require __DIR__ . '/../app/controlador/resolverIncidencia.php';
+        break;
     default:
+
         http_response_code(404);
         echo '<h1>Página no encontrada</h1>';
         echo '<p><a href="index.php">Volver al sistema</a></p>';

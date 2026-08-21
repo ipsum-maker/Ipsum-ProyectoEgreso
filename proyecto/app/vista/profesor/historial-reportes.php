@@ -4,10 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        window.IPSUM_USUARIO = <?= json_encode($usuario, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
-    </script>
-    <script src="assets/js/sesion-pestana.js"></script>
     <link rel="stylesheet" href="assets/css/historial-reportes.css">
     <script src="assets/js/control-errores.js"></script>
     <script src="assets/js/historial-reportes.js"></script>
@@ -17,9 +13,7 @@
 <body>
     <header class="historial-header">
         <nav class="historial-header__nav">
-            <!-- Al hacer clic en este botón, el usuario regresa al panel principal de profesores -->
             <a class="historial-header__link-back" id="btn-volver" href="index.php?ruta=panel-profesores">
-                <!-- Mostramos una flecha hacia la izquierda y el texto del botón -->
                 <span class="historial-header__icon-back">&larr;</span> Volver al Panel
             </a>
         </nav>
@@ -27,178 +21,66 @@
         <p class="historial-header__subtitle">Historial completo de reportes diarios e incidencias</p>
     </header>
 
-    <!-- CUERPO DE LA PÁGINA: Contiene la parte central donde está la información -->
     <main class="historial-main">
 
-        <!-- BARRA DE FILTROS: Los tres botones ovalados para filtrar los reportes en pantalla -->
+        <!-- Barra de filtros con contadores calculados por PHP -->
         <section class="historial-filters" aria-label="Filtros de reportes">
-            <!-- Botón para ver TODOS los reportes juntos. Tiene una clase activa por defecto -->
-            <button class="historial-filters__button historial-filters__button--active" id="btn-filtro-todos"
-                type="button">
-                Todos <span class="historial-filters__count" id="cantidad-todos">(0)</span>
+            <button class="historial-filters__button historial-filters__button--active" id="btn-filtro-todos" type="button">
+                Todos <span class="historial-filters__count" id="cantidad-todos">(<?= $totalTodos ?>)</span>
             </button>
-            <!-- Botón para ver únicamente los Reportes Diarios -->
             <button class="historial-filters__button" id="btn-filtro-diarios" type="button">
-                Reportes Diarios <span class="historial-filters__count" id="cantidad-diarios">(0)</span>
+                Reportes Diarios <span class="historial-filters__count" id="cantidad-diarios">(<?= $totalDiarios ?>)</span>
             </button>
-            <!-- Botón para ver únicamente los Reportes de Incidencias (problemas) -->
             <button class="historial-filters__button" id="btn-filtro-incidencias" type="button">
-                Incidencias <span class="historial-filters__count" id="cantidad-incidencias">(0)</span>
+                Incidencias <span class="historial-filters__count" id="cantidad-incidencias">(<?= $totalIncidencias ?>)</span>
             </button>
         </section>
 
-        <!-- CONTENEDOR DE RESULTADOS: Aquí es donde se van a mostrar los reportes en pantalla -->
+        <!-- Contenedor donde se imprimen los reportes de la Base de Datos -->
         <section class="historial-results" id="contenedor-reportes">
+            <?php if ($totalTodos === 0): ?>
+                <article class="historial-results__empty-state" id="mensaje-vacio">
+                    <p class="historial-results__empty-text">No hay reportes registrados aún</p>
+                </article>
+            <?php else: ?>
+                <!-- Reportes Diarios -->
+                <?php foreach ($reportesDiarios as $diario): ?>
+                    <article class="historial-card historial-card--diario" style="background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                        <header style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="background: #e3f2fd; color: #1565c0; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">Reporte Diario</span>
+                            <span style="color: #666; font-size: 0.85rem;"><?= escapar((string) $diario['fecha']) ?> - <?= escapar((string) $diario['hora']) ?></span>
+                        </header>
+                        <p style="margin: 0.5rem 0;"><strong>Aula / Taller:</strong> <?= escapar((string) $diario['aula']) ?></p>
+                        <p style="margin: 0.5rem 0; color: #555;"><strong>Equipos asignados:</strong> <?= (int) ($diario['cantidad_equipos'] ?? 0) ?></p>
+                    </article>
+                <?php endforeach; ?>
 
-            <!-- TARJETA DE AVISO (Estado Vacío): Esto aparecerá únicamente cuando no haya ningún reporte en el sistema -->
-            <article class="historial-results__empty-state" id="mensaje-vacio">
-                <p class="historial-results__empty-text">No hay reportes registrados aún</p>
-            </article>
-
-            <!--El JavaScript se encargará de borrar el aviso de arriba 
-                 y dibujar aquí los reportes en forma de tarjetas cuando se carguen desde el sistema. -->
-
+                <!-- Reportes de Incidencias -->
+                <?php foreach ($reportesIncidencias as $incidencia): ?>
+                    <article class="historial-card historial-card--incidencia" style="background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                        <header style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="background: #fff3e0; color: #e65100; padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.85rem;">Incidencia</span>
+                            <span style="color: #666; font-size: 0.85rem;"><?= escapar((string) $incidencia['fecha']) ?> - <?= escapar((string) $incidencia['hora']) ?></span>
+                        </header>
+                        <p style="margin: 0.5rem 0;"><strong>Asignatura:</strong> <?= escapar((string) $incidencia['asignatura']) ?> | <strong>Taller:</strong> <?= escapar((string) $incidencia['taller']) ?></p>
+                        <p style="margin: 0.5rem 0; color: #333;"><?= escapar((string) $incidencia['descripcion']) ?></p>
+                        <p style="margin: 0.5rem 0;">
+                            <strong>Estado:</strong> 
+                            <span style="font-weight: bold; color: <?= $incidencia['estado'] === 'resuelto' ? '#2e7d32' : '#e65100' ?>; text-transform: capitalize;">
+                                <?= escapar((string) $incidencia['estado']) ?>
+                            </span>
+                        </p>
+                        <?php if (!empty($incidencia['solucion'])): ?>
+                            <blockquote style="background: #f1f8e9; border-left: 4px solid #4caf50; margin: 0.5rem 0; padding: 0.5rem; border-radius: 0 4px 4px 0;">
+                                <strong>Solución documentada por coordinación:</strong><br>
+                                <?= escapar((string) $incidencia['solucion']) ?>
+                            </blockquote>
+                        <?php endif; ?>
+                    </article>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </section>
     </main>
-
-    <!-- VENTANA EMERGENTE (MODAL) PARA EDITAR REPORTES DIARIOS -->
-    <!-- Se abre en pantalla solo cuando el profesor hace clic en "Editar" sobre un Reporte Diario -->
-    <dialog class="modal-edicion" id="modal-diario">
-        <form class="modal-edicion__form" id="form-editar-diario" method="dialog">
-            <header class="modal-edicion__header">
-                <h2 class="modal-edicion__title">Editar Reporte Diario</h2>
-                <!-- Botón con una cruz (X) en la esquina superior derecha para cerrar la ventana -->
-                <button class="modal-edicion__close" id="btn-cerrar-diario" type="button"
-                    aria-label="Cerrar modal">&times;</button>
-            </header>
-            <p class="modal-edicion__desc">Modifique los datos y haga clic en "Guardar y Reenviar"</p>
-
-            <!-- Grupo de campos del formulario -->
-            <fieldset class="modal-edicion__fields">
-                <legend class="modal-edicion__legend">Campos del reporte diario</legend>
-
-                <!-- Campo para mostrar la fecha del reporte (no se puede modificar directamente por seguridad) -->
-                <label class="modal-edicion__label" for="edit-diario-fecha">Fecha</label>
-                <input class="modal-edicion__input" type="text" id="edit-diario-fecha" required readonly>
-
-                <!-- Campos para cambiar nombre y apellido del profesor -->
-                <label class="modal-edicion__label" for="edit-diario-nombre">Nombre del Profesor</label>
-                <input class="modal-edicion__input" type="text" id="edit-diario-nombre" required>
-
-                <label class="modal-edicion__label" for="edit-diario-apellido">Apellido del Profesor</label>
-                <input class="modal-edicion__input" type="text" id="edit-diario-apellido" required>
-
-                <!-- Menú desplegable para seleccionar el aula o taller -->
-                <label class="modal-edicion__label" for="edit-diario-aula">Aula / Taller</label>
-                <select class="modal-edicion__select" id="edit-diario-aula" required>
-                    <option value="taller1">Taller 1</option>
-                    <option value="taller2">Taller 2</option>
-                    <option value="taller3">Taller 3</option>
-                    <option value="taller4">Taller 4</option>
-                    <option value="taller5">Taller 5</option>
-                    <option value="lab1">Laboratorio 1</option>
-                    <option value="lab2">Laboratorio 2</option>
-                    <option value="lab3">Laboratorio 3</option>
-                </select>
-
-                <!-- Sección para la asignación de computadoras a los alumnos -->
-                <header class="assignment__header">
-                    <h3 class="assignment__title">Asignación de Equipos</h3>
-                    <!-- Botón para añadir una nueva fila de computadora y alumno -->
-                    <button class="button button--add" type="button" id="edit-diario-agregar-pc">+ Agregar PC</button>
-                </header>
-
-                <!-- Aquí es donde se van a inyectar las filas de PC y Alumno con JavaScript -->
-                <section class="assignment__card-list" id="edit-diario-lista-pcs">
-                    <!-- Ejemplo de cómo se verán las filas (el JS las creará dinámicamente):
-                    <section class="assignment__card">
-                         <label class="assignment__pc">PC1</label>
-                         <input class="assignment__input" type="text" value="PC1">
-                         <label class="assignment__label">Nombre del alumno</label>
-                         <input class="assignment__input" type="text" value="Juan">
-                         <button class="assignment__delete" type="button">✖</button>
-                    </section>
-                    -->
-                </section>
-            </fieldset>
-
-            <!-- Botones finales para aceptar o cancelar la edición -->
-            <footer class="modal-edicion__actions">
-                <button class="modal-edicion__button modal-edicion__button--cancelar" id="btn-cancelar-diario"
-                    type="button">Cancelar</button>
-                <button class="modal-edicion__button modal-edicion__button--guardar" type="submit">Guardar y
-                    Reenviar</button>
-            </footer>
-        </form>
-    </dialog>
-
-    <!-- VENTANA EMERGENTE (MODAL) PARA EDITAR REPORTES DE INCIDENCIA -->
-    <!-- Se abre en pantalla solo cuando el profesor hace clic en "Editar" sobre una Incidencia -->
-    <dialog class="modal-edicion" id="modal-incidencia">
-        <form class="modal-edicion__form" id="form-editar-incidencia" method="dialog">
-            <header class="modal-edicion__header">
-                <h2 class="modal-edicion__title">Editar Reporte de Incidencia</h2>
-                <button class="modal-edicion__close" id="btn-cerrar-incidencia" type="button"
-                    aria-label="Cerrar modal">&times;</button>
-            </header>
-            <p class="modal-edicion__desc">Modifique los datos y haga clic en "Guardar y Reenviar"</p>
-
-            <fieldset class="modal-edicion__fields">
-                <legend class="modal-edicion__legend">Campos del reporte de incidencia</legend>
-
-                <!-- Campos para cambiar nombre y apellido del profesor -->
-                <label class="modal-edicion__label" for="edit-incidencia-nombre">Nombre</label>
-                <input class="modal-edicion__input" type="text" id="edit-incidencia-nombre" required>
-
-                <label class="modal-edicion__label" for="edit-incidencia-apellido">Apellido</label>
-                <input class="modal-edicion__input" type="text" id="edit-incidencia-apellido" required>
-
-                <!-- Campo para la asignatura o materia correspondiente -->
-                <label class="modal-edicion__label" for="edit-incidencia-asignatura">Asignatura</label>
-                <input class="modal-edicion__input" type="text" id="edit-incidencia-asignatura" required>
-
-                <!-- Campo para mostrar la fecha de la incidencia (solo lectura por seguridad) -->
-                <label class="modal-edicion__label" for="edit-incidencia-fecha">Fecha de la Incidencia</label>
-                <input class="modal-edicion__input" type="text" id="edit-incidencia-fecha" required readonly>
-
-                <!-- Desplegable para seleccionar el tipo de inconveniente -->
-                <label class="modal-edicion__label" for="edit-incidencia-solicitud">Tipo de Solicitud</label>
-                <select class="modal-edicion__select" id="edit-incidencia-solicitud" required>
-                    <option value="rotura-equipo">Rotura de equipo</option>
-                    <option value="falla-equipo">Falla de equipo</option>
-                    <option value="otro">Otro</option>
-                </select>
-
-                <!-- Desplegable para seleccionar el aula afectada -->
-                <label class="modal-edicion__label" for="edit-incidencia-taller">Taller / Aula</label>
-                <select class="modal-edicion__select" id="edit-incidencia-taller" required>
-                    <option value="taller1">Taller 1</option>
-                    <option value="taller2">Taller 2</option>
-                    <option value="taller3">Taller 3</option>
-                    <option value="taller4">Taller 4</option>
-                    <option value="taller5">Taller 5</option>
-                    <option value="lab1">Laboratorio 1</option>
-                    <option value="lab2">Laboratorio 2</option>
-                    <option value="lab3">Laboratorio 3</option>
-                </select>
-
-                <!-- Caja de texto grande para escribir los detalles detallados -->
-                <label class="modal-edicion__label" for="edit-incidencia-descripcion">Descripción Detallada</label>
-                <textarea class="modal-edicion__textarea" id="edit-incidencia-descripcion" rows="4" required></textarea>
-            </fieldset>
-
-            <footer class="modal-edicion__actions">
-                <button class="modal-edicion__button modal-edicion__button--cancelar" id="btn-cancelar-incidencia"
-                    type="button">Cancelar</button>
-                <button class="modal-edicion__button modal-edicion__button--guardar" type="submit">Guardar y
-                    Reenviar</button>
-            </footer>
-        </form>
-    </dialog>
-
-    <!-- CONTENEDOR DE ALERTAS: Esta caja invisible flota arriba en la pantalla. 
-         El JavaScript meterá alertas verdes o rojas dentro de ella cuando edites o elimines cosas -->
-    <aside class="alertas-contenedor" id="alertas-contenedor"></aside>
 
     <footer class="historial-footer">
         <p class="historial-footer__text">&copy; 2026 Sistema de Reportes</p>

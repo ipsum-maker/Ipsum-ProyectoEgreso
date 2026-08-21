@@ -8,7 +8,14 @@ require_once __DIR__ . '/../utilidades/sesion.php';
 
 // Este controlador se ocupa únicamente de iniciar una sesión.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirigir('login.php');
+    redirigir(urlRuta('login'));
+}
+
+// Verificación de Token CSRF
+$tokenRecibido = (string) ($_POST['csrf_token'] ?? '');
+if (!verificarTokenCSRF($tokenRecibido)) {
+    $_SESSION['error_login'] = 'Solicitud no válida. Intente nuevamente.';
+    redirigir(urlRuta('login'));
 }
 
 $cedulaIngresada = trim((string) ($_POST['cedula'] ?? ''));
@@ -16,12 +23,12 @@ $contrasena = (string) ($_POST['contrasena'] ?? '');
 
 if ($cedulaIngresada === '' || $contrasena === '') {
     $_SESSION['error_login'] = 'Complete la cédula y la contraseña.';
-    redirigir('login.php');
+    redirigir(urlRuta('login'));
 }
 
 if (!cedulaTieneFormatoValido($cedulaIngresada)) {
     $_SESSION['error_login'] = 'Ingrese una cédula válida de 7 u 8 dígitos.';
-    redirigir('login.php');
+    redirigir(urlRuta('login'));
 }
 
 try {
@@ -29,8 +36,8 @@ try {
     $usuario = $modelo->buscarPorCedula(normalizarCedula($cedulaIngresada));
 } catch (PDOException $error) {
     error_log('Error de conexión al iniciar sesión: ' . $error->getMessage());
-    $_SESSION['error_login'] = 'Error MySQL: ' . $error->getMessage();
-    redirigir('login.php');
+    $_SESSION['error_login'] = 'Error en la base de datos al validar credenciales.';
+    redirigir(urlRuta('login'));
 }
 
 if (
@@ -39,7 +46,7 @@ if (
     || !password_verify($contrasena, (string) $usuario['contrasena_hash'])
 ) {
     $_SESSION['error_login'] = 'Cédula o contraseña incorrectas.';
-    redirigir('login.php');
+    redirigir(urlRuta('login'));
 }
 
 session_regenerate_id(true);
@@ -50,4 +57,4 @@ $_SESSION['usuario'] = [
     'rol' => (string) $usuario['rol'],
 ];
 
-redirigir(urlRuta(rutaPanelSegunRol((string) $usuario['rol']), ['inicio' => 1]));
+redirigir(urlRuta(rutaPanelSegunRol((string) $usuario['rol'])));

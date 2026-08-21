@@ -61,17 +61,14 @@
             <label class="report-form__label" for="otroTipo">Especifique el tipo de incidencia</label>
             <input class="report-form__input" type="text" name="otroTipo" id="otroTipo" placeholder="Describa el tipo de incidencia">
 
-            <label class="report-form__label" for="taller">Laboratorio</label>
-            <select class="report-form__select" name="taller" id="taller">
+            <label class="report-form__label" for="taller">Laboratorio / Taller</label>
+            <select class="report-form__select" name="taller" id="taller" required>
                 <option value="">Seleccione el laboratorio o taller</option>
-                <option value="taller1">Taller 1</option>
-                <option value="taller2">Taller 2</option>
-                <option value="taller3">Taller 3</option>
-                <option value="taller4">Taller 4</option>
-                <option value="taller5">Taller 5</option>
-                <option value="lab1">Laboratorio 1</option>
-                <option value="lab2">Laboratorio 2</option>
-                <option value="lab3">Laboratorio 3</option>
+                <?php foreach ($aulas as $aulaItem): ?>
+                    <option value="<?= escapar((string) $aulaItem['codigo']) ?>">
+                        <?= escapar((string) $aulaItem['nombre']) ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
 
             <label class="report-form__label" for="descripcion">Descripción Detallada</label>

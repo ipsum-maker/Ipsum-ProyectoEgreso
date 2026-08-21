@@ -72,8 +72,8 @@
                 <h2 class="cordinacion-card__title">Planillas de Registro de Uso de Sala de Informática</h2>
             </header>
 
-            <!-- Contenedor con scroll lateral para la tabla en pantallas chicas -->
-            <section class="cordinacion-table-wrapper" id="tabla-contenedor">
+                        <!-- Contenedor con scroll lateral para la tabla -->
+            <section class="cordinacion-table-wrapper" id="tabla-contenedor" style="<?= empty($reportesDiarios) ? 'display: none;' : '' ?>">
                 <table class="cordinacion-table">
                     <thead class="cordinacion-table__head">
                         <tr class="cordinacion-table__row">
@@ -85,16 +85,30 @@
                         </tr>
                     </thead>
                     <tbody class="cordinacion-table__body" id="tabla-registros-diarios">
-                        <!-- Filas inyectadas dinámicamente por JavaScript -->
+                        <?php foreach ($reportesDiarios as $reporte): ?>
+                            <tr class="cordinacion-table__row">
+                                <td class="cordinacion-table__cell"><?= escapar((string) $reporte['fecha']) ?></td>
+                                <td class="cordinacion-table__cell" style="font-weight: bold;">
+                                    <?= escapar((string) $reporte['nombre_profesor'] . ' ' . (string) $reporte['apellido_profesor']) ?>
+                                </td>
+                                <td class="cordinacion-table__cell"><?= escapar((string) $reporte['aula']) ?></td>
+                                <td class="cordinacion-table__cell"><?= (int) ($reporte['cantidad_equipos'] ?? 0) ?> equipo(s)</td>
+                                <td class="cordinacion-table__cell">
+                                    <button class="cordinacion-table__button-ver" type="button" onclick="abrirDetalleDiario(<?= (int) $reporte['id'] ?>)">
+                                        Ver
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </section>
 
             <!-- Párrafo para mostrar cuando no existan registros cargados -->
-            <p class="cordinacion-card__empty" id="mensaje-vacio-diarios" style="display: none;">
+            <p class="cordinacion-card__empty" id="mensaje-vacio-diarios" style="<?= empty($reportesDiarios) ? 'display: block;' : 'display: none;' ?>">
                 No hay registros diarios aún
             </p>
-        </section>
+
     </main>
 
     <!-- Modal: Detalle del Registro Diario seleccionado -->

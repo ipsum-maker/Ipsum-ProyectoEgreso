@@ -5,7 +5,6 @@ declare(strict_types=1);
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_name('IPSUMSESSID');
     session_start([
-        // La cookie se elimina al cerrar el navegador.
         'cookie_lifetime' => 0,
         'cookie_httponly' => true,
         'cookie_samesite' => 'Lax',
@@ -14,6 +13,22 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         'use_only_cookies' => true,
         'use_strict_mode' => true,
     ]);
+}
+
+// Genera un token CSRF seguro si no existe
+function obtenerTokenCSRF(): string
+{
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return (string) $_SESSION['csrf_token'];
+}
+
+// Valida que el token CSRF recibido por POST coincida con el de la sesión
+function verificarTokenCSRF(string $tokenRecibido): bool
+{
+    $tokenSesion = (string) ($_SESSION['csrf_token'] ?? '');
+    return $tokenSesion !== '' && hash_equals($tokenSesion, $tokenRecibido);
 }
 
 function redirigir(string $ruta): never
@@ -25,7 +40,7 @@ function redirigir(string $ruta): never
 function urlRuta(string $ruta, array $parametros = []): string
 {
     if ($ruta === 'login') {
-        return 'login.php';
+        return 'index.php?ruta=login';
     }
 
     $consulta = array_merge(['ruta' => $ruta], $parametros);
@@ -49,6 +64,15 @@ function enviarCabecerasSinCache(): void
     header('Expires: 0');
 }
 
+// Si el usuario ya está autenticado y entra al login, lo redirige automáticamente a su panel
+function redireccionarSiAutenticado(): void
+{
+    if (isset($_SESSION['usuario']['rol'])) {
+        redirigir(urlRuta(rutaPanelSegunRol((string) $_SESSION['usuario']['rol'])));
+    }
+}
+
+// Exige un rol para acceder a la página
 function exigirRol(array $rolesPermitidos): array
 {
     enviarCabecerasSinCache();
@@ -60,7 +84,7 @@ function exigirRol(array $rolesPermitidos): array
 
     $rol = (string) ($usuario['rol'] ?? '');
     if (!in_array($rol, $rolesPermitidos, true)) {
-        redirigir(urlRuta(rutaPanelSegunRol($rol), ['inicio' => 1]));
+        redirigir(urlRuta(rutaPanelSegunRol($rol)));
     }
 
     return $usuario;

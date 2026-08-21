@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../utilidades/sesion.php';
 
-// Si ya existe una sesión válida, vuelve al panel correspondiente.
-if (isset($_SESSION['usuario']['rol'])) {
-    redirigir(urlRuta(rutaPanelSegunRol((string) $_SESSION['usuario']['rol'])));
-}
+// Uso de la función homogeneizada de utilidades
+redireccionarSiAutenticado();
 
 $errorLogin = (string) ($_SESSION['error_login'] ?? '');
 unset($_SESSION['error_login']);
@@ -18,7 +16,7 @@ unset($_SESSION['error_login']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Reportes</title>
+    <title>Sistema de Reportes - Iniciar Sesión</title>
     <link rel="stylesheet" href="assets/css/ingreso.css">
 </head>
 
@@ -35,7 +33,10 @@ unset($_SESSION['error_login']);
             <p class="login-error" role="alert"><?= escapar((string) $errorLogin) ?></p>
         <?php endif; ?>
 
-        <form class="login-form" id="login-form" action="procesar-login.php" method="post">
+        <!-- Formulario apuntando a index.php?ruta=iniciar-sesion con Token CSRF -->
+        <form class="login-form" id="login-form" action="index.php?ruta=iniciar-sesion" method="post">
+            <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
+
             <label class="login-label" for="cedula">Cédula de identidad</label>
             <input class="login-input" type="text" id="cedula" name="cedula"
                 inputmode="numeric" autocomplete="username" placeholder="1.234.567-8"
@@ -50,12 +51,6 @@ unset($_SESSION['error_login']);
 
     </main>
 
-    <script>
-        // Limpia cualquier usuario guardado por la versión anterior del proyecto.
-        localStorage.removeItem("usuario-activo");
-        sessionStorage.removeItem("usuario-activo");
-        sessionStorage.removeItem("ipsum-sesion-pestana");
-    </script>
 </body>
 
 </html>

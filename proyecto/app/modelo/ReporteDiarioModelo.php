@@ -1,0 +1,95 @@
+<?php
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../config/conexion.php';
+
+class ReporteDiarioModelo
+{
+    private PDO $conexion;
+
+    public function __construct()
+    {
+        $this->conexion = Conexion::obtener();
+    }
+
+    // Inserta un reporte diario y sus asignaciones de PCs en una sola transacción
+    public function crear(
+        int $usuarioId,
+        string $fecha,
+        string $hora,
+        string $nombreProfesor,
+        string $apellidoProfesor,
+        string $aula,
+        array $equipos
+    ): bool {
+        try {
+            $this->conexion->beginTransaction();
+
+            $sql = 'INSERT INTO reportes_diarios (usuario_id, fecha, hora, nombre_profesor, apellido_profesor, aula) 
+                    VALUES (:usuario_id, :fecha, :hora, :nombre, :apellido, :aula)';
+            $stmt = $this->conexion->prepare($sql);
+            $stmt->execute([
+                ':usuario_id' => $usuarioId,
+                ':fecha' => $fecha,
+                ':hora' => $hora,
+                ':nombre' => $nombreProfesor,
+                ':apellido' => $apellidoProfesor,
+                ':aula' => $aula,
+            ]);
+
+            $reporteId = (int) $this->conexion->lastInsertId();
+
+            if (!empty($equipos)) {
+                $sqlPc = 'INSERT INTO reporte_diario_pc (reporte_diario_id, pc, alumno) VALUES (:reporte_id, :pc, :alumno)';
+                $stmtPc = $this->conexion->prepare($sqlPc);
+
+                foreach ($equipos as $equipo) {
+                    $pc = trim((string) ($equipo['pc'] ?? ''));
+                    $alumno = trim((string) ($equipo['alumno'] ?? ''));
+
+                    if ($pc !== '' && $alumno !== '') {
+                        $stmtPc->execute([
+                            ':reporte_id' => $reporteId,
+                            ':pc' => $pc,
+                            ':alumno' => $alumno,
+                        ]);
+                    }
+                }
+            }
+
+            $this->conexion->commit();
+            return true;
+        } catch (PDOException $error) {
+            $this->conexion->rollBack();
+            error_log('Error al crear reporte diario: ' . $error->getMessage());
+            throw $error;
+        }
+    }
+
+    // Obtiene todos los reportes diarios (para coordinación)
+    public function obtenerTodos(): array
+    {
+        $sql = 'SELECT r.*, COUNT(p.id) as cantidad_equipos 
+                FROM reportes_diarios r 
+                LEFT JOIN reporte_diario_pc p ON r.id = p.reporte_diario_id 
+                GROUP BY r.id 
+                ORDER BY r.fecha DESC, r.hora DESC';
+        $stmt = $this->conexion->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Obtiene los reportes diarios de un profesor específico
+    public function obtenerPorUsuario(int $usuarioId): array
+    {
+        $sql = 'SELECT r.*, COUNT(p.id) as cantidad_equipos 
+                FROM reportes_diarios r 
+                LEFT JOIN reporte_diario_pc p ON r.id = p.reporte_diario_id 
+                WHERE r.usuario_id = :usuario_id 
+                GROUP BY r.id 
+                ORDER BY r.fecha DESC, r.hora DESC';
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':usuario_id' => $usuarioId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}

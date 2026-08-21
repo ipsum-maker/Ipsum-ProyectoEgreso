@@ -85,9 +85,7 @@
                 <p class="cordinacion-card__description">Para marcar una incidencia como resuelta debe documentar la
                     solución aplicada. Las resueltas se muestran al final.</p>
             </header>
-
-            <!-- Contenedor con scroll lateral para la tabla en pantallas chicas -->
-            <section class="cordinacion-table-wrapper" id="tabla-contenedor">
+            <section class="cordinacion-table-wrapper" id="tabla-contenedor" style="<?= empty($incidencias) ? 'display: none;' : '' ?>">
                 <table class="cordinacion-table">
                     <thead class="cordinacion-table__head">
                         <tr class="cordinacion-table__row">
@@ -97,20 +95,55 @@
                             <th class="cordinacion-table__header">Tipo</th>
                             <th class="cordinacion-table__header">Taller / Aula</th>
                             <th class="cordinacion-table__header">Estado</th>
-                            <th class="cordinacion-table__header">Ver</th>
+                            <th class="cordinacion-table__header">Acción</th>
                         </tr>
                     </thead>
                     <tbody class="cordinacion-table__body" id="tabla-registros-incidencias">
-                        <!-- Filas inyectadas dinámicamente por JavaScript -->
+                        <?php foreach ($incidencias as $incidencia): ?>
+                            <?php
+                                $esAlta = $incidencia['tipo_solicitud'] === 'rotura-equipo';
+                                $prioridad = $esAlta ? 'alta' : 'media';
+                                $estado = (string) $incidencia['estado'];
+                            ?>
+                            <tr class="cordinacion-table__row estado-<?= escapar($estado) ?>">
+                                <td class="cordinacion-table__cell">
+                                    <span class="cordinacion-badge cordinacion-badge--<?= $prioridad ?>">
+                                        <?= $esAlta ? 'Alta' : 'Media' ?>
+                                    </span>
+                                </td>
+                                <td class="cordinacion-table__cell"><?= escapar((string) $incidencia['fecha']) ?></td>
+                                <td class="cordinacion-table__cell" style="font-weight: bold;">
+                                    <?= escapar((string) $incidencia['nombre_profesor'] . ' ' . (string) $incidencia['apellido_profesor']) ?>
+                                </td>
+                                <td class="cordinacion-table__cell">
+                                    <?= escapar((string) ($incidencia['tipo_solicitud'] === 'otro' ? $incidencia['otro_tipo'] : $incidencia['tipo_solicitud'])) ?>
+                                </td>
+                                <td class="cordinacion-table__cell"><?= escapar((string) $incidencia['taller']) ?></td>
+                                <td class="cordinacion-table__cell">
+                                    <span style="font-weight: bold; text-transform: capitalize; color: <?= $estado === 'resuelto' ? '#2e7d32' : '#e65100' ?>;">
+                                        <?= escapar($estado) ?>
+                                    </span>
+                                </td>
+                                <td class="cordinacion-table__cell">
+                                    <?php if ($estado !== 'resuelto'): ?>
+                                        <button class="cordinacion-table__button-ver" type="button" onclick="abrirModalSolucionIncidencia(<?= (int) $incidencia['id'] ?>)">
+                                            Resolver
+                                        </button>
+                                    <?php else: ?>
+                                        <span style="color: #666; font-size: 0.85rem;">Resuelto</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </section>
 
-            <!-- Mensaje para cuando la tabla está vacía -->
-            <p class="cordinacion-card__empty" id="mensaje-vacio-incidencias" style="display: none;">
+            <p class="cordinacion-card__empty" id="mensaje-vacio-incidencias" style="<?= empty($incidencias) ? 'display: block;' : 'display: none;' ?>">
                 No hay incidencias registradas aún
             </p>
-        </section>
+
+            
     </main>
 
     <!-- Modal: Detalle de Incidencia seleccionada -->
@@ -140,30 +173,23 @@
         </footer>
     </dialog>
 
-    <!-- Modal: Documentar Solución Aplicada -->
+        <!-- Modal: Documentar Solución Aplicada -->
     <dialog class="cordinacion-modal" id="modal-solucion-incidencia">
-        <!-- Formulario integrado directamente dentro de dialog -->
-        <form id="form-solucion-incidencia" method="dialog">
+        <form id="form-solucion-incidencia" action="index.php?ruta=resolver-incidencia" method="post">
+            <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
+            <input type="hidden" name="incidencia_id" id="solucion-incidencia-id" value="">
+
             <header class="cordinacion-modal__header">
                 <h2 class="cordinacion-modal__title">Documentar Solución Aplicada</h2>
-                <button class="cordinacion-modal__close" id="cerrar-modal-solucion" type="button"
-                    aria-label="Cerrar solución">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+                <button class="cordinacion-modal__close" id="cerrar-modal-solucion" type="button" aria-label="Cerrar solución">&times;</button>
             </header>
 
             <section class="cordinacion-modal__body">
                 <fieldset class="cordinacion-modal__form-group">
-                    <legend style="position: absolute; width: 1px; height: 1px; overflow: hidden;">Solución aplicada
-                    </legend>
                     <label class="cordinacion-modal__label" for="texto-solucion-incidencia">
-                        Solución aplicada
+                        Descripción de la solución
                     </label>
-                    <textarea class="cordinacion-modal__textarea" id="texto-solucion-incidencia" rows="5"
+                    <textarea class="cordinacion-modal__textarea" id="texto-solucion-incidencia" name="solucion" rows="5"
                         placeholder="Describa cómo se solucionó la incidencia..." required></textarea>
                 </fieldset>
             </section>
@@ -179,6 +205,7 @@
             </footer>
         </form>
     </dialog>
+
 
     <!-- Pie de página general del sitio -->
     <footer class="cordinacion-footer">

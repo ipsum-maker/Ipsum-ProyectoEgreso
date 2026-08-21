@@ -1,12 +1,10 @@
--- Base de datos para el proyecto Ipsum.
--- Importar este archivo desde phpMyAdmin antes de iniciar el sistema.
-
 CREATE DATABASE IF NOT EXISTS ipsum_reportes
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
 USE ipsum_reportes;
 
+-- 1. Tabla de Usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -21,11 +19,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     INDEX idx_usuarios_activo (activo)
 ) ENGINE=InnoDB;
 
--- Usuarios iniciales de prueba.
--- Las cédulas se guardan sin puntos ni guion.
--- Elvis: 1.234.567-8 / contraseña: 123
--- Pepita: 2.345.678-9 / contraseña: Coord123!
--- Pepito: 3.456.789-0 / contraseña: Profe123!
+-- Usuarios iniciales de prueba (contraseñas encriptadas)
 INSERT INTO usuarios (nombre, cedula, contrasena_hash, rol, activo, es_inicial)
 VALUES
     ('Elvis', '12345678', '$2y$12$J.qWMrE4MVtYHlNGHQ/smO9irZNnm1WWf3T4sYF1ZM81reIFV2jRS', 'administrador', 1, 1),
@@ -37,3 +31,86 @@ ON DUPLICATE KEY UPDATE
     rol = VALUES(rol),
     activo = VALUES(activo),
     es_inicial = VALUES(es_inicial);
+
+-- Tabla de Aulas, Talleres y Laboratorios
+CREATE TABLE IF NOT EXISTS aulas (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    codigo VARCHAR(50) NOT NULL UNIQUE,
+    nombre VARCHAR(100) NOT NULL,
+    tipo ENUM('taller', 'laboratorio', 'aula') NOT NULL DEFAULT 'taller',
+    activo TINYINT(1) NOT NULL DEFAULT 1,
+    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Carga inicial de aulas y laboratorios
+INSERT INTO aulas (codigo, nombre, tipo) VALUES
+    ('taller1', 'Taller 1', 'taller'),
+    ('taller2', 'Taller 2', 'taller'),
+    ('taller3', 'Taller 3', 'taller'),
+    ('taller4', 'Taller 4', 'taller'),
+    ('taller5', 'Taller 5', 'taller'),
+    ('lab1', 'Laboratorio 1', 'laboratorio'),
+    ('lab2', 'Laboratorio 2', 'laboratorio'),
+    ('lab3', 'Laboratorio 3', 'laboratorio')
+ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), tipo = VALUES(tipo);
+
+-- 2. Tabla de Reportes Diarios
+CREATE TABLE IF NOT EXISTS reportes_diarios (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT UNSIGNED NOT NULL,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    nombre_profesor VARCHAR(100) NOT NULL,
+    apellido_profesor VARCHAR(100) NOT NULL,
+    aula VARCHAR(50) NOT NULL,
+    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_reporte_diario_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    INDEX idx_reporte_diario_usuario (usuario_id),
+    INDEX idx_reporte_diario_fecha (fecha)
+) ENGINE=InnoDB;
+
+-- 3. Tabla de Asignación de PCs para Reportes Diarios
+CREATE TABLE IF NOT EXISTS reporte_diario_pc (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    reporte_diario_id INT UNSIGNED NOT NULL,
+    pc VARCHAR(50) NOT NULL,
+    alumno VARCHAR(150) NOT NULL,
+    CONSTRAINT fk_pc_reporte_diario
+        FOREIGN KEY (reporte_diario_id)
+        REFERENCES reportes_diarios(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    INDEX idx_pc_reporte_diario (reporte_diario_id)
+) ENGINE=InnoDB;
+
+-- 4. Tabla de Reportes de Incidencias
+CREATE TABLE IF NOT EXISTS reportes_incidencias (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT UNSIGNED NOT NULL,
+    nombre_profesor VARCHAR(100) NOT NULL,
+    apellido_profesor VARCHAR(100) NOT NULL,
+    asignatura VARCHAR(100) NOT NULL,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    tipo_solicitud ENUM('rotura-equipo', 'falla-equipo', 'otro') NOT NULL,
+    otro_tipo VARCHAR(150) DEFAULT NULL,
+    taller VARCHAR(50) NOT NULL,
+    descripcion TEXT DEFAULT NULL,
+    estado ENUM('pendiente', 'en_proceso', 'resuelto') NOT NULL DEFAULT 'pendiente',
+    solucion TEXT DEFAULT NULL,
+    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actualizado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_incidencia_usuarios
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
+    INDEX idx_incidencia_usuario (usuario_id),
+    INDEX idx_incidencia_fecha (fecha),
+    INDEX idx_incidencia_estado (estado)
+) ENGINE=InnoDB;

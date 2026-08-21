@@ -47,17 +47,14 @@
 </section>
 
 <article class="report-form__group">
-    <label class="report-form__label" for="aula">Aula/Taller/Laboratorio</label>
-    <select class="report-form__select" id="aula" name="aula">
-        <option value="">Seleccione el aula</option>
-        <option value="taller1">Taller 1</option>
-        <option value="taller2">Taller 2</option>
-        <option value="taller3">Taller 3</option>
-        <option value="taller4">Taller 4</option>
-        <option value="taller5">Taller 5</option>
-        <option value="lab1">Laboratorio 1</option>
-        <option value="lab2">Laboratorio 2</option>
-        <option value="lab3">Laboratorio 3</option>
+    <label class="report-form__label" for="aula">Aula / Taller / Laboratorio</label>
+    <select class="report-form__select" id="aula" name="aula" required>
+        <option value="">Seleccione el aula o taller</option>
+        <?php foreach ($aulas as $aulaItem): ?>
+            <option value="<?= escapar((string) $aulaItem['codigo']) ?>">
+                <?= escapar((string) $aulaItem['nombre']) ?>
+            </option>
+        <?php endforeach; ?>
     </select>
 </article>
 
