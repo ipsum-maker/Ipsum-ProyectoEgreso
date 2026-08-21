@@ -21,18 +21,29 @@ class ReporteDiarioModelo
         string $nombreProfesor,
         string $apellidoProfesor,
         string $aula,
-        array $equipos
+        array $equipos,
+        string $turno = 'matutino',
+        ?string $horaEntrada = null,
+        ?string $horaSalida = null,
+        ?string $grupo = null,
+        ?string $asignatura = null
     ): bool {
         try {
             $this->conexion->beginTransaction();
 
-            $sql = 'INSERT INTO reportes_diarios (usuario_id, fecha, hora, nombre_profesor, apellido_profesor, aula) 
-                    VALUES (:usuario_id, :fecha, :hora, :nombre, :apellido, :aula)';
+            $sql = 'INSERT INTO reportes_diarios 
+                    (usuario_id, fecha, hora, turno, hora_entrada, hora_salida, grupo, asignatura, nombre_profesor, apellido_profesor, aula) 
+                    VALUES (:usuario_id, :fecha, :hora, :turno, :hora_entrada, :hora_salida, :grupo, :asignatura, :nombre, :apellido, :aula)';
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute([
                 ':usuario_id' => $usuarioId,
                 ':fecha' => $fecha,
                 ':hora' => $hora,
+                ':turno' => $turno,
+                ':hora_entrada' => $horaEntrada,
+                ':hora_salida' => $horaSalida,
+                ':grupo' => $grupo,
+                ':asignatura' => $asignatura,
                 ':nombre' => $nombreProfesor,
                 ':apellido' => $apellidoProfesor,
                 ':aula' => $aula,
@@ -78,6 +89,7 @@ class ReporteDiarioModelo
         $stmt = $this->conexion->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
     // Obtiene los reportes diarios de un profesor específico
     public function obtenerPorUsuario(int $usuarioId): array
@@ -92,4 +104,14 @@ class ReporteDiarioModelo
         $stmt->execute([':usuario_id' => $usuarioId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+        // Obtiene los equipos asignados a un reporte diario específico
+    public function obtenerEquipos(int $reporteId): array
+    {
+        $sql = 'SELECT pc, alumno FROM reporte_diario_pc WHERE reporte_diario_id = :reporte_id ORDER BY id ASC';
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':reporte_id' => $reporteId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

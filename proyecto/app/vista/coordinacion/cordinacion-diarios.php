@@ -94,9 +94,20 @@
                                 <td class="cordinacion-table__cell"><?= escapar((string) $reporte['aula']) ?></td>
                                 <td class="cordinacion-table__cell"><?= (int) ($reporte['cantidad_equipos'] ?? 0) ?> equipo(s)</td>
                                 <td class="cordinacion-table__cell">
-                                    <button class="cordinacion-table__button-ver" type="button" onclick="abrirDetalleDiario(<?= (int) $reporte['id'] ?>)">
+                                    <button class="cordinacion-table__button-ver" type="button" 
+                                        data-equipos="<?= escapar(json_encode($reporte['equipos_detalle'] ?? [])) ?>" 
+                                        data-docente="<?= escapar((string) $reporte['nombre_profesor'] . ' ' . (string) $reporte['apellido_profesor']) ?>"
+                                        data-aula="<?= escapar((string) $reporte['aula']) ?>"
+                                        data-fecha="<?= escapar((string) $reporte['fecha']) ?>"
+                                        data-turno="<?= escapar((string) ($reporte['turno'] ?? 'matutino')) ?>"
+                                        data-entrada="<?= escapar((string) ($reporte['hora_entrada'] ?? $reporte['hora'])) ?>"
+                                        data-salida="<?= escapar((string) ($reporte['hora_salida'] ?? 'N/A')) ?>"
+                                        data-grupo="<?= escapar((string) ($reporte['grupo'] ?? 'N/A')) ?>"
+                                        data-asignatura="<?= escapar((string) ($reporte['asignatura'] ?? 'N/A')) ?>"
+                                        onclick="abrirDetalleDiario(this)">
                                         Ver
                                     </button>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>

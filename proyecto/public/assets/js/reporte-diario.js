@@ -38,10 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
         contenedorItem.style.alignItems = "center";
 
         contenedorItem.innerHTML = `
-            <span class="assignment__pc" style="font-weight: bold; min-width: 50px;">${nombrePc}</span>
-            <input type="hidden" name="equipos[${numeroPc}][pc]" value="${nombrePc}">
+            <input class="report-form__input" type="text" name="equipos[${numeroPc}][pc]" value="${nombrePc}" style="width: 90px; text-align: center; font-weight: bold;" required>
             <input class="report-form__input" type="text" name="equipos[${numeroPc}][alumno]" placeholder="Nombre del alumno" required style="flex: 1;">
-            <button class="button button--secondary assignment__delete" type="button" title="Eliminar asignación">×</button>
+            <button class="button button--secondary assignment__delete" type="button" title="Eliminar asignación" style="padding: 0.5rem 0.8rem;">×</button>
         `;
 
         // Evento para eliminar esta fila específica

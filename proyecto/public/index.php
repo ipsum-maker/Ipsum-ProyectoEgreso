@@ -62,6 +62,18 @@ switch ($ruta) {
     case 'resolver-incidencia':
         require __DIR__ . '/../app/controlador/resolverIncidencia.php';
         break;
+    case 'marcar-incidencia-proceso':
+        require __DIR__ . '/../app/controlador/marcarIncidenciaProceso.php';
+        break;
+    case 'eliminar-reporte-incidencia':
+        require __DIR__ . '/../app/controlador/eliminarReporteIncidencia.php';
+        break;
+    case 'actualizar-reporte-diario':
+        require __DIR__ . '/../app/controlador/actualizarReporteDiario.php';
+        break;
+    case 'actualizar-reporte-incidencia':
+        require __DIR__ . '/../app/controlador/actualizarReporteIncidencia.php';
+        break;
     default:
 
         http_response_code(404);

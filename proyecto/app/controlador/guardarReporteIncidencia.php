@@ -20,14 +20,16 @@ if (!verificarTokenCSRF($tokenRecibido)) {
 $nombreProfesor = trim((string) ($_POST['nombre'] ?? ''));
 $apellidoProfesor = trim((string) ($_POST['apellido'] ?? ''));
 $asignatura = trim((string) ($_POST['asignatura'] ?? ''));
-$fecha = trim((string) ($_POST['fecha'] ?? ''));
-$hora = trim((string) ($_POST['hora'] ?? ''));
+$grupo = trim((string) ($_POST['grupo'] ?? ''));
+$turno = trim((string) ($_POST['turno'] ?? 'matutino'));
+$fecha = trim((string) ($_POST['fecha'] ?? date('Y-m-d')));
+$hora = trim((string) ($_POST['hora'] ?? date('H:i')));
 $tipoSolicitud = trim((string) ($_POST['tipoSolicitud'] ?? ''));
 $otroTipo = trim((string) ($_POST['otroTipo'] ?? ''));
 $taller = trim((string) ($_POST['taller'] ?? ''));
 $descripcion = trim((string) ($_POST['descripcion'] ?? ''));
 
-if ($nombreProfesor === '' || $apellidoProfesor === '' || $asignatura === '' || $fecha === '' || $tipoSolicitud === '' || $taller === '') {
+if ($nombreProfesor === '' || $apellidoProfesor === '' || $asignatura === '' || $tipoSolicitud === '' || $taller === '') {
     guardarMensaje('error', 'Complete todos los campos obligatorios.');
     redirigir(urlRuta('reporte-incidencia'));
 }
@@ -44,11 +46,14 @@ try {
         $tipoSolicitud,
         $tipoSolicitud === 'otro' ? $otroTipo : null,
         $taller,
-        $descripcion
+        $descripcion,
+        $grupo,
+        $turno
     );
 
     guardarMensaje('exito', 'Reporte de incidencia enviado correctamente.');
-    redirigir(urlRuta('historial-reportes'));
+    redirigir(urlRuta('panel-profesores'));
+
 } catch (PDOException $error) {
     guardarMensaje('error', 'Error al guardar la incidencia en la base de datos.');
     redirigir(urlRuta('reporte-incidencia'));

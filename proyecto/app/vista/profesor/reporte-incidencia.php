@@ -25,39 +25,52 @@
     <!--Contenido principal-->
 
     <main class="report-main">
-        <form class="report-form" id="form-reporte-incidencia" action="index.php?ruta=guardar-reporte-incidencia" method="post">
+                <form class="report-form" id="form-reporte-incidencia" action="index.php?ruta=guardar-reporte-incidencia" method="post">
+            <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
 
             <article class="report-form__group">
                 <label class="report-form__label" for="nombre-profesor">Nombre del Profesor</label>
-                <input class="report-form__input" type="text" name="nombre" id="nombre-profesor" placeholder="Ej: Juan">
+                <input class="report-form__input" type="text" name="nombre" id="nombre-profesor" placeholder="Ej: Juan" required>
 
                 <label class="report-form__label" for="apellido-profesor">Apellido del Profesor</label>
-                <input class="report-form__input" type="text" name="apellido" id="apellido-profesor" placeholder="Ej: García">
+                <input class="report-form__input" type="text" name="apellido" id="apellido-profesor" placeholder="Ej: García" required>
             </article>
 
             <label class="report-form__label" for="asignatura">Asignatura</label>
-            <input class="report-form__input" type="text" name="asignatura" id="asignatura" placeholder="Ej: Full Stack, Redes, Base de Datos">
+            <input class="report-form__input" type="text" name="asignatura" id="asignatura" placeholder="Ej: Full Stack, Redes, Base de Datos" required>
+
+            <section class="report-form__group" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <div style="flex: 1;">
+                    <label class="report-form__label" for="grupo">Grupo</label>
+                    <input class="report-form__input" type="text" name="grupo" id="grupo" placeholder="Ej: 3°MC" required>
+                </div>
+
+                <div style="flex: 1;">
+                    <label class="report-form__label" for="turno">Turno</label>
+                    <select class="report-form__select" name="turno" id="turno" required>
+                        <option value="matutino">Matutino</option>
+                        <option value="vespertino">Vespertino</option>
+                        <option value="nocturno">Nocturno</option>
+                    </select>
+                </div>
+            </section>
 
             <article class="report-form__group">
-                <!-- ERROR: el atributo for="fecha" no coincide con el id="fecha-incidencia". Para corregirlo debería ser for="fecha-incidencia" -->
                 <label class="report-form__label" for="fecha-incidencia">Fecha de la Incidencia</label>
                 <input class="report-form__input" type="date" name="fecha" id="fecha-incidencia" readonly>
 
-                <!-- ERROR: el atributo for="hora" no coincide con el id="hora-reporte". Para corregirlo debería ser for="hora-reporte" -->
                 <label class="report-form__label" for="hora-reporte">Hora de la Apertura del Reporte</label>
                 <input class="report-form__input" type="time" name="hora" id="hora-reporte" readonly>
             </article>
 
-            <!-- ERROR: según el reglamento, los nombres deberían usar kebab-case. tipoSolicitud debería ser tipo-solicitud -->
             <label class="report-form__label" for="tipoSolicitud">Tipo de solicitud</label>
-            <select class="report-form__select" name="tipoSolicitud" id="tipoSolicitud">
+            <select class="report-form__select" name="tipoSolicitud" id="tipoSolicitud" required>
                 <option value="">Seleccione una opción</option>
                 <option value="rotura-equipo">Rotura de equipo</option>
                 <option value="falla-equipo">Falla de equipo</option>
                 <option value="otro">Otro</option>
             </select>
 
-            <!-- ERROR: según el reglamento, los nombres deberían usar kebab-case. otroTipo debería ser otro-tipo -->
             <label class="report-form__label" for="otroTipo">Especifique el tipo de incidencia</label>
             <input class="report-form__input" type="text" name="otroTipo" id="otroTipo" placeholder="Describa el tipo de incidencia">
 
@@ -76,10 +89,10 @@
 
             <footer class="report-form__footer">
                 <button class="report-form__button report-form__button--submit" type="submit">Enviar Reporte</button>
-                <button class="report-form__button report-form__button--reset" type="reset">Cancelar</button>
+                <a class="report-form__button report-form__button--reset" href="index.php?ruta=panel-profesores" style="text-decoration: none; text-align: center; display: inline-block;">Cancelar</a>
             </footer>
-
         </form>
+
     </main>
 
 </body>

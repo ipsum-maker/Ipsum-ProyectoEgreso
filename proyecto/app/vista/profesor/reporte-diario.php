@@ -25,38 +25,79 @@
             <h1 class="report__title">Reporte Diario</h1>
             <p class="report__description">Complete la información del reporte diario de actividades</p>
         </section>
-        <form class="report-form" id="form-reporte-diario" action="index.php? ruta=guardar-reporte-diario" method="post">
+                <form class="report-form" id="form-reporte-diario" action="index.php?ruta=guardar-reporte-diario" method="post">
+            <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
+
             <article class="report-form__group">
                 <label class="report-form__label" for="fecha">Fecha</label>
                 <input class="report-form__input" type="date" id="fecha" name="fecha" readonly>
             </article>
 
+            <!-- Turno -->
             <article class="report-form__group">
-                <label class="report-form__label" for="hora">Hora</label>
-                <input class="report-form__input" type="time" id="hora" name="hora" readonly>
-            </article><section class="report-form__row">
-    <article class="report-form__group">
-        <label class="report-form__label" for="nombre-profesor">Nombre del Profesor</label>
-        <input class="report-form__input" type="text" id="nombre-profesor" name="nombre-profesor" placeholder="Nombre">
-    </article>
+                <label class="report-form__label">Turno</label>
+                <div style="display: flex; gap: 1.5rem; margin-top: 0.25rem;">
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="turno" value="matutino" checked> Matutino
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="turno" value="vespertino"> Vespertino
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                        <input type="radio" name="turno" value="nocturno"> Nocturno
+                    </label>
+                </div>
+            </article>
 
-    <article class="report-form__group">
-        <label class="report-form__label" for="apellido-profesor">Apellido del Profesor</label>
-        <input class="report-form__input" type="text" id="apellido-profesor" name="apellido-profesor" placeholder="Apellido">
-    </article>
-</section>
+            <!-- Horarios Entrada y Salida -->
+            <section class="report-form__row" style="display: flex; gap: 1rem;">
+                <article class="report-form__group" style="flex: 1;">
+                    <label class="report-form__label" for="hora_entrada">Hora de Entrada</label>
+                    <input class="report-form__input" type="time" id="hora_entrada" name="hora_entrada" required>
+                </article>
 
-<article class="report-form__group">
-    <label class="report-form__label" for="aula">Aula / Taller / Laboratorio</label>
-    <select class="report-form__select" id="aula" name="aula" required>
-        <option value="">Seleccione el aula o taller</option>
-        <?php foreach ($aulas as $aulaItem): ?>
-            <option value="<?= escapar((string) $aulaItem['codigo']) ?>">
-                <?= escapar((string) $aulaItem['nombre']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-</article>
+                <article class="report-form__group" style="flex: 1;">
+                    <label class="report-form__label" for="hora_salida">Hora de Salida</label>
+                    <input class="report-form__input" type="time" id="hora_salida" name="hora_salida" required>
+                </article>
+            </section>
+
+            <!-- Grupo y Asignatura -->
+            <section class="report-form__row" style="display: flex; gap: 1rem;">
+                <article class="report-form__group" style="flex: 1;">
+                    <label class="report-form__label" for="grupo">Grupo</label>
+                    <input class="report-form__input" type="text" id="grupo" name="grupo" placeholder="Ej: 3°MC" required>
+                </article>
+
+                <article class="report-form__group" style="flex: 1;">
+                    <label class="report-form__label" for="asignatura">Asignatura</label>
+                    <input class="report-form__input" type="text" id="asignatura" name="asignatura" placeholder="Ej: Programación" required>
+                </article>
+            </section>
+            
+            <section class="report-form__row">
+                <article class="report-form__group">
+                    <label class="report-form__label" for="nombre-profesor">Nombre del Profesor</label>
+                    <input class="report-form__input" type="text" id="nombre-profesor" name="nombre-profesor" placeholder="Nombre" required>
+                </article>
+
+                <article class="report-form__group">
+                    <label class="report-form__label" for="apellido-profesor">Apellido del Profesor</label>
+                    <input class="report-form__input" type="text" id="apellido-profesor" name="apellido-profesor" placeholder="Apellido" required>
+                </article>
+            </section>
+
+            <article class="report-form__group">
+                <label class="report-form__label" for="aula">Aula / Taller / Laboratorio</label>
+                <select class="report-form__select" id="aula" name="aula" required>
+                    <option value="">Seleccione el aula o taller</option>
+                    <?php foreach ($aulas as $aulaItem): ?>
+                        <option value="<?= escapar((string) $aulaItem['codigo']) ?>">
+                            <?= escapar((string) $aulaItem['nombre']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </article>
 
             <!-- Botón Agregar PC -->
             <header class="assignment__header">
@@ -66,21 +107,14 @@
 
             <!-- Contenedor dinámico de PCs -->
             <section class="assignment__card" id="lista-pcs">
-                <!--<label class="assignment__pc" for="pc1">PC1</label>
-                <input class="assignment__input" type="text" id="pc1" name="pc1" value="PC1">
-
-                <label class="assignment__label" for="alumno1">Nombre del alumno</label>
-                <input class="assignment__input assignment__input--student" type="text" id="alumno1" name="alumno1"
-                    placeholder="Nombre del alumno">
-
-                <button class="assignment__delete" type="button" aria-label="Eliminar asignación">×</button>-->
             </section>
 
             <footer class="report-form__actions">
                 <button class="button button--primary" type="submit">Guardar Reporte</button>
-                <button class="button button--secondary" type="reset">Cancelar</button>
+                <a class="button button--secondary" href="index.php?ruta=panel-profesores" style="text-decoration: none; text-align: center; display: inline-block;">Cancelar</a>
             </footer>
         </form>
+
 
 
     </main>

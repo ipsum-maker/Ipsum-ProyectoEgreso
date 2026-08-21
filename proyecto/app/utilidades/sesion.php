@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+date_default_timezone_set('America/Montevideo');
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_name('IPSUMSESSID');
     session_start([

@@ -120,17 +120,44 @@
                                 </td>
                                 <td class="cordinacion-table__cell"><?= escapar((string) $incidencia['taller']) ?></td>
                                 <td class="cordinacion-table__cell">
-                                    <span style="font-weight: bold; text-transform: capitalize; color: <?= $estado === 'resuelto' ? '#2e7d32' : '#e65100' ?>;">
-                                        <?= escapar($estado) ?>
+                                    <span style="font-weight: bold; text-transform: capitalize; color: <?= $estado === 'resuelto' ? '#2e7d32' : ($estado === 'en_proceso' ? '#1565c0' : '#e65100') ?>;">
+                                        <?= escapar(str_replace('_', ' ', $estado)) ?>
                                     </span>
                                 </td>
-                                <td class="cordinacion-table__cell">
-                                    <?php if ($estado !== 'resuelto'): ?>
+                                <td class="cordinacion-table__cell" style="display: flex; gap: 0.4rem; align-items: center;">
+                                    <button class="cordinacion-table__button-ver" type="button" 
+                                        data-profesor="<?= escapar((string) $incidencia['nombre_profesor'] . ' ' . (string) $incidencia['apellido_profesor']) ?>"
+                                        data-asignatura="<?= escapar((string) $incidencia['asignatura']) ?>"
+                                        data-grupo="<?= escapar((string) ($incidencia['grupo'] ?? 'N/A')) ?>"
+                                        data-turno="<?= escapar((string) ($incidencia['turno'] ?? 'matutino')) ?>"
+                                        data-fecha="<?= escapar((string) $incidencia['fecha']) ?>"
+                                        data-hora="<?= escapar((string) $incidencia['hora']) ?>"
+                                        data-tipo="<?= escapar((string) ($incidencia['tipo_solicitud'] === 'otro' ? $incidencia['otro_tipo'] : $incidencia['tipo_solicitud'])) ?>"
+                                        data-taller="<?= escapar((string) $incidencia['taller']) ?>"
+                                        data-descripcion="<?= escapar((string) ($incidencia['descripcion'] ?? '')) ?>"
+                                        data-estado="<?= escapar($estado) ?>"
+                                        data-solucion="<?= escapar((string) ($incidencia['solucion'] ?? '')) ?>"
+                                        onclick="verDetalleIncidencia(this)" style="background: #f1f5f9; color: #334155; border-color: #cbd5e1;">
+                                        Ver
+                                    </button>
+
+                                    <?php if ($estado === 'pendiente'): ?>
+                                        <form action="index.php?ruta=marcar-incidencia-proceso" method="post" style="margin: 0; display: inline;">
+                                            <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
+                                            <input type="hidden" name="incidencia_id" value="<?= (int) $incidencia['id'] ?>">
+                                            <button class="cordinacion-table__button-ver" type="submit" style="background: #e3f2fd; color: #1565c0; border-color: #90caf9;">
+                                                En proceso
+                                            </button>
+                                        </form>
+                                        <button class="cordinacion-table__button-ver" type="button" onclick="abrirModalSolucionIncidencia(<?= (int) $incidencia['id'] ?>)">
+                                            Resolver
+                                        </button>
+                                    <?php elseif ($estado === 'en_proceso'): ?>
                                         <button class="cordinacion-table__button-ver" type="button" onclick="abrirModalSolucionIncidencia(<?= (int) $incidencia['id'] ?>)">
                                             Resolver
                                         </button>
                                     <?php else: ?>
-                                        <span style="color: #666; font-size: 0.85rem;">Resuelto</span>
+                                        <span style="color: #2e7d32; font-weight: bold; font-size: 0.875rem;">Resuelto</span>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -184,15 +211,27 @@
                 <button class="cordinacion-modal__close" id="cerrar-modal-solucion" type="button" aria-label="Cerrar solución">&times;</button>
             </header>
 
-            <section class="cordinacion-modal__body">
-                <fieldset class="cordinacion-modal__form-group">
-                    <label class="cordinacion-modal__label" for="texto-solucion-incidencia">
-                        Descripción de la solución
+                        <section class="cordinacion-modal__body">
+                <fieldset class="cordinacion-modal__form-group" style="border: none; padding: 0; margin-bottom: 1rem;">
+                    <label class="cordinacion-modal__label" for="estado-solucion-incidencia" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+                        Cambiar Estado
+                    </label>
+                    <select class="cordinacion-filter-select" id="estado-solucion-incidencia" name="estado" style="width: 100%; padding: 0.8rem; border: 1px solid #d9dee7; border-radius: 0.5rem;">
+                        <option value="resuelto">Resuelto</option>
+                        <option value="en_proceso">En proceso</option>
+                        <option value="pendiente">Pendiente</option>
+                    </select>
+                </fieldset>
+
+                <fieldset class="cordinacion-modal__form-group" style="border: none; padding: 0;">
+                    <label class="cordinacion-modal__label" for="texto-solucion-incidencia" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+                        Descripción de la solución / actualización
                     </label>
                     <textarea class="cordinacion-modal__textarea" id="texto-solucion-incidencia" name="solucion" rows="5"
-                        placeholder="Describa cómo se solucionó la incidencia..." required></textarea>
+                        placeholder="Describa la solución o avance..." required></textarea>
                 </fieldset>
             </section>
+
 
             <footer class="cordinacion-modal__footer cordinacion-modal__footer--row">
                 <button class="cordinacion-modal__button cordinacion-modal__button--secondary"

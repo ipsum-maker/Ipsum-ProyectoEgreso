@@ -131,14 +131,38 @@
                     </tr>
                 </thead>
 
-                <tbody class="admin-users__tbody">
+                                <tbody class="admin-users__tbody">
+                    <?php foreach ($reportesResueltos as $resuelto): ?>
+                        <tr class="admin-users__row">
+                            <td class="admin-users__cell"><?= escapar((string) $resuelto['fecha']) ?></td>
+                            <td class="admin-users__cell admin-users__cell--name"><?= escapar((string) $resuelto['nombre_profesor'] . ' ' . (string) $resuelto['apellido_profesor']) ?></td>
+                            <td class="admin-users__cell"><?= escapar((string) ($resuelto['tipo_solicitud'] === 'otro' ? $resuelto['otro_tipo'] : $resuelto['tipo_solicitud'])) ?></td>
+                            <td class="admin-users__cell"><?= escapar((string) $resuelto['taller']) ?></td>
+                            <td class="admin-users__cell">Coordinación</td>
+                            <td class="admin-users__cell">
+                                <button type="button" 
+                                    data-solucion="<?= escapar((string) ($resuelto['solucion'] ?? 'Sin información de solución')) ?>"
+                                    data-profesor="<?= escapar((string) $resuelto['nombre_profesor'] . ' ' . (string) $resuelto['apellido_profesor']) ?>"
+                                    data-tipo="<?= escapar((string) ($resuelto['tipo_solicitud'] === 'otro' ? $resuelto['otro_tipo'] : $resuelto['tipo_solicitud'])) ?>"
+                                    data-taller="<?= escapar((string) $resuelto['taller']) ?>"
+                                    data-fecha="<?= escapar((string) $resuelto['fecha'] . ' ' . (string) $resuelto['hora']) ?>"
+                                    data-descripcion="<?= escapar((string) ($resuelto['descripcion'] ?? '')) ?>"
+                                    onclick="verSolucionResuelta(this)" 
+                                    style="background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem;">
+                                    Ver Solución
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
 
-            <p class="admin-users__description" id="mensaje-reportes-resueltos">
-                No hay reportes resueltos todavía.
-            </p>
-        </section>
+            <?php if (empty($reportesResueltos)): ?>
+                <p class="admin-users__description" id="mensaje-reportes-resueltos">
+                    No hay reportes resueltos todavía.
+                </p>
+            <?php endif; ?>
+
     </main>
 
     <dialog class="admin-modal" id="modal-nuevo-usuario">
