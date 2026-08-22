@@ -6,6 +6,7 @@ require_once __DIR__ . '/../utilidades/sesion.php';
 require_once __DIR__ . '/../modelo/AulaModelo.php';
 
 $usuario = exigirRol(['profesor']);
+$mensaje = obtenerMensaje();
 
 $aulaModelo = new AulaModelo();
 $aulas = $aulaModelo->obtenerTodasActivas();

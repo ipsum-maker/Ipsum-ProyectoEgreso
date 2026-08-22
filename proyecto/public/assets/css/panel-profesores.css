@@ -97,14 +97,14 @@ main {
 }
 
 /* Estiliza el título de bienvenida */
-main > section:first-child h2 {
+main>section:first-child h2 {
     margin: 0 0 8px 0;
     font-size: 1rem;
     font-weight: 700;
 }
 
 /* Estiliza el texto de bienvenida */
-main > section:first-child p {
+main>section:first-child p {
     margin: 0;
     font-size: 1.75rem;
     color: #64748b;
@@ -228,6 +228,7 @@ footer {
 
 /* Ajusta el diseño para tablet */
 @media (min-width: 577px) {
+
     /* Aumenta el espacio interno del encabezado */
     header {
         padding: 20px 32px;
@@ -256,12 +257,12 @@ footer {
     }
 
     /* Agranda el título de bienvenida */
-    main > section:first-child h2 {
+    main>section:first-child h2 {
         font-size: 2rem;
     }
 
     /* Ajusta el texto de bienvenida */
-    main > section:first-child p {
+    main>section:first-child p {
         font-size: 1.05rem;
     }
 
@@ -310,6 +311,7 @@ footer {
 
 /* Ajusta el diseño para escritorio */
 @media (min-width: 900px) {
+
     /* Aumenta el tamaño base del texto */
     html,
     body {
@@ -352,18 +354,18 @@ footer {
     }
 
     /* Hace que bienvenida ocupe todo el ancho */
-    main > section:first-child {
+    main>section:first-child {
         grid-column: 1 / -1;
     }
 
     /* Ajusta el título de bienvenida en escritorio */
-    main > section:first-child h2 {
+    main>section:first-child h2 {
         font-size: 1.8rem;
         margin-bottom: 12px;
     }
 
     /* Ajusta el texto de bienvenida en escritorio */
-    main > section:first-child p {
+    main>section:first-child p {
         font-size: 1.05rem;
     }
 
@@ -424,4 +426,27 @@ footer {
     footer {
         max-width: none;
     }
-}        
+}
+
+/* Mensajes de notificación y retroalimentación */
+.mensaje-alerta {
+    width: 100%;
+    padding: 0.85rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.mensaje-alerta--exito {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.mensaje-alerta--error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}

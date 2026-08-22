@@ -25,7 +25,7 @@
     <!--Contenido principal-->
 
     <main class="report-main">
-                <form class="report-form" id="form-reporte-incidencia" action="index.php?ruta=guardar-reporte-incidencia" method="post">
+        <form class="report-form" id="form-reporte-incidencia" action="index.php?ruta=guardar-reporte-incidencia" method="post">
             <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
 
             <article class="report-form__group">

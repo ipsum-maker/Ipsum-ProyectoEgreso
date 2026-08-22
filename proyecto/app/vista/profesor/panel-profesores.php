@@ -27,6 +27,13 @@
     </header>
 
     <main>
+
+        <?php if (!empty($mensaje)): ?>
+            <div class="mensaje-alerta mensaje-alerta--<?= escapar((string) $mensaje['tipo']) ?>" role="status">
+                <?= escapar((string) $mensaje['texto']) ?>
+            </div>
+        <?php endif; ?>
+
         <section>
             <h2>Bienvenido</h2>
             <p>Seleccione el tipo de reporte que desea generar.</p>

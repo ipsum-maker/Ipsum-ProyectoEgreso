@@ -25,7 +25,7 @@
             <h1 class="report__title">Reporte Diario</h1>
             <p class="report__description">Complete la información del reporte diario de actividades</p>
         </section>
-                <form class="report-form" id="form-reporte-diario" action="index.php?ruta=guardar-reporte-diario" method="post">
+        <form class="report-form" id="form-reporte-diario" action="index.php?ruta=guardar-reporte-diario" method="post">
             <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
 
             <article class="report-form__group">

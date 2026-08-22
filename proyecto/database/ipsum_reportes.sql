@@ -4,6 +4,13 @@ CREATE DATABASE IF NOT EXISTS ipsum_reportes
 
 USE ipsum_reportes;
 
+-- Eliminación de tablas previas en orden correcto de claves foráneas
+DROP TABLE IF EXISTS reporte_diario_pc;
+DROP TABLE IF EXISTS reportes_diarios;
+DROP TABLE IF EXISTS reportes_incidencias;
+DROP TABLE IF EXISTS aulas;
+DROP TABLE IF EXISTS usuarios;
+
 -- 1. Tabla de Usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
