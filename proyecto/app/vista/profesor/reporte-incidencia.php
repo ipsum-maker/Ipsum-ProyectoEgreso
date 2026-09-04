@@ -29,11 +29,8 @@
             <input type="hidden" name="csrf_token" value="<?= escapar(obtenerTokenCSRF()) ?>">
 
             <article class="report-form__group">
-                <label class="report-form__label" for="nombre-profesor">Nombre del Profesor</label>
-                <input class="report-form__input" type="text" name="nombre" id="nombre-profesor" placeholder="Ej: Juan" required>
-
-                <label class="report-form__label" for="apellido-profesor">Apellido del Profesor</label>
-                <input class="report-form__input" type="text" name="apellido" id="apellido-profesor" placeholder="Ej: García" required>
+                <label class="report-form__label">Docente Responsable</label>
+                <input class="report-form__input" type="text" value="<?= escapar((string) $usuario['nombre']) ?>" readonly style="background-color: #f1f5f9; cursor: not-allowed;">
             </article>
 
             <label class="report-form__label" for="asignatura">Asignatura</label>
@@ -75,10 +72,10 @@
             <input class="report-form__input" type="text" name="otroTipo" id="otroTipo" placeholder="Describa el tipo de incidencia">
 
             <label class="report-form__label" for="taller">Laboratorio / Taller</label>
-            <select class="report-form__select" name="taller" id="taller" required>
+            <select class="report-form__select" name="aula_id" id="taller" required>
                 <option value="">Seleccione el laboratorio o taller</option>
                 <?php foreach ($aulas as $aulaItem): ?>
-                    <option value="<?= escapar((string) $aulaItem['codigo']) ?>">
+                    <option value="<?= (int) $aulaItem['id'] ?>">
                         <?= escapar((string) $aulaItem['nombre']) ?>
                     </option>
                 <?php endforeach; ?>

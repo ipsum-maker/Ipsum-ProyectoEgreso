@@ -17,8 +17,6 @@ if (!verificarTokenCSRF($tokenRecibido)) {
     redirigir(urlRuta('reporte-incidencia'));
 }
 
-$nombreProfesor = trim((string) ($_POST['nombre'] ?? ''));
-$apellidoProfesor = trim((string) ($_POST['apellido'] ?? ''));
 $asignatura = trim((string) ($_POST['asignatura'] ?? ''));
 $grupo = trim((string) ($_POST['grupo'] ?? ''));
 $turno = trim((string) ($_POST['turno'] ?? 'matutino'));
@@ -26,10 +24,10 @@ $fecha = trim((string) ($_POST['fecha'] ?? date('Y-m-d')));
 $hora = trim((string) ($_POST['hora'] ?? date('H:i')));
 $tipoSolicitud = trim((string) ($_POST['tipoSolicitud'] ?? ''));
 $otroTipo = trim((string) ($_POST['otroTipo'] ?? ''));
-$taller = trim((string) ($_POST['taller'] ?? ''));
+$aulaId = (int) ($_POST['aula_id'] ?? $_POST['taller'] ?? 0);
 $descripcion = trim((string) ($_POST['descripcion'] ?? ''));
 
-if ($nombreProfesor === '' || $apellidoProfesor === '' || $asignatura === '' || $tipoSolicitud === '' || $taller === '') {
+if ($aulaId <= 0 || $asignatura === '' || $tipoSolicitud === '') {
     guardarMensaje('error', 'Complete todos los campos obligatorios.');
     redirigir(urlRuta('reporte-incidencia'));
 }
@@ -38,14 +36,12 @@ try {
     $modelo = new ReporteIncidenciaModelo();
     $modelo->crear(
         (int) $usuario['id'],
-        $nombreProfesor,
-        $apellidoProfesor,
+        $aulaId,
         $asignatura,
         $fecha,
         $hora,
         $tipoSolicitud,
         $tipoSolicitud === 'otro' ? $otroTipo : null,
-        $taller,
         $descripcion,
         $grupo,
         $turno

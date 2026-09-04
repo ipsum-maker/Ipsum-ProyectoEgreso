@@ -18,14 +18,14 @@ if (!verificarTokenCSRF($tokenRecibido)) {
 }
 
 $reporteId = (int) ($_POST['reporte_id'] ?? 0);
-$aula = trim((string) ($_POST['aula'] ?? ''));
+$aulaId = (int) ($_POST['aula_id'] ?? $_POST['aula'] ?? 0);
 $grupo = trim((string) ($_POST['grupo'] ?? ''));
 $asignatura = trim((string) ($_POST['asignatura'] ?? ''));
 $turno = trim((string) ($_POST['turno'] ?? 'matutino'));
 $horaEntrada = trim((string) ($_POST['hora_entrada'] ?? ''));
 $horaSalida = trim((string) ($_POST['hora_salida'] ?? ''));
 
-if ($reporteId <= 0 || $aula === '') {
+if ($reporteId <= 0 || $aulaId <= 0) {
     guardarMensaje('error', 'Complete los datos obligatorios.');
     redirigir(urlRuta('historial-reportes'));
 }
@@ -52,11 +52,11 @@ try {
     }
 
     $sqlUpd = 'UPDATE reportes_diarios 
-               SET aula = :aula, grupo = :grupo, asignatura = :asignatura, turno = :turno, hora_entrada = :entrada, hora_salida = :salida 
+               SET aula_id = :aula_id, grupo = :grupo, asignatura = :asignatura, turno = :turno, hora_entrada = :entrada, hora_salida = :salida 
                WHERE id = :id AND usuario_id = :uid';
     $stmtUpd = $pdo->prepare($sqlUpd);
     $stmtUpd->execute([
-        ':aula' => $aula,
+        ':aula_id' => $aulaId,
         ':grupo' => $grupo,
         ':asignatura' => $asignatura,
         ':turno' => $turno,

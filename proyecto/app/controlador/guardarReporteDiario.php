@@ -24,13 +24,11 @@ $hora = $horaEntrada !== '' ? $horaEntrada : date('H:i');
 $turno = trim((string) ($_POST['turno'] ?? 'matutino'));
 $grupo = trim((string) ($_POST['grupo'] ?? ''));
 $asignatura = trim((string) ($_POST['asignatura'] ?? ''));
-$nombreProfesor = trim((string) ($_POST['nombre-profesor'] ?? ''));
-$apellidoProfesor = trim((string) ($_POST['apellido-profesor'] ?? ''));
-$aula = trim((string) ($_POST['aula'] ?? ''));
+$aulaId = (int) ($_POST['aula_id'] ?? $_POST['aula'] ?? 0);
 $equipos = $_POST['equipos'] ?? [];
 
-if ($nombreProfesor === '' || $apellidoProfesor === '' || $aula === '') {
-    guardarMensaje('error', 'Complete todos los campos obligatorios del reporte.');
+if ($aulaId <= 0) {
+    guardarMensaje('error', 'Seleccione un aula o taller válido.');
     redirigir(urlRuta('reporte-diario'));
 }
 
@@ -38,11 +36,9 @@ try {
     $modelo = new ReporteDiarioModelo();
     $modelo->crear(
         (int) $usuario['id'],
+        $aulaId,
         $fecha,
         $hora,
-        $nombreProfesor,
-        $apellidoProfesor,
-        $aula,
         (array) $equipos,
         $turno,
         $horaEntrada,

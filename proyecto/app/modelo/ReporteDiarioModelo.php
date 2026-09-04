@@ -16,11 +16,9 @@ class ReporteDiarioModelo
     // Inserta un reporte diario y sus asignaciones de PCs en una sola transacción
     public function crear(
         int $usuarioId,
+        int $aulaId,
         string $fecha,
         string $hora,
-        string $nombreProfesor,
-        string $apellidoProfesor,
-        string $aula,
         array $equipos,
         string $turno = 'matutino',
         ?string $horaEntrada = null,
@@ -32,11 +30,12 @@ class ReporteDiarioModelo
             $this->conexion->beginTransaction();
 
             $sql = 'INSERT INTO reportes_diarios 
-                    (usuario_id, fecha, hora, turno, hora_entrada, hora_salida, grupo, asignatura, nombre_profesor, apellido_profesor, aula) 
-                    VALUES (:usuario_id, :fecha, :hora, :turno, :hora_entrada, :hora_salida, :grupo, :asignatura, :nombre, :apellido, :aula)';
+                    (usuario_id, aula_id, fecha, hora, turno, hora_entrada, hora_salida, grupo, asignatura) 
+                    VALUES (:usuario_id, :aula_id, :fecha, :hora, :turno, :hora_entrada, :hora_salida, :grupo, :asignatura)';
             $stmt = $this->conexion->prepare($sql);
             $stmt->execute([
                 ':usuario_id' => $usuarioId,
+                ':aula_id' => $aulaId,
                 ':fecha' => $fecha,
                 ':hora' => $hora,
                 ':turno' => $turno,
@@ -44,9 +43,6 @@ class ReporteDiarioModelo
                 ':hora_salida' => $horaSalida,
                 ':grupo' => $grupo,
                 ':asignatura' => $asignatura,
-                ':nombre' => $nombreProfesor,
-                ':apellido' => $apellidoProfesor,
-                ':aula' => $aula,
             ]);
 
             $reporteId = (int) $this->conexion->lastInsertId();
@@ -81,8 +77,17 @@ class ReporteDiarioModelo
     // Obtiene todos los reportes diarios (para coordinación)
     public function obtenerTodos(): array
     {
-        $sql = 'SELECT r.*, COUNT(p.id) as cantidad_equipos 
+        $sql = 'SELECT r.*, 
+                       u.nombre AS docente_nombre,
+                       u.nombre AS nombre_profesor,
+                       "" AS apellido_profesor,
+                       a.nombre AS aula,
+                       a.nombre AS aula_nombre,
+                       a.codigo AS aula_codigo,
+                       COUNT(p.id) as cantidad_equipos 
                 FROM reportes_diarios r 
+                INNER JOIN usuarios u ON r.usuario_id = u.id 
+                INNER JOIN aulas a ON r.aula_id = a.id 
                 LEFT JOIN reporte_diario_pc p ON r.id = p.reporte_diario_id 
                 GROUP BY r.id 
                 ORDER BY r.fecha DESC, r.hora DESC';
@@ -94,8 +99,17 @@ class ReporteDiarioModelo
     // Obtiene los reportes diarios de un profesor específico
     public function obtenerPorUsuario(int $usuarioId): array
     {
-        $sql = 'SELECT r.*, COUNT(p.id) as cantidad_equipos 
+        $sql = 'SELECT r.*, 
+                       u.nombre AS docente_nombre,
+                       u.nombre AS nombre_profesor,
+                       "" AS apellido_profesor,
+                       a.nombre AS aula,
+                       a.nombre AS aula_nombre,
+                       a.codigo AS aula_codigo,
+                       COUNT(p.id) as cantidad_equipos 
                 FROM reportes_diarios r 
+                INNER JOIN usuarios u ON r.usuario_id = u.id 
+                INNER JOIN aulas a ON r.aula_id = a.id 
                 LEFT JOIN reporte_diario_pc p ON r.id = p.reporte_diario_id 
                 WHERE r.usuario_id = :usuario_id 
                 GROUP BY r.id 

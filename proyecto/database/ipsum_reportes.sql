@@ -61,10 +61,11 @@ INSERT INTO aulas (codigo, nombre, tipo) VALUES
     ('lab3', 'Laboratorio 3', 'laboratorio')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), tipo = VALUES(tipo);
 
--- 2. Tabla de Reportes Diarios
+-- 2. Tabla de Reportes Diarios (Normalizada en 3FN)
 CREATE TABLE IF NOT EXISTS reportes_diarios (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NOT NULL,
+    aula_id INT UNSIGNED NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
     turno ENUM('matutino', 'vespertino', 'nocturno') NOT NULL DEFAULT 'matutino',
@@ -72,9 +73,6 @@ CREATE TABLE IF NOT EXISTS reportes_diarios (
     hora_salida TIME DEFAULT NULL,
     grupo VARCHAR(50) DEFAULT NULL,
     asignatura VARCHAR(100) DEFAULT NULL,
-    nombre_profesor VARCHAR(100) NOT NULL,
-    apellido_profesor VARCHAR(100) NOT NULL,
-    aula VARCHAR(50) NOT NULL,
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     actualizado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_reporte_diario_usuario
@@ -82,7 +80,13 @@ CREATE TABLE IF NOT EXISTS reportes_diarios (
         REFERENCES usuarios(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
+    CONSTRAINT fk_reporte_diario_aula
+        FOREIGN KEY (aula_id)
+        REFERENCES aulas(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
     INDEX idx_reporte_diario_usuario (usuario_id),
+    INDEX idx_reporte_diario_aula (aula_id),
     INDEX idx_reporte_diario_fecha (fecha)
 ) ENGINE=InnoDB;
 
@@ -100,12 +104,11 @@ CREATE TABLE IF NOT EXISTS reporte_diario_pc (
     INDEX idx_pc_reporte_diario (reporte_diario_id)
 ) ENGINE=InnoDB;
 
--- 4. Tabla de Reportes de Incidencias
+-- 4. Tabla de Reportes de Incidencias (Normalizada en 3FN)
 CREATE TABLE IF NOT EXISTS reportes_incidencias (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NOT NULL,
-    nombre_profesor VARCHAR(100) NOT NULL,
-    apellido_profesor VARCHAR(100) NOT NULL,
+    aula_id INT UNSIGNED NOT NULL,
     asignatura VARCHAR(100) NOT NULL,
     grupo VARCHAR(50) DEFAULT NULL,
     turno ENUM('matutino', 'vespertino', 'nocturno') NOT NULL DEFAULT 'matutino',
@@ -113,7 +116,6 @@ CREATE TABLE IF NOT EXISTS reportes_incidencias (
     hora TIME NOT NULL,
     tipo_solicitud ENUM('rotura-equipo', 'falla-equipo', 'otro') NOT NULL,
     otro_tipo VARCHAR(150) DEFAULT NULL,
-    taller VARCHAR(50) NOT NULL,
     descripcion TEXT DEFAULT NULL,
     estado ENUM('pendiente', 'en_proceso', 'resuelto') NOT NULL DEFAULT 'pendiente',
     solucion TEXT DEFAULT NULL,
@@ -124,7 +126,13 @@ CREATE TABLE IF NOT EXISTS reportes_incidencias (
         REFERENCES usuarios(id)
         ON DELETE RESTRICT
         ON UPDATE CASCADE,
+    CONSTRAINT fk_incidencia_aula
+        FOREIGN KEY (aula_id)
+        REFERENCES aulas(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE,
     INDEX idx_incidencia_usuario (usuario_id),
+    INDEX idx_incidencia_aula (aula_id),
     INDEX idx_incidencia_fecha (fecha),
     INDEX idx_incidencia_estado (estado)
 ) ENGINE=InnoDB;

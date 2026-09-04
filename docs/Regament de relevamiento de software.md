@@ -2,30 +2,30 @@ Reglamento de organización de software y Estándares de Codificación de Ipsum:
 
     • Introducción y Alcance:
 	El presente documento establece las normas, convencionales y buenas prácticas obligatorias para el desarrollo de proyectos web en Ipsum. Para garantizar un ecosistema de equipo técnico.
-	Este reglamento aplica de forma estricta a todos los archivos HTML, CSS y JavaScript. 
+	Este reglamento aplica de forma estricta a todos los archivos HTML, CSS, JavaScript, PHP y modelos de bases de datos relacionales. 
     • Estructura del proyecto y arquitectura de carpetas:
-    El proyecto se organiza en carpetas según el tipo de archivo con el fin de mantener el orden, facilitar el mantenimiento y permitir la reutilización del código.
+    El proyecto adopta el patrón Modelo-Vista-Controlador (MVC) desacoplado con aislamiento del Document Root (carpeta pública) para garantizar máxima seguridad y organización:
 	Estructura de carpetas:
 	/proyecto
-		/assets
-			/images
-			/code
-                /css
-                    ligin.css
-                    panel-profesores.css
-                    reporte-diario.css
-                /html
-                    login.html
-                    panel-profesores.html
-                    reporte-dirio.html
-                    reporte-incidencia.html
-                /js
-                    LOGIN.js
-                    PANEL_PROFESORES.js
-                    REPORTE_DIARIO.js
-                /php	
+		/public
+			/assets
+				/css
+				/js
+			index.php (Front Controller / Despachador único)
+		/app
+			/config (Conexión PDO a base de datos)
+			/controlador (Controladores de acción única)
+			/modelo (Clases de persistencia y consultas SQL)
+			/utilidades (Manejo de sesiones, seguridad CSRF, validaciones)
+			/vista (Plantillas de renderizado organizadas por rol)
+				/administrador
+				/coordinacion
+				/profesor
+		/database
+			ipsum_reportes.sql (Definición DDL normalizada en 3FN)
 	    /docs
-            Regamento de relevamiento de software.md
+            Regament de relevamiento de software.md
+            /persistencia (Diagramas MER, DER y normalización)
 
 		
     • Convenciones de nomenclartura universal:
@@ -65,3 +65,22 @@ layouts específicos o contenedores máximos.
             ▪ Contenedores: Cada sección lógica del sitio debe envolverse en una clase de control de
 layout (ej: .container) para asegurar alineación y márgenes consistentes en pantallas de
 cualquier tamaño.
+    • Modelo de Arquitectura y Estándares de Backend (PHP):
+        1. Patrón Arquitectónico (MVC + Front Controller):
+            ▪ Front Controller: Todo el flujo de navegación se centraliza a través de public/index.php mediante el parámetro ?ruta=...
+            ▪ Desacoplamiento en capas:
+                - Modelos (/app/modelo/): Clases con POO que encapsulan la persistencia y consultas SQL mediante PDO.
+                - Controladores (/app/controlador/): Controladores de acción única orientados al principio de responsabilidad única (SRP).
+                - Vistas (/app/vista/): Plantillas enfocadas exclusivamente en la presentación e interfaz de usuario, organizadas por módulos de rol.
+            ▪ Aislamiento del Document Root: La carpeta /public/ es el único punto de acceso web; los archivos de configuración y lógica residen fuera de la raíz pública por seguridad.
+        2. Estándares de Codificación PHP:
+            ▪ Modo Estricto: Todos los scripts PHP deben iniciar obligatoriamente con declare(strict_types=1);.
+            ▪ Tipado Estricto: Todas las funciones, métodos y propiedades deben declarar tipos de datos de entrada y retorno.
+            ▪ Seguridad contra Inyecciones (SQLi): Prohibida la concatenación de variables en consultas SQL; uso obligatorio de sentencias preparadas con PDO y parámetros enlazados.
+            ▪ Protección contra XSS y CSRF: Toda salida de datos dinámicos en vistas debe ser sanitizada con la función escapar(), y todo formulario POST debe incorporar un token CSRF verificado.
+            ▪ Control de Acceso: Las rutas protegidas deben invocar la verificación de sesión y rol (RBAC) previo a cualquier procesamiento.
+    • Estándares de Persistencia y Normalización de Base de Datos (3FN):
+        1. Tercera Forma Normal (3FN) Obligatoria:
+            ▪ Eliminación de Dependencias Parciales (2FN): Todos los atributos no clave deben depender de la clave primaria completa.
+            ▪ Eliminación de Dependencias Transitivas (3FN): Queda estrictamente prohibido almacenar datos descriptivos dependientes de claves foráneas en tablas transaccionales (ej: nombres de usuarios o descripciones de salas dentro de reportes de incidencias o partes diarios). Estos datos deben resolverse dinámicamente mediante consultas con INNER JOIN hacia sus entidades maestras.
+            ▪ Integridad Referencial: Toda referencia a entidades maestras (como la tabla aulas) debe estar respaldada formalmente por una clave foránea (FOREIGN KEY) con acciones ON DELETE y ON UPDATE debidamente tipadas en el motor transaccional InnoDB.

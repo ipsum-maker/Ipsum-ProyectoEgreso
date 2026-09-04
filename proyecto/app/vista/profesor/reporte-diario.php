@@ -76,23 +76,18 @@
             </section>
             
             <section class="report-form__row">
-                <article class="report-form__group">
-                    <label class="report-form__label" for="nombre-profesor">Nombre del Profesor</label>
-                    <input class="report-form__input" type="text" id="nombre-profesor" name="nombre-profesor" placeholder="Nombre" required>
-                </article>
-
-                <article class="report-form__group">
-                    <label class="report-form__label" for="apellido-profesor">Apellido del Profesor</label>
-                    <input class="report-form__input" type="text" id="apellido-profesor" name="apellido-profesor" placeholder="Apellido" required>
+                <article class="report-form__group" style="flex: 1;">
+                    <label class="report-form__label">Docente Responsable</label>
+                    <input class="report-form__input" type="text" value="<?= escapar((string) $usuario['nombre']) ?>" readonly style="background-color: #f1f5f9; cursor: not-allowed;">
                 </article>
             </section>
 
             <article class="report-form__group">
                 <label class="report-form__label" for="aula">Aula / Taller / Laboratorio</label>
-                <select class="report-form__select" id="aula" name="aula" required>
+                <select class="report-form__select" id="aula" name="aula_id" required>
                     <option value="">Seleccione el aula o taller</option>
                     <?php foreach ($aulas as $aulaItem): ?>
-                        <option value="<?= escapar((string) $aulaItem['codigo']) ?>">
+                        <option value="<?= (int) $aulaItem['id'] ?>">
                             <?= escapar((string) $aulaItem['nombre']) ?>
                         </option>
                     <?php endforeach; ?>

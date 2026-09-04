@@ -108,7 +108,13 @@
 
                                         <div>
                                             <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Aula / Taller</label>
-                                            <input type="text" name="aula" value="<?= escapar((string) $diario['aula']) ?>" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" required>
+                                            <select name="aula_id" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" required>
+                                                <?php foreach ($aulas as $aItem): ?>
+                                                    <option value="<?= (int) $aItem['id'] ?>" <?= (int) ($diario['aula_id'] ?? 0) === (int) $aItem['id'] ? 'selected' : '' ?>>
+                                                        <?= escapar((string) $aItem['nombre']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
                                         </div>
 
                                         <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
@@ -167,17 +173,6 @@
 
                                             <div style="display: flex; gap: 0.5rem;">
                                                 <div style="flex: 1;">
-                                                    <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Nombre Profesor</label>
-                                                    <input type="text" name="nombre" value="<?= escapar((string) $incidencia['nombre_profesor']) ?>" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" required>
-                                                </div>
-                                                <div style="flex: 1;">
-                                                    <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Apellido Profesor</label>
-                                                    <input type="text" name="apellido" value="<?= escapar((string) $incidencia['apellido_profesor']) ?>" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" required>
-                                                </div>
-                                            </div>
-
-                                            <div style="display: flex; gap: 0.5rem;">
-                                                <div style="flex: 1;">
                                                     <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Asignatura</label>
                                                     <input type="text" name="asignatura" value="<?= escapar((string) $incidencia['asignatura']) ?>" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" required>
                                                 </div>
@@ -198,7 +193,13 @@
                                                 </div>
                                                 <div style="flex: 1;">
                                                     <label style="display: block; font-weight: bold; margin-bottom: 0.3rem;">Taller / Lab</label>
-                                                    <input type="text" name="taller" value="<?= escapar((string) $incidencia['taller']) ?>" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" required>
+                                                    <select name="aula_id" style="width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;" required>
+                                                        <?php foreach ($aulas as $aItem): ?>
+                                                            <option value="<?= (int) $aItem['id'] ?>" <?= (int) ($incidencia['aula_id'] ?? 0) === (int) $aItem['id'] ? 'selected' : '' ?>>
+                                                                <?= escapar((string) $aItem['nombre']) ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
                                                 </div>
                                             </div>
 
