@@ -74,9 +74,13 @@ switch ($ruta) {
     case 'actualizar-reporte-incidencia':
         require __DIR__ . '/../app/controlador/actualizarReporteIncidencia.php';
         break;
+    case 'metricas-administrador':
+        require __DIR__ . '/../app/controlador/mostrarMetricasAdministrador.php';
+        break;
     default:
 
         http_response_code(404);
         echo '<h1>Página no encontrada</h1>';
         echo '<p><a href="index.php">Volver al sistema</a></p>';
+        break;
 }

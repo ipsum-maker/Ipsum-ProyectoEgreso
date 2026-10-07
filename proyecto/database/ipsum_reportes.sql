@@ -61,7 +61,7 @@ INSERT INTO aulas (codigo, nombre, tipo) VALUES
     ('lab3', 'Laboratorio 3', 'laboratorio')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), tipo = VALUES(tipo);
 
--- 2. Tabla de Reportes Diarios (Normalizada en 3FN)
+-- 2. Tabla de Reportes Diarios
 CREATE TABLE IF NOT EXISTS reportes_diarios (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS reporte_diario_pc (
     INDEX idx_pc_reporte_diario (reporte_diario_id)
 ) ENGINE=InnoDB;
 
--- 4. Tabla de Reportes de Incidencias (Normalizada en 3FN)
+-- 4. Tabla de Reportes de Incidencias
 CREATE TABLE IF NOT EXISTS reportes_incidencias (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NOT NULL,

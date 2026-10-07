@@ -1,0 +1,268 @@
+/* Estilos para el Módulo de Métricas y Estadísticas */
+
+/* Botón de volver en la cabecera */
+.admin-header__back::before {
+    content: "←";
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+/* Banner de acceso a Métricas en el Panel Principal */
+.admin-metrics-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-metrics-banner__link {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 0;
+    max-width: 200px;
+}
+
+/* Barra de filtros temporales */
+.metricas-filtros {
+    background-color: #ffffff;
+    border: 1px solid #dedede;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.metricas-filtros__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.metricas-filtros__botones {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.metricas-filtros__btn {
+    display: inline-block;
+    padding: 0.6rem 1rem;
+    border-radius: 0.6rem;
+    background-color: #f3f4fa;
+    color: #050505;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.metricas-filtros__btn:hover {
+    background-color: #e5e7f5;
+}
+
+.metricas-filtros__btn--activo {
+    background-color: #8a2cff;
+    color: #ffffff;
+}
+
+.metricas-filtros__btn--activo:hover {
+    background-color: #7c2cff;
+}
+
+.metricas-filtros__personalizado {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.metricas-filtros__label {
+    font-size: 0.85rem;
+    color: #69707e;
+    font-weight: 600;
+}
+
+.metricas-filtros__date {
+    padding: 0.45rem 0.6rem;
+    border: 1px solid #dedede;
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+    background-color: #fafaff;
+}
+
+.metricas-filtros__submit {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #030014;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease;
+}
+
+.metricas-filtros__submit:hover {
+    background-color: #17142c;
+}
+
+/* Tarjetas KPI Superiores */
+.metricas-kpis {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+}
+
+.metricas-kpi--alerta {
+    color: #c62828 !important;
+}
+
+.metricas-kpi--exito {
+    color: #2e7d32 !important;
+}
+
+/* Gráfico de Barras Nativo (Incidencias por Aula) */
+.metricas-barras {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.metricas-barras__fila {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.metricas-barras__etiqueta {
+    width: 140px;
+    flex-shrink: 0;
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.metricas-barras__tipo {
+    font-size: 0.75rem;
+    color: #69707e;
+    text-transform: capitalize;
+}
+
+.metricas-barras__pista {
+    flex-grow: 1;
+    background-color: #f0eef8;
+    height: 28px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.metricas-barras__relleno {
+    background: linear-gradient(90deg, #8a2cff 0%, #6115c5 100%);
+    height: 100%;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.6rem;
+    transition: width 0.4s ease;
+}
+
+.metricas-barras__relleno--cero {
+    background: #e0e0e0;
+    justify-content: center;
+    padding-right: 0;
+}
+
+.metricas-barras__valor {
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.metricas-barras__valor--cero {
+    color: #69707e;
+}
+
+/* Cuadrícula Inferior (Distribución + Tabla) */
+.metricas-grid-inferior {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+    .metricas-grid-inferior {
+        grid-template-columns: 1fr 1.3fr;
+    }
+}
+
+/* Barras de distribución por tipo de falla */
+.metricas-distribucion {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+.metricas-distribucion__header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+
+.metricas-distribucion__barra {
+    width: 100%;
+    height: 12px;
+    background-color: #f0eef8;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.metricas-distribucion__progreso {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+
+.metricas-color--rotura {
+    background-color: #ff5252;
+}
+
+.metricas-color--falla {
+    background-color: #8a2cff;
+}
+
+.metricas-color--otro {
+    background-color: #ffb142;
+}
+
+/* Etiquetas de estado (Badges) */
+.metricas-badge {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.metricas-badge--resuelto {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.metricas-badge--en_proceso {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.metricas-badge--pendiente {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Reportes</title>
     <link rel="stylesheet" href="assets/css/panel-administrador.css">
+    <link rel="stylesheet" href="assets/css/metricas-administrador.css">
     <script>
         window.IPSUM_USUARIO = <?= json_encode($usuario, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
     </script>
@@ -52,6 +53,12 @@
                 <h3 class="admin-stats__name">Administradores</h3>
                 <p class="admin-stats__number"><?= $cantidades['administrador'] ?></p>
             </article>
+        </section>
+
+        <section class="admin-users admin-metrics-banner" id="seccion-metricas-banner">
+            <h2 class="admin-users__title">Métricas del Sistema</h2>
+            <p class="admin-users__description">Visualización de estadísticas de incidencias, rendimiento de resolución y demanda de talleres.</p>
+            <a class="admin-users__button admin-metrics-banner__link" href="index.php?ruta=metricas-administrador">Ver Métricas</a>
         </section>
 
         <section class="admin-users" id="usuarios-del-sistema">
