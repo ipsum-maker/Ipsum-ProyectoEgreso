@@ -5,6 +5,7 @@ CREATE DATABASE IF NOT EXISTS ipsum_reportes
 USE ipsum_reportes;
 
 -- Eliminación de tablas previas en orden correcto de claves foráneas
+DROP TABLE IF EXISTS solicitudes_laboratorio;
 DROP TABLE IF EXISTS reporte_diario_pc;
 DROP TABLE IF EXISTS reportes_diarios;
 DROP TABLE IF EXISTS reportes_incidencias;
@@ -39,7 +40,7 @@ ON DUPLICATE KEY UPDATE
     activo = VALUES(activo),
     es_inicial = VALUES(es_inicial);
 
--- Tabla de Aulas, Talleres y Laboratorios
+-- 2. Tabla de Aulas, Talleres y Laboratorios
 CREATE TABLE IF NOT EXISTS aulas (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(50) NOT NULL UNIQUE,
@@ -61,7 +62,7 @@ INSERT INTO aulas (codigo, nombre, tipo) VALUES
     ('lab3', 'Laboratorio 3', 'laboratorio')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre), tipo = VALUES(tipo);
 
--- 2. Tabla de Reportes Diarios
+-- 3. Tabla de Reportes Diarios
 CREATE TABLE IF NOT EXISTS reportes_diarios (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NOT NULL,
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS reportes_diarios (
     INDEX idx_reporte_diario_fecha (fecha)
 ) ENGINE=InnoDB;
 
--- 3. Tabla de Asignación de PCs para Reportes Diarios
+-- 4. Tabla de Asignación de PCs para Reportes Diarios
 CREATE TABLE IF NOT EXISTS reporte_diario_pc (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     reporte_diario_id INT UNSIGNED NOT NULL,
@@ -104,7 +105,7 @@ CREATE TABLE IF NOT EXISTS reporte_diario_pc (
     INDEX idx_pc_reporte_diario (reporte_diario_id)
 ) ENGINE=InnoDB;
 
--- 4. Tabla de Reportes de Incidencias
+-- 5. Tabla de Reportes de Incidencias
 CREATE TABLE IF NOT EXISTS reportes_incidencias (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     usuario_id INT UNSIGNED NOT NULL,
@@ -117,6 +118,7 @@ CREATE TABLE IF NOT EXISTS reportes_incidencias (
     tipo_solicitud ENUM('rotura-equipo', 'falla-equipo', 'otro') NOT NULL,
     otro_tipo VARCHAR(150) DEFAULT NULL,
     descripcion TEXT DEFAULT NULL,
+    codigo_equipo VARCHAR(50) DEFAULT NULL,
     estado ENUM('pendiente', 'en_proceso', 'resuelto') NOT NULL DEFAULT 'pendiente',
     solucion TEXT DEFAULT NULL,
     creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -134,5 +136,33 @@ CREATE TABLE IF NOT EXISTS reportes_incidencias (
     INDEX idx_incidencia_usuario (usuario_id),
     INDEX idx_incidencia_aula (aula_id),
     INDEX idx_incidencia_fecha (fecha),
-    INDEX idx_incidencia_estado (estado)
+    INDEX idx_incidencia_estado (estado),
+    INDEX idx_incidencia_equipo (codigo_equipo)
+) ENGINE=InnoDB;
+
+-- 6. Tabla de Solicitudes de Laboratorio / Salones
+CREATE TABLE IF NOT EXISTS solicitudes_laboratorio (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT UNSIGNED NOT NULL,
+    aula_id INT UNSIGNED NOT NULL,
+    fecha DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    motivo TEXT NOT NULL,
+    estado ENUM('pendiente', 'aprobada', 'rechazada') NOT NULL DEFAULT 'pendiente',
+    respuesta TEXT DEFAULT NULL,
+    revisor_id INT UNSIGNED DEFAULT NULL,
+    creado_en TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    decidido_en TIMESTAMP NULL DEFAULT NULL,
+    CONSTRAINT fk_solicitud_laboratorio_usuario
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_solicitud_laboratorio_aula
+        FOREIGN KEY (aula_id) REFERENCES aulas(id)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_solicitud_laboratorio_revisor
+        FOREIGN KEY (revisor_id) REFERENCES usuarios(id)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    INDEX idx_solicitud_disponibilidad (aula_id, fecha, estado, hora_inicio, hora_fin),
+    INDEX idx_solicitud_usuario (usuario_id, creado_en)
 ) ENGINE=InnoDB;

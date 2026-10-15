@@ -70,6 +70,18 @@
                         Reportes</button></a>
             </article>
         </section>
+
+        <!-- Sección de Solicitud de Laboratorios y Salones -->
+        <section class="reporte-diario" id="seccion-solicitud-laboratorio">
+            <article>
+                <h2>Solicitar Laboratorio / Salón</h2>
+                <span>Solicite el uso de un espacio con fecha y horario</span>
+                <a href="index.php?ruta=solicitar-laboratorio"><button class="reportediario-button" id="solicitud-laboratorio-button"
+                        type="button">Nueva Solicitud</button></a>
+                <a href="index.php?ruta=mis-solicitudes-laboratorio" style="display:inline-block; margin-top: 10px;"><button class="historial-button" id="mis-solicitudes-button"
+                        type="button">Mis Solicitudes</button></a>
+            </article>
+        </section>
     </main>
 
     <footer>

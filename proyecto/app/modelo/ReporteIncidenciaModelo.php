@@ -23,11 +23,12 @@ class ReporteIncidenciaModelo
         ?string $otroTipo,
         string $descripcion,
         ?string $grupo = null,
-        string $turno = 'matutino'
+        string $turno = 'matutino',
+        ?string $codigoEquipo = null
     ): bool {
         $sql = 'INSERT INTO reportes_incidencias 
-                (usuario_id, aula_id, asignatura, fecha, hora, tipo_solicitud, otro_tipo, descripcion, grupo, turno) 
-                VALUES (:usuario_id, :aula_id, :asignatura, :fecha, :hora, :tipo, :otro_tipo, :descripcion, :grupo, :turno)';
+                (usuario_id, aula_id, asignatura, fecha, hora, tipo_solicitud, otro_tipo, descripcion, grupo, turno, codigo_equipo) 
+                VALUES (:usuario_id, :aula_id, :asignatura, :fecha, :hora, :tipo, :otro_tipo, :descripcion, :grupo, :turno, :codigo_equipo)';
 
         $stmt = $this->conexion->prepare($sql);
         return $stmt->execute([
@@ -41,6 +42,7 @@ class ReporteIncidenciaModelo
             ':descripcion' => $descripcion,
             ':grupo' => $grupo,
             ':turno' => $turno,
+            ':codigo_equipo' => !empty($codigoEquipo) ? $codigoEquipo : null,
         ]);
     }
 

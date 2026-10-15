@@ -26,6 +26,7 @@ $tipoSolicitud = trim((string) ($_POST['tipoSolicitud'] ?? ''));
 $otroTipo = trim((string) ($_POST['otroTipo'] ?? ''));
 $aulaId = (int) ($_POST['aula_id'] ?? $_POST['taller'] ?? 0);
 $descripcion = trim((string) ($_POST['descripcion'] ?? ''));
+$codigoEquipo = trim((string) ($_POST['codigo_equipo'] ?? ''));
 
 if ($aulaId <= 0 || $asignatura === '' || $tipoSolicitud === '') {
     guardarMensaje('error', 'Complete todos los campos obligatorios.');
@@ -44,7 +45,8 @@ try {
         $tipoSolicitud === 'otro' ? $otroTipo : null,
         $descripcion,
         $grupo,
-        $turno
+        $turno,
+        $codigoEquipo !== '' ? $codigoEquipo : null
     );
 
     guardarMensaje('exito', 'Reporte de incidencia enviado correctamente.');

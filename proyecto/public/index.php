@@ -77,6 +77,24 @@ switch ($ruta) {
     case 'metricas-administrador':
         require __DIR__ . '/../app/controlador/mostrarMetricasAdministrador.php';
         break;
+    case 'solicitar-laboratorio':
+    case 'solicitar-salon':
+        require __DIR__ . '/../app/controlador/mostrarSolicitarLaboratorio.php';
+        break;
+    case 'guardar-solicitud-laboratorio':
+        require __DIR__ . '/../app/controlador/guardarSolicitudLaboratorio.php';
+        break;
+    case 'mis-solicitudes-laboratorio':
+    case 'mis-solicitudes':
+        require __DIR__ . '/../app/controlador/mostrarMisSolicitudesLaboratorio.php';
+        break;
+    case 'solicitudes-laboratorio':
+    case 'solicitudes-salones':
+        require __DIR__ . '/../app/controlador/mostrarSolicitudesLaboratorio.php';
+        break;
+    case 'decidir-solicitud-laboratorio':
+        require __DIR__ . '/../app/controlador/decidirSolicitudLaboratorio.php';
+        break;
     default:
 
         http_response_code(404);

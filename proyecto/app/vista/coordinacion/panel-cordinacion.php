@@ -49,6 +49,17 @@
             </a>
 
         </section>
+
+        <!-- Solicitudes de Laboratorio -->
+        <section class="panel-cordinacion-section panel-cordinacion-section--daily" id="solicitudes-laboratorio">
+            <h2 class="panel-cordinacion-section__title">Solicitudes de Salón / Laboratorio</h2>
+            <h3 class="panel-cordinacion-section__subtitle">Gestión de Reservas</h3>
+            <p class="panel-cordinacion-section__description">Revise las solicitudes de uso de espacios enviadas por profesores y decida su aprobación o rechazo</p>
+            <a class="panel-cordinacion-section__button panel-cordinacion-section__button--daily"
+                id="boton-solicitudes-laboratorio" href="index.php?ruta=solicitudes-laboratorio">
+                Ver Solicitudes de Espacios
+            </a>
+        </section>
     </main>
 
     <footer class="panel-cordinacion-footer" id="panel-cordinacion-footer">

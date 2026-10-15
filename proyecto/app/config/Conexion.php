@@ -16,12 +16,22 @@ final class Conexion
             return self::$conexion;
         }
 
-        // Valores habituales de XAMPP. Pueden cambiarse aquí si fuera necesario.
-        $host = getenv('DB_HOST') ?: '127.0.0.1';
-        $puerto = getenv('DB_PORT') ?: '3306';
-        $baseDeDatos = getenv('DB_NAME') ?: 'ipsum_reportes';
-        $usuario = getenv('DB_USER') ?: 'root';
-        $contrasena = getenv('DB_PASSWORD') ?: '';
+        // Cargar configuración local si existe
+        $configLocal = [];
+        $archivoLocal = __DIR__ . '/local.php';
+        if (file_exists($archivoLocal)) {
+            $cargado = require $archivoLocal;
+            if (is_array($cargado)) {
+                $configLocal = $cargado;
+            }
+        }
+
+        // Valores habituales de XAMPP con precedencia: getenv -> local.php -> defecto
+        $host = getenv('DB_HOST') ?: ($configLocal['DB_HOST'] ?? '127.0.0.1');
+        $puerto = getenv('DB_PORT') ?: ($configLocal['DB_PORT'] ?? '3306');
+        $baseDeDatos = getenv('DB_NAME') ?: ($configLocal['DB_NAME'] ?? 'ipsum_reportes');
+        $usuario = getenv('DB_USER') ?: ($configLocal['DB_USER'] ?? 'root');
+        $contrasena = getenv('DB_PASSWORD') ?: ($configLocal['DB_PASSWORD'] ?? '');
 
         $dsn = "mysql:host={$host};port={$puerto};dbname={$baseDeDatos};charset=utf8mb4";
 
