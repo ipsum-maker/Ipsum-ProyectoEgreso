@@ -3,26 +3,21 @@ declare(strict_types=1);
 
 final class RespuestaJson
 {
-    public static function exito(array $datos, int $codigo = 200): never
+    public static function exito(array $datos, int $codigo = 200, string $mensaje = 'Operación realizada correctamente'): never
     {
         self::enviar([
-            'ok' => true,
-            'exito' => true,
+            'status' => 'success',
+            'message' => $mensaje,
             'data' => $datos,
-            'datos' => $datos,
         ], $codigo);
     }
 
     public static function error(string $mensaje, int $codigo = 400): never
     {
         self::enviar([
-            'ok' => false,
-            'exito' => false,
-            'mensaje' => $mensaje,
-            'error' => [
-                'codigo' => $codigo,
-                'mensaje' => $mensaje,
-            ],
+            'status' => 'error',
+            'message' => $mensaje,
+            'data' => null,
         ], $codigo);
     }
 

@@ -37,7 +37,7 @@
             if (!token) {
                 try {
                     const sesion = await solicitar("/sesion");
-                    token = sesion.data && sesion.data.csrfToken ? sesion.data.csrfToken : (sesion.datos && sesion.datos.csrfToken);
+                    token = sesion.data && sesion.data.csrfToken ? sesion.data.csrfToken : "";
                 } catch (e) {}
             }
             if (token) {
@@ -65,19 +65,16 @@
             throw new Error("El servidor no devolvió una respuesta JSON válida.");
         }
 
-        const esExitoso = (datos.ok === true || datos.exito === true);
+        const esExitoso = datos.status === "success";
         if (!respuesta.ok || !esExitoso) {
-            const mensajeError = (datos.error && datos.error.mensaje) || datos.mensaje || "No se pudo completar la solicitud.";
-            const error = new Error(mensajeError);
-            error.codigo = (datos.error && datos.error.codigo) || respuesta.status;
+            const error = new Error(datos.message || "No se pudo completar la solicitud.");
+            error.codigo = respuesta.status;
             error.status = respuesta.status;
             throw error;
         }
 
         if (datos.data && datos.data.csrfToken) {
             csrfToken = datos.data.csrfToken;
-        } else if (datos.datos && datos.datos.csrfToken) {
-            csrfToken = datos.datos.csrfToken;
         }
 
         return datos;

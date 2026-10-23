@@ -9,91 +9,91 @@ $ruta = (string) ($_GET['ruta'] ?? 'inicio');
 // Cada ruta carga un controlador que representa una sola funcionalidad.
 switch ($ruta) {
     case 'inicio':
-        require __DIR__ . '/../app/controlador/irAlInicio.php';
+        require __DIR__ . '/../app/controlador/autenticacion/irAlInicio.php';
         break;
     case 'login':
         require __DIR__ . '/../app/vista/login.php';
         break;
     case 'iniciar-sesion':
-        require __DIR__ . '/../app/controlador/iniciarSesion.php';
+        require __DIR__ . '/../app/controlador/autenticacion/iniciarSesion.php';
         break;
     case 'cerrar-sesion':
-        require __DIR__ . '/../app/controlador/cerrarSesion.php';
+        require __DIR__ . '/../app/controlador/autenticacion/cerrarSesion.php';
         break;
     case 'panel-administrador':
-        require __DIR__ . '/../app/controlador/mostrarPanelAdministrador.php';
+        require __DIR__ . '/../app/controlador/administrador/mostrarPanelAdministrador.php';
         break;
     case 'crear-usuario':
-        require __DIR__ . '/../app/controlador/crearUsuario.php';
+        require __DIR__ . '/../app/controlador/administrador/crearUsuario.php';
         break;
     case 'cambiar-rol-usuario':
-        require __DIR__ . '/../app/controlador/cambiarRolUsuario.php';
+        require __DIR__ . '/../app/controlador/administrador/cambiarRolUsuario.php';
         break;
     case 'eliminar-usuario':
-        require __DIR__ . '/../app/controlador/eliminarUsuario.php';
+        require __DIR__ . '/../app/controlador/administrador/eliminarUsuario.php';
         break;
     case 'panel-profesores':
-        require __DIR__ . '/../app/controlador/mostrarPanelProfesores.php';
+        require __DIR__ . '/../app/controlador/profesor/mostrarPanelProfesores.php';
         break;
     case 'reporte-diario':
-        require __DIR__ . '/../app/controlador/mostrarReporteDiario.php';
+        require __DIR__ . '/../app/controlador/profesor/mostrarReporteDiario.php';
         break;
     case 'reporte-incidencia':
-        require __DIR__ . '/../app/controlador/mostrarReporteIncidencia.php';
+        require __DIR__ . '/../app/controlador/profesor/mostrarReporteIncidencia.php';
         break;
     case 'historial-reportes':
-        require __DIR__ . '/../app/controlador/mostrarHistorialReportes.php';
+        require __DIR__ . '/../app/controlador/profesor/mostrarHistorialReportes.php';
         break;
     case 'panel-cordinacion':
-        require __DIR__ . '/../app/controlador/mostrarPanelCordinacion.php';
+        require __DIR__ . '/../app/controlador/coordinacion/mostrarPanelCordinacion.php';
         break;
     case 'cordinacion-diarios':
-        require __DIR__ . '/../app/controlador/mostrarCordinacionDiarios.php';
+        require __DIR__ . '/../app/controlador/coordinacion/mostrarCordinacionDiarios.php';
         break;
     case 'guardar-reporte-diario':
-        require __DIR__ . '/../app/controlador/guardarReporteDiario.php';
+        require __DIR__ . '/../app/controlador/profesor/guardarReporteDiario.php';
         break;
     case 'guardar-reporte-incidencia':
-        require __DIR__ . '/../app/controlador/guardarReporteIncidencia.php';
+        require __DIR__ . '/../app/controlador/profesor/guardarReporteIncidencia.php';
         break;
     case 'cordinacion-incidencias':
-        require __DIR__ . '/../app/controlador/mostrarCordinacionIncidencias.php';
+        require __DIR__ . '/../app/controlador/coordinacion/mostrarCordinacionIncidencias.php';
         break;
     case 'resolver-incidencia':
-        require __DIR__ . '/../app/controlador/resolverIncidencia.php';
+        require __DIR__ . '/../app/controlador/coordinacion/resolverIncidencia.php';
         break;
     case 'marcar-incidencia-proceso':
-        require __DIR__ . '/../app/controlador/marcarIncidenciaProceso.php';
+        require __DIR__ . '/../app/controlador/coordinacion/marcarIncidenciaProceso.php';
         break;
     case 'eliminar-reporte-incidencia':
-        require __DIR__ . '/../app/controlador/eliminarReporteIncidencia.php';
+        require __DIR__ . '/../app/controlador/profesor/eliminarReporteIncidencia.php';
         break;
     case 'actualizar-reporte-diario':
-        require __DIR__ . '/../app/controlador/actualizarReporteDiario.php';
+        require __DIR__ . '/../app/controlador/profesor/actualizarReporteDiario.php';
         break;
     case 'actualizar-reporte-incidencia':
-        require __DIR__ . '/../app/controlador/actualizarReporteIncidencia.php';
+        require __DIR__ . '/../app/controlador/profesor/actualizarReporteIncidencia.php';
         break;
     case 'metricas-administrador':
-        require __DIR__ . '/../app/controlador/mostrarMetricasAdministrador.php';
+        require __DIR__ . '/../app/controlador/administrador/mostrarMetricasAdministrador.php';
         break;
     case 'solicitar-laboratorio':
     case 'solicitar-salon':
-        require __DIR__ . '/../app/controlador/mostrarSolicitarLaboratorio.php';
+        require __DIR__ . '/../app/controlador/profesor/mostrarSolicitarLaboratorio.php';
         break;
     case 'guardar-solicitud-laboratorio':
-        require __DIR__ . '/../app/controlador/guardarSolicitudLaboratorio.php';
+        require __DIR__ . '/../app/controlador/profesor/guardarSolicitudLaboratorio.php';
         break;
     case 'mis-solicitudes-laboratorio':
     case 'mis-solicitudes':
-        require __DIR__ . '/../app/controlador/mostrarMisSolicitudesLaboratorio.php';
+        require __DIR__ . '/../app/controlador/profesor/mostrarMisSolicitudesLaboratorio.php';
         break;
     case 'solicitudes-laboratorio':
     case 'solicitudes-salones':
-        require __DIR__ . '/../app/controlador/mostrarSolicitudesLaboratorio.php';
+        require __DIR__ . '/../app/controlador/coordinacion/mostrarSolicitudesLaboratorio.php';
         break;
     case 'decidir-solicitud-laboratorio':
-        require __DIR__ . '/../app/controlador/decidirSolicitudLaboratorio.php';
+        require __DIR__ . '/../app/controlador/coordinacion/decidirSolicitudLaboratorio.php';
         break;
     default:
 

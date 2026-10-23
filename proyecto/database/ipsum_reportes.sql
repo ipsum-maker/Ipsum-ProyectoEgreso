@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS ipsum_reportes
+CREATE DATABASE IF NOT EXISTS ipsum
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE ipsum_reportes;
+USE ipsum;
 
 -- Eliminación de tablas previas en orden correcto de claves foráneas
 DROP TABLE IF EXISTS solicitudes_laboratorio;

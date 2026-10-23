@@ -672,3 +672,22 @@ body {
         padding: 2rem;
     }
 }
+
+.historial-mensaje {
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+}
+
+.historial-mensaje--exito {
+    color: #15803d;
+    background-color: #f0fdf4;
+    border-left: 5px solid #22c55e;
+}
+
+.historial-mensaje--error {
+    color: #b91c1c;
+    background-color: #fef2f2;
+    border-left: 5px solid #ef4444;
+}

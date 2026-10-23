@@ -23,6 +23,12 @@
 
     <main class="historial-main">
 
+        <?php if ($mensaje !== null): ?>
+            <p class="historial-mensaje historial-mensaje--<?= escapar((string) $mensaje['tipo']) ?>" role="status">
+                <?= escapar((string) $mensaje['texto']) ?>
+            </p>
+        <?php endif; ?>
+
         <!-- Barra de filtros con contadores calculados por PHP -->
         <section class="historial-filters" aria-label="Filtros de reportes">
             <button class="historial-filters__button historial-filters__button--active" id="btn-filtro-todos" type="button">

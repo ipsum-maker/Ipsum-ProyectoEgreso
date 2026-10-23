@@ -76,17 +76,17 @@ function verDetalleIncidencia(boton) {
     const contenedorBody = document.getElementById("detalle-incidencia-contenido");
     if (!modalDetalle || !contenedorBody || !boton) return;
 
-    const profesor = boton.getAttribute("data-profesor") || "";
-    const asignatura = boton.getAttribute("data-asignatura") || "";
-    const grupo = boton.getAttribute("data-grupo") || "";
-    const turno = boton.getAttribute("data-turno") || "";
-    const fecha = boton.getAttribute("data-fecha") || "";
-    const hora = boton.getAttribute("data-hora") || "";
-    const tipo = boton.getAttribute("data-tipo") || "";
-    const taller = boton.getAttribute("data-taller") || "";
-    const descripcion = boton.getAttribute("data-descripcion") || "";
-    const estado = boton.getAttribute("data-estado") || "";
-    const solucion = boton.getAttribute("data-solucion") || "";
+    const profesor = ControlErrores.escaparHtml(boton.getAttribute("data-profesor") || "");
+    const asignatura = ControlErrores.escaparHtml(boton.getAttribute("data-asignatura") || "");
+    const grupo = ControlErrores.escaparHtml(boton.getAttribute("data-grupo") || "");
+    const turno = ControlErrores.escaparHtml(boton.getAttribute("data-turno") || "");
+    const fecha = ControlErrores.escaparHtml(boton.getAttribute("data-fecha") || "");
+    const hora = ControlErrores.escaparHtml(boton.getAttribute("data-hora") || "");
+    const tipo = ControlErrores.escaparHtml(boton.getAttribute("data-tipo") || "");
+    const taller = ControlErrores.escaparHtml(boton.getAttribute("data-taller") || "");
+    const descripcion = ControlErrores.escaparHtml(boton.getAttribute("data-descripcion") || "");
+    const estado = ControlErrores.escaparHtml(boton.getAttribute("data-estado") || "");
+    const solucion = ControlErrores.escaparHtml(boton.getAttribute("data-solucion") || "");
 
     let colorEstado = estado === "resuelto" ? "#2e7d32" : (estado === "en_proceso" ? "#1565c0" : "#e65100");
 

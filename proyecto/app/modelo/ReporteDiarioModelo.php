@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../config/conexion.php';
+require_once __DIR__ . '/../config/Conexion.php';
 
 class ReporteDiarioModelo
 {
@@ -119,7 +119,42 @@ class ReporteDiarioModelo
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-        // Obtiene los equipos asignados a un reporte diario específico
+    public function obtenerPropio(int $reporteId, int $usuarioId): ?array
+    {
+        $sql = 'SELECT * FROM reportes_diarios WHERE id = :id AND usuario_id = :uid LIMIT 1';
+        $stmt = $this->conexion->prepare($sql);
+        $stmt->execute([':id' => $reporteId, ':uid' => $usuarioId]);
+        $reporte = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $reporte !== false ? $reporte : null;
+    }
+
+    public function actualizar(
+        int $reporteId,
+        int $usuarioId,
+        int $aulaId,
+        string $grupo,
+        string $asignatura,
+        string $turno,
+        string $horaEntrada,
+        string $horaSalida
+    ): bool {
+        $sql = 'UPDATE reportes_diarios
+                SET aula_id = :aula_id, grupo = :grupo, asignatura = :asignatura, turno = :turno, hora_entrada = :entrada, hora_salida = :salida
+                WHERE id = :id AND usuario_id = :uid';
+        $stmt = $this->conexion->prepare($sql);
+        return $stmt->execute([
+            ':aula_id' => $aulaId,
+            ':grupo' => $grupo,
+            ':asignatura' => $asignatura,
+            ':turno' => $turno,
+            ':entrada' => $horaEntrada,
+            ':salida' => $horaSalida,
+            ':id' => $reporteId,
+            ':uid' => $usuarioId,
+        ]);
+    }
+
+    // Obtiene los equipos asignados a un reporte diario específico
     public function obtenerEquipos(int $reporteId): array
     {
         $sql = 'SELECT pc, alumno FROM reporte_diario_pc WHERE reporte_diario_id = :reporte_id ORDER BY id ASC';

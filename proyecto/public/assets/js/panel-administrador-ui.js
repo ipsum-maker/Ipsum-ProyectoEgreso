@@ -62,12 +62,12 @@ function verSolucionResuelta(boton) {
     const contenedorBody = document.getElementById("detalle-resuelto-contenido");
     if (!modalResuelto || !contenedorBody || !boton) return;
 
-    const profesor = boton.getAttribute("data-profesor") || "";
-    const tipo = boton.getAttribute("data-tipo") || "";
-    const taller = boton.getAttribute("data-taller") || "";
-    const fecha = boton.getAttribute("data-fecha") || "";
-    const descripcion = boton.getAttribute("data-descripcion") || "";
-    const solucion = boton.getAttribute("data-solucion") || "";
+    const profesor = ControlErrores.escaparHtml(boton.getAttribute("data-profesor") || "");
+    const tipo = ControlErrores.escaparHtml(boton.getAttribute("data-tipo") || "");
+    const taller = ControlErrores.escaparHtml(boton.getAttribute("data-taller") || "");
+    const fecha = ControlErrores.escaparHtml(boton.getAttribute("data-fecha") || "");
+    const descripcion = ControlErrores.escaparHtml(boton.getAttribute("data-descripcion") || "");
+    const solucion = ControlErrores.escaparHtml(boton.getAttribute("data-solucion") || "");
 
     let html = `<p style="margin: 0 0 0.5rem;"><strong>Docente:</strong> ${profesor}</p>`;
     html += `<p style="margin: 0 0 0.5rem;"><strong>Fecha y Hora:</strong> ${fecha}</p>`;

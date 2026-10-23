@@ -73,7 +73,7 @@
                 <select class="cordinacion-filter-select" id="filtro-estado-incidencias">
                     <option value="todos">Todos</option>
                     <option value="pendiente">Pendientes</option>
-                    <option value="en-proceso">En proceso</option>
+                    <option value="en_proceso">En proceso</option>
                     <option value="resuelto">Resueltos</option>
                 </select>
             </section>

@@ -1,5 +1,11 @@
 // Herramientas de interfaz para evitar errores y gestionar modales
 const ControlErrores = {
+    escaparHtml: function (valor) {
+        return String(valor == null ? "" : valor).replace(/[&<>"']/g, function (caracter) {
+            return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[caracter];
+        });
+    },
+
     // Muestra errores al usuario y en la consola del navegador
     mostrarError: function (mensaje, error) {
         alert(mensaje);

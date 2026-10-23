@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 query: { aula_id: aula.value, fecha: fecha.value }
             });
             if (consulta !== consultaActual) return;
-            const resData = respuesta.data || respuesta.datos || {};
+            const resData = respuesta.data || {};
             ocupados = resData.ocupados || [];
             mensaje.textContent = ocupados.length ? "Estos intervalos ya están ocupados:" : "No hay horarios ocupados para este espacio y fecha. Su solicitud aún requerirá aprobación.";
             ocupados.forEach(function (horario) {

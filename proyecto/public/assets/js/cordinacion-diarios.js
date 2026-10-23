@@ -42,14 +42,14 @@ function abrirDetalleDiario(boton) {
     const contenedorBody = document.getElementById("detalle-diario-contenido");
     if (!modalDetalle || !contenedorBody || !boton) return;
 
-    const docente = boton.getAttribute("data-docente") || "";
-    const aula = boton.getAttribute("data-aula") || "";
-    const fecha = boton.getAttribute("data-fecha") || "";
-    const turno = boton.getAttribute("data-turno") || "";
-    const entrada = boton.getAttribute("data-entrada") || "";
-    const salida = boton.getAttribute("data-salida") || "";
-    const grupo = boton.getAttribute("data-grupo") || "";
-    const asignatura = boton.getAttribute("data-asignatura") || "";
+    const docente = ControlErrores.escaparHtml(boton.getAttribute("data-docente") || "");
+    const aula = ControlErrores.escaparHtml(boton.getAttribute("data-aula") || "");
+    const fecha = ControlErrores.escaparHtml(boton.getAttribute("data-fecha") || "");
+    const turno = ControlErrores.escaparHtml(boton.getAttribute("data-turno") || "");
+    const entrada = ControlErrores.escaparHtml(boton.getAttribute("data-entrada") || "");
+    const salida = ControlErrores.escaparHtml(boton.getAttribute("data-salida") || "");
+    const grupo = ControlErrores.escaparHtml(boton.getAttribute("data-grupo") || "");
+    const asignatura = ControlErrores.escaparHtml(boton.getAttribute("data-asignatura") || "");
     const equiposJson = boton.getAttribute("data-equipos") || "[]";
 
     let equipos = [];
@@ -80,8 +80,8 @@ function abrirDetalleDiario(boton) {
                     <tbody>`;
         equipos.forEach(eq => {
             html += `<tr>
-                        <td style="padding: 8px; border: 1px solid #cbd5e1; font-weight: bold; color: #0f172a;">${eq.pc}</td>
-                        <td style="padding: 8px; border: 1px solid #cbd5e1;">${eq.alumno}</td>
+                        <td style="padding: 8px; border: 1px solid #cbd5e1; font-weight: bold; color: #0f172a;">${ControlErrores.escaparHtml(eq.pc)}</td>
+                        <td style="padding: 8px; border: 1px solid #cbd5e1;">${ControlErrores.escaparHtml(eq.alumno)}</td>
                      </tr>`;
         });
         html += `</tbody></table>`;

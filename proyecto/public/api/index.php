@@ -3,12 +3,13 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../app/utilidades/sesion.php';
 require_once __DIR__ . '/../../app/vista/RespuestaJson.php';
-require_once __DIR__ . '/../../app/controlador/IncidenciaController.php';
-require_once __DIR__ . '/../../app/controlador/ReporteDiarioController.php';
-require_once __DIR__ . '/../../app/controlador/SolicitudLaboratorioController.php';
-require_once __DIR__ . '/../../app/controlador/UsuarioController.php';
+require_once __DIR__ . '/../../app/controlador/api/IncidenciaController.php';
+require_once __DIR__ . '/../../app/controlador/api/ReporteDiarioController.php';
+require_once __DIR__ . '/../../app/controlador/api/SolicitudLaboratorioController.php';
+require_once __DIR__ . '/../../app/controlador/api/UsuarioController.php';
+require_once __DIR__ . '/../../app/controlador/api/MetricasController.php';
 require_once __DIR__ . '/../../app/modelo/AulaModelo.php';
-require_once __DIR__ . '/../../app/modelo/MetricasModelo.php';
+require_once __DIR__ . '/../../app/utilidades/PeticionJson.php';
 
 $metodo = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 $recurso = trim((string) ($_GET['r'] ?? ''));
@@ -33,15 +34,15 @@ if ($recurso === '' || $recurso === '/') {
         'version' => '1.0',
         'endpoints' => [
             '/sesion' => ['GET', 'POST', 'DELETE'],
-            '/usuarios' => ['GET', 'POST', 'PATCH', 'DELETE'],
+            '/usuarios' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
             '/aulas' => ['GET'],
-            '/incidencias' => ['GET', 'POST', 'PATCH', 'DELETE'],
-            '/reportes-diarios' => ['GET', 'POST', 'PATCH'],
-            '/solicitudes-laboratorio' => ['GET', 'POST', 'PATCH'],
+            '/incidencias' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+            '/reportes-diarios' => ['GET', 'POST', 'PUT', 'PATCH'],
+            '/solicitudes-laboratorio' => ['GET', 'POST', 'PUT', 'PATCH'],
             '/solicitudes-laboratorio/disponibilidad' => ['GET'],
-            '/metricas/equipos' => ['GET'],
+            '/metricas' => ['GET'],
         ]
-    ]);
+    ], 200, 'Catálogo de endpoints de la API');
 }
 
 // 2. Sesión
@@ -62,8 +63,20 @@ if (str_starts_with($recurso, '/usuarios')) {
 
 // 4. Catálogo de Aulas
 if ($recurso === '/aulas') {
-    $aulaModelo = new AulaModelo();
-    RespuestaJson::exito($aulaModelo->obtenerTodasActivas());
+    try {
+        PeticionJson::usuario();
+        if ($metodo !== 'GET') {
+            header('Allow: GET');
+            throw new ErrorPeticion('Método no permitido', 405);
+        }
+        $aulaModelo = new AulaModelo();
+        RespuestaJson::exito($aulaModelo->obtenerTodasActivas());
+    } catch (ErrorPeticion $error) {
+        RespuestaJson::error($error->getMessage(), $error->getCode());
+    } catch (Throwable $error) {
+        error_log('API aulas: ' . $error->getMessage());
+        RespuestaJson::error('Error interno al obtener las aulas. Intente nuevamente.', 500);
+    }
 }
 
 // 5. Disponibilidad de espacios
@@ -100,16 +113,8 @@ if (str_starts_with($recurso, '/reportes-diarios') || str_starts_with($recurso, 
 }
 
 // 9. Métricas para administración
-if (str_starts_with($recurso, '/metricas')) {
-    $usuario = PeticionJson::usuario();
-    PeticionJson::exigirRol($usuario, ['administrador']);
-    $metricasModelo = new MetricasModelo();
-    RespuestaJson::exito([
-        'estadisticas' => $metricasModelo->obtenerEstadisticasGenerales(),
-        'rendimiento' => $metricasModelo->obtenerRendimientoResolucion(),
-        'porTaller' => $metricasModelo->obtenerIncidenciasPorTaller(),
-        'porDocente' => $metricasModelo->obtenerIncidenciasPorDocente(),
-    ]);
+if ($recurso === '/metricas') {
+    (new MetricasController())->gestionar($metodo);
 }
 
 RespuestaJson::error('Recurso no encontrado: ' . $recurso, 404);

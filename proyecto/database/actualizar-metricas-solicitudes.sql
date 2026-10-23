@@ -1,6 +1,4 @@
--- Actualización aditiva sobre la base ipsum_reportes existente.
--- Este script NO elimina tablas, NO borra datos existentes y NO reinicia los usuarios.
-USE ipsum_reportes;
+
 
 -- 1. Agregar columna codigo_equipo en reportes_incidencias si no existe
 SET @ipsum_agregar_equipo = IF(
